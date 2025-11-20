@@ -11,11 +11,14 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
 
-behaviorRegistry:Register('TriggerEvent', function(self, node)  
+behaviorRegistry:Register('TriggerEvent', function(self, node) 
+	print(self,node)
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
 	local selectedBlock = self.Events[node.Config.TagName]
+	
+	print(selectedBlock)
 	selectedBlock.TriggerArgs = node.Config
 
 	--selectedBlock.Config = node.Config
@@ -64,18 +67,6 @@ behaviorRegistry:Register('SpawnProjectile',function(self,node)
 	Part.Parent = workspace
 	
 	node.Config['Part'] = Part
-	
-	Part.Touched:Connect(function(otherPart)
-		self:Execute(
-			{
-				Name = 'Action.TriggerEvent',
-				Config = {
-					part = otherPart,
-					TagName = node.Config.OnHitTag
-					
-				}
-			})
-	end)
 end)
 
 behaviorRegistry:Register('Hello', function(self, node)
