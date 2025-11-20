@@ -1,4 +1,3 @@
-
 local ServerScriptService = game:GetService('ServerScriptService')
 local Bricks = ServerScriptService:WaitForChild('Bricksv2')
 
@@ -9,9 +8,9 @@ local Registries = Data:WaitForChild('Registries')
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
-local behaviorRegistry = Registry.new()
+local conditionRegisrty = Registry.new()
 
-behaviorRegistry:Register('TriggerEvent', function(self, node)  
+conditionRegisrty:Register('TriggerEvent', function(self, node)  
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
@@ -27,20 +26,29 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	-- print(self)
 end)
 
-behaviorRegistry:Register('OnHit', function(self, node) 
-	print(self.Tags) 
-	--print('root created', self)
+
+
+conditionRegisrty:Register('==', function(self, node)  
+	return node.Config.arg1 == node.Config.arg2
 end)
 
-behaviorRegistry:Register('Test', function(self, node)  
-	print(node)
+conditionRegisrty:Register('>=', function(self, node)  
+	return node.Config.arg1 >= node.Config.arg2
 end)
 
-behaviorRegistry:Register('Wait', function(self, node)  
-	task.wait(node.Config.Wait)
+conditionRegisrty:Register('>', function(self, node)  
+	return node.Config.arg1 > node.Config.arg2
 end)
 
-behaviorRegistry:Register('LinearSpeedUp',function(self,node)
+conditionRegisrty:Register('<', function(self, node)  
+	return node.Config.arg1 < node.Config.arg2
+end)
+
+conditionRegisrty:Register('<=', function(self, node)  
+	return node.Config.arg1 <= node.Config.arg2
+end)
+
+conditionRegisrty:Register('LinearSpeedUp',function(self,node)
 	local Part: BasePart = node.Additional['ProjectileInfo'].Part
 	if not Part then return end
 	local BodyVelocity = Part:FindFirstChildOfClass('BodyVelocity')
@@ -53,7 +61,7 @@ behaviorRegistry:Register('LinearSpeedUp',function(self,node)
 	end)
 end)
 
-behaviorRegistry:Register('SpawnProjectile',function(self,node)
+conditionRegisrty:Register('SpawnProjectile',function(self,node)
 	local Part = Instance.new('Part')
 	local BodyVelocity = Instance.new('BodyVelocity')
 
@@ -78,12 +86,12 @@ behaviorRegistry:Register('SpawnProjectile',function(self,node)
 	end)
 end)
 
-behaviorRegistry:Register('Hello', function(self, node)
+conditionRegisrty:Register('Hello', function(self, node)
 	--print(node.Additional['OnHit'])
 	--print('hello', node.Config)
 end)
 
-behaviorRegistry:Register('TriggerPassive', function(self, node)
+conditionRegisrty:Register('TriggerPassive', function(self, node)
 	local info = node.Additional.Main
 	
 	for _, passive in pairs(info.Passives) do
@@ -98,4 +106,4 @@ behaviorRegistry:Register('TriggerPassive', function(self, node)
 	end
 end)
 
-return behaviorRegistry
+return conditionRegisrty

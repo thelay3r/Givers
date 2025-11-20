@@ -10,19 +10,22 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
+local conditionRegisrty = require(Registries:WaitForChild('ConditionRegistry'))
 
 local parser = AbilityParser.new()
 
 local behaviorRegistry2 = Registry.new():Clone(behaviorRegistry)
 
-behaviorRegistry2:Register('Root', function(...: any)  
+behaviorRegistry2:Register('Root', function()  
 	print('New Root Behavior')
 end)
 
 parser.BehaviorRegistry = behaviorRegistry2
 parser.ScopeRegistry = scopeRegistry
+parser.ConditionRegistry = conditionRegisrty
 
 local passive = require(Data.Passive.Passive)
+
 
 local ability = parser:Create({
 	Name = 'Action.Root',
@@ -37,6 +40,29 @@ local ability = parser:Create({
 		}
 	},
 	
+	
+	{
+		Name = 'Condition.>=';
+		Config = 
+		{
+			arg1 = 1;
+			arg2 = 1;
+		};
+
+		{
+			Name = 'Action.SpawnProjectile';
+			Tag = 'Projectile32';
+
+			Config = {
+			Speed = 1,
+			Direction = Vector3.new(0,0,1),
+			StartVelocity = 10,
+			Damage = 15,
+			},
+		};
+		
+	};
+
 	{
 		Name = 'Action.SpawnProjectile',
 		Tag = 'Projectile1',
