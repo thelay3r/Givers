@@ -44,7 +44,8 @@ function AbilityParser:TransferIntoNodes(structure: any)
 
 	rootNode.InjectedCallback = function()
 		if (not scope) then return end
-		scope(self, rootNode)
+		print(scope(self,rootNode))
+		return scope(self, rootNode)
 	end
 
 	return rootNode
@@ -52,7 +53,7 @@ end
 
 function AbilityParser:Execute(structure: any)
 	local block = self:TransferIntoNodes(structure)
-	block:Execute()
+	return block:Execute()
 end
 
 function AbilityParser:Create(structure: any)

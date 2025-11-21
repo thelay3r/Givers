@@ -1,23 +1,18 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local ServerScriptService = game:GetService("ServerScriptService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local NetWork = Utilities:WaitForChild('NetWork')
 
 
-local EventBus = require(NetWork:WaitForChild('EventBus'))
 
-local TestBus = EventBus.new('test')
+local AbilityHandler = require(ServerScriptService:WaitForChild('Components'):WaitForChild('AbilityHandler'))
 
-TestBus:Once('test',function()
-	
-end)
 
-TestBus:Subscribe('test1',function()
-	
-end)
 
-local t: Humanoid
+-- local t = AbilityHandler.new('test',123,{})
+-- AbilityHandler.OnStart('test')
 
-t.Jumping:Connect(function()
-	TestBus:Fire('Jump')
-end)
+local t = AbilityHandler.AddAbility(123,'Default','Equip')
+AbilityHandler.OnStart('Equip',123)
+

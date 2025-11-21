@@ -11,11 +11,12 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
 
-behaviorRegistry:Register('TriggerEvent', function(self, node)  
+behaviorRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
 	local selectedBlock = self.Events[node.Config.TagName]
+	
 	selectedBlock.TriggerArgs = node.Config
 
 	--selectedBlock.Config = node.Config
@@ -38,8 +39,6 @@ end)
 
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
-	
-	
 end)
 
 behaviorRegistry:Register('LinearSpeedUp',function(self,node)
@@ -66,18 +65,6 @@ behaviorRegistry:Register('SpawnProjectile',function(self,node)
 	Part.Parent = workspace
 	
 	node.Config['Part'] = Part
-	
-	Part.Touched:Connect(function(otherPart)
-		self:Execute(
-			{
-				Name = 'Action.TriggerEvent',
-				Config = {
-					part = otherPart,
-					TagName = node.Config.OnHitTag
-					
-				}
-			})
-	end)
 end)
 
 behaviorRegistry:Register('Hello', function(self, node)

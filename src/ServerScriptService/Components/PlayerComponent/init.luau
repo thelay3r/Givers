@@ -14,7 +14,7 @@ local Interfaces = Shared:WaitForChild("Interfaces")
 
 local PlayerInterfaces = require(Interfaces:WaitForChild('PlayerInterfaces'))
 
-local SessionData = require(Templates:WaitForChild('SessionData'))
+local _SessionData = require(Templates:WaitForChild('SessionData'))
 local Components = ServerScriptService.Components
 
 local EntityComponent = require(Components.EntityComponent)
@@ -25,7 +25,7 @@ for _, component in pairs(script:GetChildren()) do
 	LoadedComponents[component.Name] = require(component) :: any
 end
 
-local TableHelper = require(Modules:FindFirstChild('TableHelper'))
+local _TableHelper = require(Modules:FindFirstChild('TableHelper'))
 
 
 local PlayerComponent = {}
@@ -35,7 +35,7 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 	
 	local entity = EntityComponent.new()
 	
-	local self = setmetatable({}, {__index = function(t, i)
+	local self = setmetatable({}, {__index = function(_, i)
 		for _, component in pairs(LoadedComponents) do
 			if (component[i]) then return component[i] end
 		end
@@ -51,8 +51,12 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 	self:SetupCharacter()
 	self:LoadReplica()
 	
+	local Character : Model? = self.Instance.Character
+	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
+
+
 	self:AppendPassive("Default", "Test")
-	
+	EntityComponent.AddToList(_Id,self)
 	return self :: any --:: PlayerInterfaces.IServerPlayerComponent
 end
 

@@ -43,6 +43,39 @@ function TableHelper:CheckIndexCount(t : {})
 
 	return count
 end
+
+function TableHelper:DeepTableFind2(_table: {}, Target: any, Type: string?, ignorElements: {})
+    ignorElements = ignorElements or {}
+    
+    if ignorElements[_table] then
+        return nil
+    end
+    ignorElements[_table] = true
+    
+    for index, value in pairs(_table) do
+        if index == Target then
+            if not Type or typeof(value) == Type then
+                return value
+            end
+        end
+        
+        if value == Target then
+            if not Type or typeof(value) == Type then
+                return value
+            end
+        end
+        
+        if typeof(value) == "table" then
+            local result = TableHelper:DeepTableFind(value, Target, Type, ignorElements)
+            if result ~= nil then
+                return result
+            end
+        end
+    end
+    
+    return nil
+end
+
 function TableHelper:DeepTableFind(_table : {},Type : any, Target : any, ignorElements : {})
 	
 	if not ignorElements then
