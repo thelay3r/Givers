@@ -1,12 +1,29 @@
 return {
 	Name = 'Action.Root';
 	Tag = 'Main',
-	Config = {},
+	Config = 
+	{
+		KeyCode = Enum.KeyCode.E;
+
+		Duration = 1;
+		CoolDown = 5;
+		LastUsed = 0;
+	},
 	{
 		Name = 'Event.OnStart';
 		Tag = 'OnStart';
-
 		{
+			Name = 'Condition.CheckBlackList';
+			Config = 
+			{
+				Ignor = 
+				{
+					['Stun'] = true;
+				}
+			};
+			RequestedTags = {['OnStart'] = 'OnStart'},
+			{
+
 			Name = 'Action.SpawnProjectile';
 			Tag = '111';
 
@@ -18,5 +35,8 @@ return {
 			}
 
 		}
+		};
+
+		
 	};      
 }

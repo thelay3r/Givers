@@ -31,7 +31,7 @@ local NPCComponent = {}
 
 function NPCComponent.Destroy(self: NPCInterfaces.INPCComponent)
 	TaskManager:CancelAllTasks(self)
-	TaskManager:CancelThread(self)
+	TaskManager:CancelAllThreads(self)
 	
 	for _, sub in pairs(self.SessionData) do
 		if type(sub) == "table" then
@@ -48,19 +48,25 @@ function NPCComponent.New(Model): NPCInterfaces.INPCComponent
 	
 	local entity = EntityComponent.new()
 
-	local self: IEntity = setmetatable({}, {__index = function(t, i)
-		for _, component in pairs(LoadedComponents) do
-			if (component[i]) then return component[i] end
-		end
+	local self = setmetatable({} :: any, {
+		__index = function(_, i)
+			for _, component in pairs(LoadedComponents) do
+				if (component[i]) then return component[i] end
+			end
 
-		if (entity[i]) then return entity[i] end
-		return NPCComponent[i]
-	end}) :: NPCInterfaces.INPCComponent
+			if (entity[i]) then return entity[i] end
+			return NPCComponent[i]
+		end
+	}) :: NPCInterfaces.INPCComponent
 	
 	self.SessionData = self:LoadSession()
 	self.SessionData.UserId = Id
 	self:SetupCharacter(Model)
 	
+	local Character : Model? = self.Instance.Character
+	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
+	EntityComponent.AddToList(_Id,self)
+
 	return self
 	
 end

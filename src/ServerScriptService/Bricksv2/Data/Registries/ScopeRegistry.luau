@@ -28,14 +28,20 @@ end)
 
 scopeRegistry:Register('Condition', function(self,node) 
 
+	for key, tag in pairs(node.RequestedTags or {}) do
+		node.Additional[key] = self.Tags[tag] or {}
+	end
+
 	local validate = self.ConditionRegistry:Get(node.Name)
 	if (validate) then validate = validate(self,node) end
 
+	
 	if not validate then return end
 	for _, child in (node.Children or {}) do 
 		child:Execute()
 	end
 	
+	return validate
 end)
 
 scopeRegistry:Register('EventAction', function(self, node) 

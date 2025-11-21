@@ -11,6 +11,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local Services = ServerScriptService:WaitForChild('Services')
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local nameOf = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.nameOf)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 -- Server
 
@@ -19,6 +20,8 @@ local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 local EntiyComponent = require(ServerComponents:WaitForChild('EntityComponent'))
 local EntitiesComponent = require(ServerComponents:WaitForChild('EntitiesStorage'))
+local AbilityHandler = require(ServerComponents:WaitForChild('AbilityHandler'))
+
 
 local DefaultAbility = Packets.DefaultAbility
 local Ability = Packets.Ability
@@ -40,9 +43,7 @@ end)
 
 DefaultAbility.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-	
 	if not Entity then return end
-	
 	local Pack
 	
 	-- if Entity.SessionData.CurrentEquipped == 'none' then
@@ -63,6 +64,7 @@ end)
 
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
+	--print(args)
 
 	if not Entity then return end
 
@@ -75,8 +77,11 @@ end)
 
 PackAbility.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-
+	print(args)
+	
     if not Entity then return end
+	AbilityHandler.OnStart('Equip',Player.UserId)
+	
 
 	--if not Entity.SessionData.Packs[args.Scope][args.Name] then return end
 
@@ -93,7 +98,9 @@ end)
 Replicator:GetRemote('BindableGlobal'):Connect('SetUp', function(UserId: string)
 	
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	
+	local TestAbility = AbilityHandler.AddAbility(UserId, 'Default', 'Equip')
+	print(TestAbility)
+
 	--if Entity.SessionData.Equipment.Weapon == 'none' or nil then return end
 	
 	-- local DefaultPath = AbilitiesFolder:WaitForChild('Default')

@@ -53,7 +53,7 @@ end
 
 function TreeNode:Execute()
 	if (not self.InjectedCallback) then return end
-	self.InjectedCallback()
+	return self.InjectedCallback()
 end
 
 return TreeNode

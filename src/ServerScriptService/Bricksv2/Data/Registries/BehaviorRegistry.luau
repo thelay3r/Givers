@@ -12,13 +12,11 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 local behaviorRegistry = Registry.new()
 
 behaviorRegistry:Register('TriggerEvent', function(self, node) 
-	print(self,node)
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
 	local selectedBlock = self.Events[node.Config.TagName]
 	
-	print(selectedBlock)
 	selectedBlock.TriggerArgs = node.Config
 
 	--selectedBlock.Config = node.Config
