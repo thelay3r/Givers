@@ -33,8 +33,12 @@ behaviorRegistry:Register('OnHit', function(self, node)
 	--print('root created', self)
 end)
 
-behaviorRegistry:Register('Test', function(self, node)  
-	print(node)
+behaviorRegistry:Register('SetCoolDown', function(self, node)
+	node:GetRoot().Config.LastUsed = tick()
+end)
+
+behaviorRegistry:Register('ResetCoolDown', function(self, node)
+	node:GetRoot().Config.LastUsed = 0
 end)
 
 behaviorRegistry:Register('Wait', function(self, node)  

@@ -40,11 +40,11 @@ function AbilityParser:TransferIntoNodes(structure: any)
 		requestedTags = structure.RequestedTags
 	})
 
+
 	local scope = self.ScopeRegistry:Get(splitted[1])
 
 	rootNode.InjectedCallback = function()
 		if (not scope) then return end
-		print(scope(self,rootNode))
 		return scope(self, rootNode)
 	end
 
@@ -62,7 +62,7 @@ function AbilityParser:Create(structure: any)
 end
 
 function AbilityParser:Build()
-	self.Tree:Execute()
+	return self.Tree:Execute()
 end
 
 return AbilityParser

@@ -43,6 +43,9 @@ function AbilityHandler.new(name: string,EntityId,Config: {}) : typeof(AbilityPa
     local ability = AbilityParser.new()
     local InheritanceRoot = Registry.new():Clone(behaviorRegistry)
 
+    InheritanceRoot:Register('Root', function()  
+	    print('New Root Behavior')
+    end)
     
     ability.BehaviorRegistry = InheritanceRoot
     ability.ScopeRegistry = scopeRegistry
@@ -74,7 +77,6 @@ function AbilityHandler.OnStart(name: string,EntityId)
     local ability = Abilities[EntityId][name]
     local _Entity = Entity.GetEntity(EntityId)
     local _ability = FindAbility(name,Abilities[EntityId])
-    print(_ability)
     ability:Execute(
         {
             Name = 'Action.TriggerEvent';

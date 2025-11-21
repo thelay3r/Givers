@@ -44,10 +44,9 @@ end
 function TreeNode:GetRoot()
 	local current = self
 
-	while current do
+	while current.Parent do
 		current = current.Parent
 	end
-
 	return current
 end
 

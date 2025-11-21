@@ -55,8 +55,10 @@ end)
 conditionRegisrty:Register('CheckCoolDown', function(self,node)
 	local nodeConfig = node.Additional['Main']
 	local lastUsed = nodeConfig.LastUsed
-	if tick() - lastUsed >= nodeConfig.CoolDown then return false end
+	if tick() - lastUsed <= nodeConfig.CoolDown then return false end
 	nodeConfig.lastUsed = tick()
+	print(node)
+	
 	return true
 end)
 
@@ -85,16 +87,15 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 			return false
 		end
 	end
-
-	local t = self:Execute(
+	
+	local CoolDown = self:Execute(
 		{
 			Name = 'Condition.CheckCoolDown';
 			RequestedTags = {['Main'] = 'Main'},
 		})
-	print(t)
-	print(self)
 
-	return true
+
+	return if (CoolDown and true) then true else false
 end)
 
 conditionRegisrty:Register('<=', function(self, node)  
@@ -133,7 +134,6 @@ conditionRegisrty:Register('SpawnProjectile',function(self,node)
 				Config = {
 					part = otherPart,
 					TagName = node.Config.OnHitTag
-					
 				}
 			})
 	end)

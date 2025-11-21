@@ -43,7 +43,7 @@ function PassiveParser:TransferIntoNodes(structure: any)
 
 	rootNode.InjectedCallback = function()
 		if (not scope) then return end
-		scope(self, rootNode)
+		return scope(self, rootNode)
 	end
 
 	return rootNode

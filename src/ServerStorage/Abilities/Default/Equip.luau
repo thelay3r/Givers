@@ -21,7 +21,13 @@ return {
 					['Stun'] = true;
 				}
 			};
-			RequestedTags = {['OnStart'] = 'OnStart'},
+			RequestedTags = {['OnStart'] = 'OnStart'};
+
+			{
+				Name = 'Action.SetCoolDown';
+			};
+
+
 			{
 
 			Name = 'Action.SpawnProjectile';

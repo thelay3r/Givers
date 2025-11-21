@@ -23,11 +23,12 @@ scopeRegistry:Register('Action', function(self, node)
 
 	for _, child in (node.Children or {}) do
 		child:Execute()
-	end
+	end	
+	
+	return true
 end)
 
 scopeRegistry:Register('Condition', function(self,node) 
-
 	for key, tag in pairs(node.RequestedTags or {}) do
 		node.Additional[key] = self.Tags[tag] or {}
 	end
@@ -35,12 +36,12 @@ scopeRegistry:Register('Condition', function(self,node)
 	local validate = self.ConditionRegistry:Get(node.Name)
 	if (validate) then validate = validate(self,node) end
 
+	if not validate then return validate end
 	
-	if not validate then return end
 	for _, child in (node.Children or {}) do 
 		child:Execute()
 	end
-	
+
 	return validate
 end)
 
@@ -51,6 +52,7 @@ scopeRegistry:Register('EventAction', function(self, node)
 	for _, child in (node.Children or {}) do
 		child:Execute()
 	end
+	return true
 end)
 
 scopeRegistry:Register('Event', function(self, node) 
@@ -58,6 +60,8 @@ scopeRegistry:Register('Event', function(self, node)
 	--if (behavior) then behavior(self, node) end
 	if (self.Events[node.Tag]) then warn(node.Tag..' already exists!'); return end
 	self.Events[node.Tag] = node
+
+	return true
 end)
 
 return scopeRegistry
