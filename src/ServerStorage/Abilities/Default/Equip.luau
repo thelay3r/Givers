@@ -1,5 +1,3 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Config = require(ReplicatedStorage.Shared.Abilities.Movement.Dash.Config)
 return {
 	Name = 'Action.Root';
 	Tag = 'Main',
@@ -18,18 +16,16 @@ return {
 		Tag = 'OnStart';
 		{
 			Name = 'Condition.CheckBlackList';
-			Config = 
-			{
-				Ignor = 
-				{
-					['Stun'] = true;
-				}
-			};
 			RequestedTags = {['OnStart'] = 'OnStart'};
 
 			{
+				Name = 'Action.SetAbilityActive';
+				Config = {Status = true};
+			};
+			{
 				Name = 'Action.SetCoolDown';
 			};
+			
 			{
 
 			Name = 'Action.SpawnProjectile';
@@ -54,7 +50,7 @@ return {
 			Name = 'Condition.IsActive?';
 			RequestedTags = {['Ability'] = 'Main'};
 			
-			{
+		{
 			Name = 'Action.SpawnProjectile';
 			Config = {
 				Speed = 1,
@@ -62,7 +58,13 @@ return {
 				StartVelocity = 10,
 				Damage = 15,
 			}
-		}
+
+		};
+		{
+			Name = 'Action.SetAbilityCoolDown';
+			Config = {Status = false};
+		};
+
 		};
 		
 	}    

@@ -33,6 +33,10 @@ behaviorRegistry:Register('OnHit', function(self, node)
 	--print('root created', self)
 end)
 
+behaviorRegistry:Register('SetAbilityActive', function(self, node)
+	node:GetRoot().Config.IsActive = node.Config.Status
+end)
+
 behaviorRegistry:Register('SetCoolDown', function(self, node)
 	node:GetRoot().Config.LastUsed = tick()
 end)

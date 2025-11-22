@@ -66,7 +66,7 @@ conditionRegisrty:Register('IsActive?', function(self,node)
 
 	local RootCFG = node.Additional['Ability']
 
-	return not RootCFG.IsActive
+	return RootCFG.IsActive
 end)
 
 
