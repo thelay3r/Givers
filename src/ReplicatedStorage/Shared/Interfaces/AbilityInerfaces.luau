@@ -30,7 +30,7 @@ export type IAbilityMethods = {
 	
 	OnStart: (self: IAbilityComponent, Additional: IAdditional) -> (),
 	OnSpecialStart: (self: IAbilityComponent, Additional: IAdditional) -> (),
-	OnEnd: (self: IAbilityComponent) -> (),
+	OnStop: (self: IAbilityComponent) -> (),
 }
 
 export type IAdditional = {

@@ -29,7 +29,7 @@ local function GetState(State : Enum.UserInputState)
 	if State == Enum.UserInputState.Begin then
 		return 'OnStart' 
 	else
-		return 'OnEnd'
+		return 'OnStop'
 	end
 end
 

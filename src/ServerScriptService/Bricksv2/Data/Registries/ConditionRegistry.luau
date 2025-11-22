@@ -62,10 +62,22 @@ conditionRegisrty:Register('CheckCoolDown', function(self,node)
 	return true
 end)
 
+conditionRegisrty:Register('IsActive?', function(self,node)  
+
+	local RootCFG = node.Additional['Ability']
+
+	return not RootCFG.IsActive
+end)
+
+
+
 conditionRegisrty:Register('CheckBlackList', function(self,node)
 	local Entity : IEntity = node.Additional['OnStart'].Entity
 	local nodeConfig = node.Config
 	local IgnorList = (nodeConfig.Ignor ) or ({})
+
+	local RootCFG = node:GetRoot().Config
+	if RootCFG.IsActive then return false end
 
 	local BlackList = 
 	{

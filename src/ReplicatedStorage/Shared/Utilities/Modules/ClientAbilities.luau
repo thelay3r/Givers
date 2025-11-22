@@ -228,7 +228,7 @@ function AbilitiesMethods.OnSpecialStart(self: AbilityInterfaces.IAbilityCompone
 
 end
 
-function AbilitiesMethods.OnEnd(self: AbilityInterfaces.IAbilityComponent)
+function AbilitiesMethods.OnStop(self: AbilityInterfaces.IAbilityComponent)
 	if (not self.IsActive) then return end
 
 	if (self.StartTime + self.MinDuration) > os.clock() then task.wait((self.StartTime + self.MinDuration) - os.clock()) end

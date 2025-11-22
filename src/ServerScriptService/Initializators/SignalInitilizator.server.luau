@@ -80,7 +80,7 @@ PackAbility.OnServerEvent:Connect(function(Player, args)
 	print(args)
 	
     if not Entity then return end
-	AbilityHandler.OnStart('Equip',Player.UserId)
+	AbilityHandler[args.State]('Equip',Player.UserId)
 	
 
 	--if not Entity.SessionData.Packs[args.Scope][args.Name] then return end
