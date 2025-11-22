@@ -77,7 +77,7 @@ end)
 
 PackAbility.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-	print(args)
+
 	
     if not Entity then return end
 	AbilityHandler[args.State]('Equip',Player.UserId)
