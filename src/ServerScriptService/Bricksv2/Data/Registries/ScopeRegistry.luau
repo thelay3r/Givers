@@ -33,7 +33,7 @@ scopeRegistry:Register('Condition', function(self,node)
 		node.Additional[key] = self.Tags[tag] or {}
 	end
 
-	local validate = self.ConditionRegistry:Get(node.Name)
+	local validate = self.BehaviorRegistry:Get(node.Name)
 	if (validate) then validate = validate(self,node) end
 
 	if not validate then return validate end
@@ -52,6 +52,7 @@ scopeRegistry:Register('EventAction', function(self, node)
 	for _, child in (node.Children or {}) do
 		child:Execute()
 	end
+
 	return true
 end)
 

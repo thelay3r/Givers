@@ -14,97 +14,94 @@ local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
-local Entity = require(ServerScriptService.Components:WaitForChild('EntityComponent'))
-
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
-local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
+local abilityRegistry = require(Registries:WaitForChild('AbilityRegistry'))
+local conditionRegistry = require(Registries:WaitForChild('ConditionRegistry'))
+
+local defaultRegistry = require(Registries:WaitForChild('DefaultRegistry'))
+local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
+
+local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
+
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
-local conditionRegisrty = require(Registries:WaitForChild('ConditionRegistry'))
 local TableHelper = require(ReplicatedStorage.Shared.Utilities.Modules.TableHelper)
 
+local InjectedRegistries = {
+    abilityRegistry, conditionRegistry,
+    defaultRegistry, eventRegistry, 
+    projectileRegistry
+}
 
 local AbilityHandler = {}
 local Abilities = {}
 
-function AbilityHandler._AddToCache(EntityId,AbilityName,ability)
-    if not Abilities[EntityId] then Abilities[EntityId] = {} end
-    Abilities[EntityId][AbilityName] = ability
+local function addToCache(name, entityId, ability)
+    if (not Abilities[entityId]) then Abilities[entityId] = {} end
+    Abilities[entityId][name] = ability
 end
 
-function AbilityHandler.AddAbility(EntityId,packName,abilityName)
-    local ability = AbilityHandler.new(abilityName,EntityId,require(AbilitesFolder[packName][abilityName]))
+function AbilityHandler.createByName(packName, abilityName)
+    assert(AbilitesFolder:FindFirstChild(packName), `{packName} doesnt exist!`)
+    assert(AbilitesFolder[packName]:FindFirstChild(abilityName), `{abilityName} in {packName} pack doesnt exist!`)
+
+    local ability = AbilityHandler.new(
+        require(AbilitesFolder[packName][abilityName])
+    )
 
     return ability
 end
 
-function AbilityHandler.new(name: string,EntityId,Config: {}) : typeof(AbilityParser)
+function AbilityHandler.new(config: {}) : typeof(AbilityParser)
     local ability = AbilityParser.new()
-    local InheritanceRoot = Registry.new():Clone(behaviorRegistry)
+    local behaviorRegistry = Registry.new():Extends(InjectedRegistries)
 
-    InheritanceRoot:Register('Root', function()  
-	    print('New Root Behavior')
-    end)
-    
-    ability.BehaviorRegistry = InheritanceRoot
+    ability.BehaviorRegistry = behaviorRegistry
     ability.ScopeRegistry = scopeRegistry
-    ability.ConditionRegistry = conditionRegisrty 
 
-    ability:Create(Config)
-    ability:Build()
+    ability:Create(config)
 
-    AbilityHandler._AddToCache(EntityId, name, ability)
-    return ability
-end
-
-local function FindAbility(name,_table)
-    local target
-    for _name,v in pairs(_table) do
-        if _name == name then 
-            target = v 
-            return target
+    local createdAbility = setmetatable({
+        Instance = ability
+    }, {
+        __index = function(t, i)
+            return AbilityHandler[i]
         end
-        if typeof(v) == 'table' then target = FindAbility(name,v) end
-    end
+    })
 
-    return target
+    return createdAbility
 end
 
+function AbilityHandler:Build()
+    self.Instance:Build()
+end
 
-function AbilityHandler.OnStart(name: string,EntityId)
-    if not Abilities[EntityId][name] then return end
-    local ability = Abilities[EntityId][name]
-    local _Entity = Entity.GetEntity(EntityId)
-    local _ability = FindAbility(name,Abilities[EntityId])
-    ability:Execute(
+function AbilityHandler:Start()
+    self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
             Config = 
             {
                 TagName = 'OnStart';
-                Entity = _Entity;
             }
         })
 end
-function AbilityHandler.OnStop(name: string,EntityId)
-    if not Abilities[EntityId][name] then return end
-    local ability = Abilities[EntityId][name]
-    local _Entity = Entity.GetEntity(EntityId)
 
-    ability:Execute(
+function AbilityHandler:Stop()
+    self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
             Config = 
             {
                 TagName = 'OnStop';
-                Entity = _Entity;
             }
         })
 end
 
-
-
-
+function AbilityHandler:BindToEntity(name: string, entityId: number)
+    self:Build()
+    addToCache(name, entityId, self.Instance)
+end
 
 return AbilityHandler

@@ -47,6 +47,7 @@ function TreeNode:GetRoot()
 	while current.Parent do
 		current = current.Parent
 	end
+	
 	return current
 end
 
