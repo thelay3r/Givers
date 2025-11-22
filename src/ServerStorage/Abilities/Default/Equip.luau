@@ -36,10 +36,10 @@ return {
 			Tag = '111';
 
 			Config = {
-			Speed = 1,
-			Direction = Vector3.new(0,0,1),
-			StartVelocity = 10,
-			Damage = 15,
+				Speed = 1,
+				Direction = Vector3.new(0,0,1),
+				StartVelocity = 10,
+				Damage = 15,
 			}
 
 		}
