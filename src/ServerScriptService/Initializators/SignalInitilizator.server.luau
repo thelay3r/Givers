@@ -44,29 +44,20 @@ end)
 DefaultAbility.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
 	if not Entity then return end
-	local Pack
+	local ability = Entity:GetAbility(args.Name)
+	ability[args.State](ability)
+	print(args)
 	
-	-- if Entity.SessionData.CurrentEquipped == 'none' then
-	-- 	Pack = AbilityComponent.GetPack(Entity, 'Default')
-	-- 	if (Pack[args.Name]) then
-	-- 		if args.State == 'OnEnd' and Pack[args.Name].Config.Type == 'Toggle' then return end
-	-- 		Pack[args.Name][args.State](Pack[args.Name])
-	-- 	end
-	-- else
-	-- 	Pack = AbilityComponent.GetPack(Entity, Entity.SessionData.CurrentEquipped)
-	-- 	if (Pack[args.Name]) then
-	-- 		if args.State == 'OnEnd' and Pack[args.Name].Config.Type == 'Toggle' then return end
-	-- 		Pack[args.Name][args.State](Pack[args.Name])
-	-- 	end
-	-- end
 	
 end)
 
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-	--print(args)
+
 
 	if not Entity then return end
+
+	
 
 	--if not Entity.SessionData.Abilities[args.Scope][args.Name] then return end
 
@@ -80,8 +71,6 @@ PackAbility.OnServerEvent:Connect(function(Player, args)
 
 	
     if not Entity then return end
-	AbilityHandler[args.State]('Equip',Player.UserId)
-	
 
 	--if not Entity.SessionData.Packs[args.Scope][args.Name] then return end
 
@@ -98,8 +87,7 @@ end)
 Replicator:GetRemote('BindableGlobal'):Connect('SetUp', function(UserId: string)
 	
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	local TestAbility = AbilityHandler.AddAbility(UserId, 'Default', 'Equip')
-	print(TestAbility)
+	
 
 	--if Entity.SessionData.Equipment.Weapon == 'none' or nil then return end
 	

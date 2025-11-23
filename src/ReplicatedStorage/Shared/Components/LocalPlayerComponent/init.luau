@@ -49,7 +49,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	
 	PlayerComponent = self
 	
-	
+	print(self)
 	return self
 end
 

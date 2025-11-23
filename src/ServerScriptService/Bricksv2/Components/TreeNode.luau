@@ -1,3 +1,5 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local nicknames = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.nicknames)
 local nodeCount = 0 --! come up with a better solution
 
 local TreeNode = {}
@@ -26,6 +28,36 @@ function TreeNode.new(config: any)
 	nodeCount += 1
 
 	return self
+end
+
+local function _DestroyTable(t)
+
+
+	for name,v in pairs(t) do 
+		if (typeof(v) ~= 'table') or (name == 'Parent') then continue end
+		_DestroyTable(v)
+		v = nil
+	end
+	table.clear(t)
+end
+
+function TreeNode:Destroy()
+
+	for _,v in pairs(self) do 
+		if typeof(v) ~= 'table' then continue end
+		_DestroyTable(v)
+	end
+
+	self.Id = nil
+	self.Tag = nil
+	self.Type = nil
+	self.Name = nil 
+	self.Config = nil 
+	self.RequestedTags = nil
+	self.InjectedCallback = nil 
+	self.Additional = nil
+	self.Children = nil 
+	self.Parent = nil 
 end
 
 function TreeNode:GetPath(): string

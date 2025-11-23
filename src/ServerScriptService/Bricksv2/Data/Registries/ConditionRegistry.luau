@@ -54,7 +54,8 @@ end)
 
 
 conditionRegisrty:Register('CheckBlackList', function(self,node)
-	local Entity : IEntity = node.Additional['OnStart'].Entity
+	print(node.Additional['Owner'])
+	local Entity : IEntity = node.Additional['Owner']
 	local nodeConfig = node.Config
 	local IgnorList = (nodeConfig.Ignor ) or ({})
 
@@ -75,7 +76,6 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 		'Vaulting';
 	}
 	
-	Entity.SessionData.StatusEffects.Stun = true;
 	for _,v in pairs(BlackList) do 
 		if (Entity.SessionData.StatusEffects[v] == true) and (not IgnorList[v]) then 
 			return false
@@ -85,7 +85,10 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 	local CoolDown = self:Execute(
 		{
 			Name = 'Condition.CheckCoolDown';
-			RequestedTags = {['Main'] = 'Main'},
+			RequestedTags = {
+				['Main'] = 'Main';
+				['Owner'] = 'Owner';
+			},
 		})
 
 

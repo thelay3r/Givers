@@ -16,7 +16,10 @@ return {
 		Tag = 'OnStart';
 		{
 			Name = 'Condition.CheckBlackList';
-			RequestedTags = {['OnStart'] = 'OnStart'};
+			RequestedTags = {
+				['OnStart'] = 'OnStart';
+				['Owner'] = 'Owner';
+			};
 
 			{
 				Name = 'Action.SetAbilityActive';

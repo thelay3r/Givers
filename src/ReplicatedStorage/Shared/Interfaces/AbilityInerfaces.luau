@@ -17,7 +17,7 @@ export type IAbilityMethods = {
 	RemoveAllPacks: (self: IAbilityMethods) -> (),
 	
 	AddAbility: (self: IAbilityMethods, AbilitiesFolder: Folder, AbilityName: string) -> (),
-	GetAbility: (self: IAbilityMethods, Scope: string, AbilityName: string) -> (),
+	GetAbility: (self: IAbilityMethods, AbilityName: string) -> (),
 	RemoveAbility: (self: IAbilityMethods, Scope: string, AbilityName: string) -> (),
 	RemoveAllAbilities: (self: IAbilityMethods) -> (),
 	

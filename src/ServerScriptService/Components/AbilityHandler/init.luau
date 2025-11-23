@@ -26,6 +26,7 @@ local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
 local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
 
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
+local nicknames = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.nicknames)
 local TableHelper = require(ReplicatedStorage.Shared.Utilities.Modules.TableHelper)
 
 local InjectedRegistries = {
@@ -42,7 +43,11 @@ local function addToCache(name, entityId, ability)
     Abilities[entityId][name] = ability
 end
 
-function AbilityHandler.createByName(packName, abilityName)
+local function GetFromCache(name, entityId)
+    return Abilities[entityId][name]
+end
+
+function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHandler)
     assert(AbilitesFolder:FindFirstChild(packName), `{packName} doesnt exist!`)
     assert(AbilitesFolder[packName]:FindFirstChild(abilityName), `{abilityName} in {packName} pack doesnt exist!`)
 
@@ -77,7 +82,7 @@ function AbilityHandler:Build()
     self.Instance:Build()
 end
 
-function AbilityHandler:Start()
+function AbilityHandler:OnStart()
     self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
@@ -88,7 +93,7 @@ function AbilityHandler:Start()
         })
 end
 
-function AbilityHandler:Stop()
+function AbilityHandler:OnStop()
     self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
@@ -99,9 +104,20 @@ function AbilityHandler:Stop()
         })
 end
 
+function AbilityHandler.GetAbility(name,entityId)
+    return GetFromCache(name, entityId)
+end
+
 function AbilityHandler:BindToEntity(name: string, entityId: number)
     self:Build()
-    addToCache(name, entityId, self.Instance)
+    addToCache(name, entityId, self)
+end
+
+function AbilityHandler:UnBindToEntity(name:string,entityId:number)
+    local ability = GetFromCache(name,entityId)
+    ability.Instance:Destroy()
+    ability.Instance = nil
+    ability = nil
 end
 
 return AbilityHandler
