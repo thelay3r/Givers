@@ -11,6 +11,7 @@ local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
 local DefaultAbility = Packets.DefaultAbility
+local AbilityPacket = Packets.Ability
 local PackAbility = Packets.PackAbility
 
 local AbilityInterfaces = require(Interfaces:WaitForChild('AbilityInerfaces'))
@@ -41,7 +42,7 @@ end
 Contexts['Weapon'] = function(args, State, SelectedInput: InputObject)
 	
 	if args['Additional'][SelectedInput]['Type'] == 'Server' then
-		DefaultAbility:Fire(
+		AbilityPacket:Fire(
 			{
 				Input = SelectedInput;
 				Name = args['Additional'][SelectedInput]['Name'];

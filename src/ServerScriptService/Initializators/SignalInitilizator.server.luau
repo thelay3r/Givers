@@ -41,76 +41,21 @@ ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	
 end)
 
-DefaultAbility.OnServerEvent:Connect(function(Player, args)
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-	if not Entity then return end
-	local ability = Entity:GetAbility(args.Name)
-	ability[args.State](ability)
-	print(args)
-	
-	
-end)
+
 
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-
-
 	if not Entity then return end
 
-	
+	local ability = Entity:GetAbility(args.Name)
+	if not ability then return end
+	ability[args.State](ability)
 
-	--if not Entity.SessionData.Abilities[args.Scope][args.Name] then return end
-
-	-- local Ability = AbilityComponent.GetAbility(Entity, args.Scope, args.Name)
-	-- if args.State == 'OnEnd' and Ability.Config.Type == 'Toggle' then return end
-	-- Ability[args.State](Ability)
 end)
 
-PackAbility.OnServerEvent:Connect(function(Player, args)
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
-
-	
-    if not Entity then return end
-
-	--if not Entity.SessionData.Packs[args.Scope][args.Name] then return end
-
-	-- local Pack = AbilityComponent.GetPack(Entity, args.Scope)
-	
-	-- if not (Pack[args.Name]) then return end
-	
-	-- local Ability = Pack[args.Name]
-	
-	-- if args.State == 'OnEnd' and Ability.Config.Type == 'Toggle' then return end
-	-- Ability[args.State](Ability)
-end)
 
 Replicator:GetRemote('BindableGlobal'):Connect('SetUp', function(UserId: string)
 	
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	
 
-	--if Entity.SessionData.Equipment.Weapon == 'none' or nil then return end
-	
-	-- local DefaultPath = AbilitiesFolder:WaitForChild('Default')
-	-- local StylePath = AbilitiesFolder:WaitForChild(Entity.SessionData.Equipment.Style)
-	-- local MovementPath = AbilitiesFolder:WaitForChild('Movement')
-	
-	-- local StylePack = Entity:AddPack(StylePath)
-	-- local DefaultPack = Entity:AddPack(DefaultPath)
-	-- local MovementPack = Entity:AddPack(MovementPath)
-	
-	-- --local WeaponPack = Entity:AddPack(AbilitiesFolder)
-	
-	-- local FireBallAbility = Entity:AddAbility(ServerStorage:FindFirstChild('Abilities'):FindFirstChild('Fire'), 'FireBall')
-	-- StateManager:New(
-	-- 	{
-	-- 		FOLDER = StatesLibraryS['Communication'];
-	-- 		SECTION_NAME = 'Replicate';
-	-- 		LOCK_MODE = false;
-	-- 		IGNORE = true;
-	-- 		LAUNCH = false;
-	-- 		Entity = Entity;
-	-- 	}
-	-- )
-	
 end)

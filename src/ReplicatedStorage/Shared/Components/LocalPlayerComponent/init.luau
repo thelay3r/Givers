@@ -18,12 +18,12 @@ end
 local LocalPlayerComponent = {}
 
 function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClientPlayerComponent
-	local self: LocalPlayerInterfaces.IClientPlayerComponent = setmetatable({}, {__index = function(t, i)
+	local self = setmetatable({}, {__index = function(t, i)
 		for _, component in pairs(LoadedComponents) do
 			if (component[i]) then return component[i] end
 		end
 		return LocalPlayerComponent[i]
-	end})
+	end}) :: any & LocalPlayerInterfaces.IAbilityMethods
 	
 	self.Instance = player
 	self.ClientData = self:LoadClientData()
