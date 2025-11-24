@@ -1,3 +1,4 @@
+local AdService = game:GetService("AdService")
 return {
 	[1] = {
 		Name = 'BackpackButton';
@@ -104,6 +105,13 @@ return {
 			[Enum.KeyCode.E.Name] = {Name = 'Equip', Type = 'Server'},
 			[Enum.KeyCode.F.Name] = {Name = 'Block', Type = 'Client'},
 		};
+	};
+	['Abilities'] = 
+	{
+		Name = 'Ability';
+		Codes = {Enum.KeyCode.Z; Enum.KeyCode.X,Enum.KeyCode.C,Enum.KeyCode.V};
+		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
+		Additional = {};
 	};
 	
 	

@@ -10,9 +10,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
-local DefaultAbility = Packets.DefaultAbility
 local AbilityPacket = Packets.Ability
-local PackAbility = Packets.PackAbility
 
 local AbilityInterfaces = require(Interfaces:WaitForChild('AbilityInerfaces'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
@@ -56,46 +54,15 @@ Contexts['Movement'] = function(args, State, SelectedInput: InputObject)
 	Player = PlayerStorage:GetPlayer()
 	
 	if (not Player) or (not Player.ClientData) then return end
-	
-	local Pack = Player.ClientData.ClientAbilities.Packs['Movement']
-	local Ability: IAbility = Pack[args['Additional'][SelectedInput]['Name']]
-	
-	if args['Additional'][SelectedInput]['Type'] == 'Server' then
-		
-		PackAbility:Fire(
-			{
-				Scope = 'Movement';
-				Name = args['Additional'][SelectedInput]['Name'];
-				State = GetState(State)
-			})
-		
-	elseif args['Additional'][SelectedInput]['Type'] == 'Client' then
-		Replicator:GetRemote('BindableGlobal'):BindableFire('Movement', {
-			Input = SelectedInput;
-			Name = args['Additional'][SelectedInput]['Name'];
-			State = GetState(State)
-		})
-	else
-		
-		if not CheckBlacklist(Ability) then
-			PackAbility:Fire(
-				{
-					Scope = 'Movement';
-					Name = args['Additional'][SelectedInput]['Name'];
-					State = GetState(State)
-				})
-		end
-		
-		Replicator:GetRemote('BindableGlobal'):BindableFire('Movement', {
-			Input = SelectedInput;
-			Name = args['Additional'][SelectedInput]['Name'];
-			State = GetState(State)
-		})
-	end
 end
 
-Contexts['Ability'] = function(additional)
-	print(additional)
+Contexts['Ability'] = function(_,State, SelectedInput: InputObject)
+	print(State,SelectedInput)
+	AbilityPacket:Fire(
+		{
+			Name = SelectedInput;
+			State = GetState(State);
+		})
 end
 
 Contexts['BackpackButton'] = function(args, State)

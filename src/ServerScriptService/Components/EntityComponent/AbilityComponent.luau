@@ -13,7 +13,8 @@ local Abilities = {}
 
 
 function Component.GetAbility(self: any & IEntity,name: string)
-    return AbilityHandler.GetAbility(name,self.SessionData.UserId)
+   -- return AbilityHandler.GetAbility(name,self.SessionData.UserId)
+    return Abilities[self.SessionData.UserId][name]
 end
 
 function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
@@ -28,13 +29,13 @@ function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
 
     if not PlayersService:GetPlayerByUserId(sessionData.UserId) then return end
 
-    self:SetAbility(name, 
+    self:SetAbility(Config.KeyCode.Name,
     {
-        KeyCode = Config.KeyCode;
+        KeyCode = Config.KeyCode.Name;
     })
     
     if (not Abilities[sessionData.UserId]) then Abilities[sessionData.UserId] = {} end
-    Abilities[sessionData.UserId][name] = ability
+    Abilities[sessionData.UserId][Config.KeyCode.Name] = ability
     return 
 end
 

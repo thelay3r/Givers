@@ -30,14 +30,12 @@ function ClientDataComponent.ReplicaInit(self: ILocalPlayer.IClientPlayerCompone
 		warn('Replica started!')
 	end)
 	ReplicaClient.RequestData()
-
-	
-	
 	while (not Loaded) do task.wait(1/10) end
 
 	self.Replica:OnChange(function(Method,Path,new,old)
-
+		print(Method,Path,new,old)
 	end)
+	
 	
 	return self
 end

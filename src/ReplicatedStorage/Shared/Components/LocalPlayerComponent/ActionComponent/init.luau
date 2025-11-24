@@ -54,7 +54,7 @@ function ActionComponent.UpdateControls(self, actions: {Codes: {}, States: {}, N
 			
 			local selectedActions = {};
 			local FormatedInput = self:FormattedInput(inputObject)
-			
+			print(actionName)
 			for _, action in pairs(actions) do
 				if inputObject.KeyCode == Enum.KeyCode.Unknown then continue end
 				if (table.find(action.States, inputState)) and (table.find(action.Codes, inputObject.KeyCode)) then
