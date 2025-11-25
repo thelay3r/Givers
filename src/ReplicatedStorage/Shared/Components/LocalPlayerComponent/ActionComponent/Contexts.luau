@@ -37,25 +37,10 @@ local function CheckBlacklist(Ability: IAbility)
 	return false
 end
 
-Contexts['Weapon'] = function(args, State, SelectedInput: InputObject)
-	
-	if args['Additional'][SelectedInput]['Type'] == 'Server' then
-		AbilityPacket:Fire(
-			{
-				Input = SelectedInput;
-				Name = SelectedInput;--args['Additional'][SelectedInput]['Name'];
-				State = GetState(State);
-			})
-	end
-end
 
-Contexts['Movement'] = function(args, State, SelectedInput: InputObject)
+Contexts['LocalAbility'] = function(_,State, SelectedInput: InputObject)
 	
-	Player = PlayerStorage:GetPlayer()
-	
-	if (not Player) or (not Player.ClientData) then return end
 end
-
 
 
 Contexts['Ability'] = function(_,State, SelectedInput: InputObject)

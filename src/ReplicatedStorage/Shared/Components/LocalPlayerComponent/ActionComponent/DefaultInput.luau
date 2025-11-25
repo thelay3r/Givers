@@ -84,17 +84,6 @@ return {
 		Additional = { Int = 12 };
 	};
 
-	['Movement'] = {
-		Name = 'Movement';
-		Codes = {Enum.KeyCode.W, Enum.KeyCode.Q, Enum.KeyCode.Space, Enum.UserInputType.MouseButton2};
-		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
-		Additional = {
-			[Enum.KeyCode.W.Name] = {Name = 'Sprint', Type = 'Both'},
-			[Enum.KeyCode.Q.Name] = {Name = 'Dash', Type = 'Client'},
-			[Enum.UserInputType.MouseButton2.Name] = {Name = 'Feint', Type = 'Client'},
-			[Enum.KeyCode.Space.Name] = {Name = 'Vault', Type = 'Client'},
-		};
-	};
 
 	['Abilities'] = 
 	{
@@ -119,6 +108,7 @@ return {
 			Enum.KeyCode.W;
 			Enum.KeyCode.Q;
 			Enum.KeyCode.LeftControl;
+			Enum.KeyCode.Space;
 		};
 	}
 	
