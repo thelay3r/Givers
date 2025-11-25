@@ -43,7 +43,6 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self:ReplicateKeys()
 	self.CreateSmoothShiftLock(self)
 	self:InitClientVFX()
-	self:LoadMovement()
 	self:InitCamera()
 	self:SharePlayer()
 	

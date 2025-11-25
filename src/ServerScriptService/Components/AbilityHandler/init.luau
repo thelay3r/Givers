@@ -1,5 +1,4 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService('ServerScriptService')
 local ServerStorage = game:GetService("ServerStorage")
 
 
@@ -8,7 +7,7 @@ local Utilities = Shared:WaitForChild('Utilities')
 local _Modules = Utilities:WaitForChild('Modules')
 
 local AbilitesFolder = ServerStorage:WaitForChild('Abilities')
-local Bricks = ServerScriptService:WaitForChild('Bricksv2')
+local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
@@ -26,8 +25,6 @@ local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
 local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
 
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
-local nicknames = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.nicknames)
-local TableHelper = require(ReplicatedStorage.Shared.Utilities.Modules.TableHelper)
 
 local InjectedRegistries = {
     abilityRegistry, conditionRegistry,

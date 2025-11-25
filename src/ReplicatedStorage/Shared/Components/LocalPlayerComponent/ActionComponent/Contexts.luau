@@ -43,8 +43,8 @@ Contexts['Weapon'] = function(args, State, SelectedInput: InputObject)
 		AbilityPacket:Fire(
 			{
 				Input = SelectedInput;
-				Name = args['Additional'][SelectedInput]['Name'];
-				State = GetState(State)
+				Name = SelectedInput;--args['Additional'][SelectedInput]['Name'];
+				State = GetState(State);
 			})
 	end
 end
@@ -55,6 +55,8 @@ Contexts['Movement'] = function(args, State, SelectedInput: InputObject)
 	
 	if (not Player) or (not Player.ClientData) then return end
 end
+
+
 
 Contexts['Ability'] = function(_,State, SelectedInput: InputObject)
 	print(State,SelectedInput)

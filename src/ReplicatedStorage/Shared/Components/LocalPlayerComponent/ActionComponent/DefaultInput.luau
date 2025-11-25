@@ -96,23 +96,31 @@ return {
 		};
 	};
 
-	['Weapon'] = {
-		Name = 'Weapon';
-		Codes = {Enum.UserInputType.MouseButton1, Enum.KeyCode.E, Enum.KeyCode.F};
-		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
-		Additional = {
-			[Enum.UserInputType.MouseButton1.Name] = {Name = 'M1', Type = 'Server'},
-			[Enum.KeyCode.E.Name] = {Name = 'Equip', Type = 'Server'},
-			[Enum.KeyCode.F.Name] = {Name = 'Block', Type = 'Client'},
-		};
-	};
 	['Abilities'] = 
 	{
 		Name = 'Ability';
-		Codes = {Enum.KeyCode.Z; Enum.KeyCode.X,Enum.KeyCode.C,Enum.KeyCode.V};
+		Codes = {
+			Enum.KeyCode.Z,
+			Enum.KeyCode.X,
+			Enum.KeyCode.C,
+			Enum.KeyCode.V,
+
+			Enum.UserInputType.MouseButton1,
+			Enum.KeyCode.E,
+			Enum.KeyCode.F
+			},
 		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
 		Additional = {};
 	};
+	['LocalAbilities'] = 
+	{
+		Name = 'LocalAbility';
+		Codes = {
+			Enum.KeyCode.W;
+			Enum.KeyCode.Q;
+			Enum.KeyCode.LeftControl;
+		};
+	}
 	
 	
 }
