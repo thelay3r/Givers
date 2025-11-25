@@ -4,9 +4,10 @@ return
     Tag = 'Main';
     Config = 
     {
-        Acceleration = 2;
-        BaseSpeed = 16;
-        AccelerationTime = 0.25;
+        Name = 'Run';
+        KeyCode = Enum.KeyCode.W;
+        CoolDown = .1;
+        IsActive = false;
     };
 
 
@@ -20,6 +21,12 @@ return
             {
                 Name = 'Action.AcceleratMoveSpeed';
                 RequestedTags = {['Player'] = 'Player',['Config'] = 'Main'};
+                Conifg = 
+                {
+                    Acceleration = 2;
+                    BaseSpeed = 16;
+                    AccelerationTime = 0.25;
+                }
             }
         }
     }

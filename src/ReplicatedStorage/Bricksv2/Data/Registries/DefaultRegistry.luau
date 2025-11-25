@@ -1,6 +1,6 @@
 
-local ServerScriptService = game:GetService('ServerScriptService')
-local Bricks = ServerScriptService:WaitForChild('Bricksv2')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
