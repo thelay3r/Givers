@@ -12,15 +12,14 @@ local Replicator = require(NetWork:WaitForChild('Replicator'))
 
 local AbilityPacket = Packets.Ability
 
-local AbilityInterfaces = require(Interfaces:WaitForChild('AbilityInerfaces'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
 local PlayerStorage = require(Components:WaitForChild('LocalPlayerComponent'):WaitForChild('PlayerStorage'))
 
 type IPlayer = LocalPlayerInterfaces.IClientPlayerComponent
-type IAbility = AbilityInterfaces.IAbilityComponent
 
 local Player: IPlayer = PlayerStorage:GetPlayer()
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 local Contexts = {}
 
@@ -32,24 +31,23 @@ local function GetState(State : Enum.UserInputState)
 	end
 end
 
-local function CheckBlacklist(Ability: IAbility)
-	if Ability:CheckBlacklist(Ability.Config.Blacklist) then return true end
-	return false
-end
+
 
 
 Contexts['LocalAbility'] = function(_,State, SelectedInput: InputObject)
-	
+	BindableGlobal:BindableFire('LocalAbility', {
+		Name = SelectedInput;
+		State = GetState(State);
+	})
 end
 
 
 Contexts['Ability'] = function(_,State, SelectedInput: InputObject)
-	print(State,SelectedInput)
-	AbilityPacket:Fire(
-		{
-			Name = SelectedInput;
-			State = GetState(State);
-		})
+	BindableGlobal:BindableFire('ServerAbility',
+	{
+		Name = SelectedInput;
+		State = GetState(State);
+	})
 end
 
 Contexts['BackpackButton'] = function(args, State)

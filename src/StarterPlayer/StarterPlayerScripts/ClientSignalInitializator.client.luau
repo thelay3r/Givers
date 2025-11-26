@@ -10,44 +10,25 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
-local AbilityInterfaces = require(Interfaces:WaitForChild('AbilityInerfaces'))
+local AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
-type ILocalAbility = AbilityInterfaces.IAbilityComponent
 
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 local PacketManager = require(NetWork:WaitForChild('Packets'))
 local Replica = require(NetWork:WaitForChild('ReplicaClient'))
 
+local Packets = require(NetWork:WaitForChild('Packets'))
+local AbilityPacket = Packets.Ability
+
 local Animator = require(Utilmodules:WaitForChild('Animator'))
 
 local Player: LocalPlayerInterfaces.IClientPlayerComponent = LocalPlayerComponent:GetPlayer()
 
-PacketManager['ReplicateAbilities'].OnClientEvent:Connect(function(abilities: {ILocalAbility})
-	Player = LocalPlayerComponent:GetPlayer()
-	Player:UpdateAbilities(abilities)
-end)
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
-Replicator:GetRemote('BindableGlobal'):Connect('Movement', function(args: {})
-	Player = LocalPlayerComponent:GetPlayer()
-	
-	repeat if (not Player) or (not Player.ClientData) then
-			Player = LocalPlayerComponent:GetPlayer()
-			task.wait(0.5)
-		end
-	until (Player) and (Player.ClientData)
-	
-	local Movement = Player:GetPack('Movement')
-	local Ability: ILocalAbility = Movement[args.Name]
-	
-	if args.Input == Ability.Key.Name then
-		Ability[args.State](Ability)
-	end
-	
-end)
-
-Replicator:GetRemote('Global'):Connect('ReplicateAbilities', function(args: {})
+Replicator:GetRemote('Global'):Connect('ReplicateAbilities', function(args)
 	Player = LocalPlayerComponent:GetPlayer()
 	repeat if (not Player) or (not Player.ClientData) then
 			Player = LocalPlayerComponent:GetPlayer()
@@ -56,11 +37,11 @@ Replicator:GetRemote('Global'):Connect('ReplicateAbilities', function(args: {})
 	until (Player) and (Player.ClientData)
 end)
 
-Replicator:GetRemote('VFX'):Connect('ReplicateNPCAnimations', function(args: {})
+Replicator:GetRemote('VFX'):Connect('ReplicateNPCAnimations', function(args)
 	Animator.InitNPCAnimations(args.NPC)
 end)
 
-Replicator:GetRemote('VFX'):Connect('VFX', function(args: {}, ...)
+Replicator:GetRemote('VFX'):Connect('VFX', function(args, ...)
 	
 	if not (VFXReplica[args.Pack]) then return warn('Cannot find required pack.') end
 	
@@ -76,7 +57,7 @@ Replicator:GetRemote('VFX'):Connect('VFX', function(args: {}, ...)
 	
 end)
 
-Replicator:GetRemote('BindableGlobal'):Connect('VFX', function(args: {}, ...)
+BindableGlobal:Connect('VFX', function(args, ...)
 
 	if not (VFXReplica[args.Pack]) then return warn('Cannot find required pack.') end
 
@@ -93,6 +74,33 @@ Replicator:GetRemote('BindableGlobal'):Connect('VFX', function(args: {}, ...)
 end)
 
 Replica.OnNew('StatusEffects', function(replica)
-	print(Replica)
 	Replica.RequestData()
+end)
+
+BindableGlobal:Connect('PlayerInitialized', function(args)
+	Player = LocalPlayerComponent:GetPlayer()
+	Player:AppendAbility('Movement','Run')
+	
+end)
+
+BindableGlobal:Connect('LocalAbility', function(args)
+	_Player = LocalPlayerComponent:GetPlayer()
+	local abilityName = _Player.ClientData.Abilities[args.Name].Name
+	local ability = _Player:GetAbility(abilityName)
+	ability[args.State](ability)
+end)
+
+BindableGlobal:Connect('ServerAbility', function(args)
+	local _Player = LocalPlayerComponent:GetPlayer()
+	local ClientReplica = _Player.Replica
+	local sessionData = ClientReplica.Data.Session
+	local Abilities = sessionData.Abilities
+	local ability = Abilities[args.Name]
+	
+	AbilityPacket:Fire(
+		{
+			Name = ability.Name;
+			State = args.State;
+		})
+
 end)

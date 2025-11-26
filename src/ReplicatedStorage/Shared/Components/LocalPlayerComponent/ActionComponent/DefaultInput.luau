@@ -110,6 +110,7 @@ return {
 			Enum.KeyCode.LeftControl;
 			Enum.KeyCode.Space;
 		};
+		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
 	}
 	
 	

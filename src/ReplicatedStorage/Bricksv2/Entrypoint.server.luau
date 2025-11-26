@@ -5,7 +5,6 @@ local Data = Bricks.Data
 local Abilities = Data.Abilities
 
 
-local _ability = require(Abilities.Fireball2)
 
 --[[
 ability:Execute(

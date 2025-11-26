@@ -16,7 +16,10 @@ function Component.GetAbility(self: any & IEntity,name: string)
    -- return AbilityHandler.GetAbility(name,self.SessionData.UserId)
     return Abilities[self.SessionData.UserId][name]
 end
-
+function Component.GetAbilityByKeyCode(self: any & IEntity,name: string)
+   -- return AbilityHandler.GetAbility(name,self.SessionData.UserId)
+    return AbilityHandler.GetByKeyCode(name)
+end
 function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
     local sessionData = self.SessionData
 
@@ -31,11 +34,11 @@ function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
 
     self:SetAbility(Config.KeyCode.Name,
     {
-        KeyCode = Config.KeyCode.Name;
+        Name = name;
     })
     
     if (not Abilities[sessionData.UserId]) then Abilities[sessionData.UserId] = {} end
-    Abilities[sessionData.UserId][Config.KeyCode.Name] = ability
+    Abilities[sessionData.UserId][name] = ability
     return 
 end
 

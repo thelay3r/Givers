@@ -1,12 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
 
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local _Modules = Utilities:WaitForChild('Modules')
 
-local AbilitesFolder = ServerStorage:WaitForChild('Abilities')
+local AbilitesFolder = Shared:WaitForChild('Abilities')
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
@@ -23,13 +22,14 @@ local defaultRegistry = require(Registries:WaitForChild('DefaultRegistry'))
 local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
 
 local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
+local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
 
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
 
 local InjectedRegistries = {
     abilityRegistry, conditionRegistry,
     defaultRegistry, eventRegistry, 
-    projectileRegistry
+    projectileRegistry,behaviorRegistry
 }
 
 local AbilityHandler = {}
@@ -43,14 +43,12 @@ end
 local function GetFromCache(name, entityId)
     return Abilities[entityId][name]
 end
-
-function AbilityHandler.GetByKeyCode(name, entityId,key)
-    local ability = GetFromCache(name, entityId)
+function AbilityHandler.GetByKeyCode(name, entityId)
+    local ability = Abilities[entityId][name]
     if not ability then return end
-    local config = ability.Instance.Config
+    local config = Abilities[entityId][name].Config
     if not config then return end
-    if config.KeyCode.Name ~= key then return end
-    return ability
+    return Abilities[entityId][name].Config.KeyCode.Name
 end
 
 function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHandler)
@@ -70,7 +68,7 @@ function AbilityHandler.new(config: {}) : typeof(AbilityParser)
 
     ability.BehaviorRegistry = behaviorRegistry
     ability.ScopeRegistry = scopeRegistry
-
+    print(ability.ScopeRegistry)
     ability:Create(config)
 
     local createdAbility = setmetatable({

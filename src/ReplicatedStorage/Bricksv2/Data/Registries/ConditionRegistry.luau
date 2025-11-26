@@ -35,10 +35,9 @@ end)
 
 conditionRegisrty:Register('CheckCoolDown', function(self,node)
 	local nodeConfig = node.Additional['Main']
-	local lastUsed = nodeConfig.LastUsed
+	local lastUsed = (nodeConfig.LastUsed) or (0)
 	if tick() - lastUsed <= nodeConfig.CoolDown then return false end
 	nodeConfig.lastUsed = tick()
-	print(node)
 	
 	return true
 end)
@@ -53,13 +52,14 @@ end)
 
 
 conditionRegisrty:Register('CheckBlackList', function(self,node)
-	print(node.Additional['Owner'])
-	local Entity : IEntity = node.Additional['Owner']
+	local Entity : any & IEntity = node.Additional['Owner']
 	local nodeConfig = node.Config
 	local IgnorList = (nodeConfig.Ignor ) or ({})
 
 	local RootCFG = node:GetRoot().Config
 	if RootCFG.IsActive then return false end
+	
+	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
 
 	local BlackList = 
 	{
@@ -74,9 +74,9 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 		'Stun';
 		'Vaulting';
 	}
-	
+
 	for _,v in pairs(BlackList) do 
-		if (Entity.SessionData.StatusEffects[v] == true) and (not IgnorList[v]) then 
+		if (sessionData.StatusEffects[v] == true) and (not IgnorList[v]) then 
 			return false
 		end
 	end
@@ -89,7 +89,6 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 				['Owner'] = 'Owner';
 			},
 		})
-
 
 	return if (CoolDown and true) then true else false
 end)

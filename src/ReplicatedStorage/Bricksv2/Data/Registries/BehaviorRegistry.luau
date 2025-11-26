@@ -1,6 +1,13 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
+local Shared = ReplicatedStorage:WaitForChild('Shared')
+local Utilities = Shared:WaitForChild('Utilities')
+local UtilModules = Utilities:WaitForChild('Modules')
+
+local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
+
+
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
@@ -48,22 +55,55 @@ behaviorRegistry:Register('Wait', function(self, node)
 	task.wait(node.Config.Wait)
 end)
 
-behaviorRegistry:Register('LinearSpeedUp',function(self,node)
-	local Part: BasePart = node.Additional['ProjectileInfo'].Part
-	if not Part then return end
-	local BodyVelocity = Part:FindFirstChildOfClass('BodyVelocity')
-	if not BodyVelocity then return end
-	task.spawn(function()
-		for i=1,10 do
-			BodyVelocity.Velocity *= 1.1
-			task.wait(1/10)
-		end
-	end)
+behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
+	local Entity = node.Additional['Owner']
+	if not Entity then return end
+	local config = node.Additional['Config']
+	local Character = Entity.Instance.Character
+
+	if config['Accelerat'] then
+		task.cancel(config['Accelerat'] )
+		config['Accelerat'] = nil
+	end
+
+	local Speed = SpeedComponent.new(Character)
+	Speed:Revert(
+		{
+			Name = config.Name or ('AcceleratMoveSpeed')..Character.Name;
+			Recursive = false;
+		})
 end)
 
 behaviorRegistry:Register('AcceleratMoveSpeed', function(self,node)
-	 
+	local Entity = node.Additional['Owner']
+	if not Entity then return end
+	local config = node.Config
+	local Character = Entity.Instance.Character
+
+	local Speed = SpeedComponent.new(Character)
+	local targetSpeed = config.BaseSpeed * (config.Acceleration or 1)
+	local updTime = config.AccelerationTime * 60
+		
+	local diff = targetSpeed - config.BaseSpeed
+	local speedPerFrame = diff / (updTime)
+	local percentPerFrame = (speedPerFrame / config.BaseSpeed) * 100
+
+	node.Config['Accelerat'] = task.spawn(function() 
+		for i=1, updTime do
+			Speed:Amplify(
+				{
+					Name = (config.Name) or ('AcceleratMoveSpeed')..Character.Name;
+					Type = 'Buff';
+					Percent = percentPerFrame;
+					InitSpeed = config.BaseSpeed;
+				})
+			task.wait(1/60)
+		end
+		node.Config['Accelerat'] = nil
+	end)
 end)
+
+
 
 behaviorRegistry:Register('SpawnProjectile',function(self,node)
 	local Part = Instance.new('Part')

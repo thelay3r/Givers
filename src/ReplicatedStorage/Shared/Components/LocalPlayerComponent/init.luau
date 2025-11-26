@@ -5,11 +5,14 @@ local Utilities = Shared:WaitForChild('Utilities')
 local NetWork = Utilities:WaitForChild('NetWork')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local Replicator = require(NetWork:WaitForChild('Replicator'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 local DefaultInputs = require(script.ActionComponent.DefaultInput)
 local EventBus = require(NetWork:WaitForChild('EventBus'))
 local LoadedComponents = {}
 local PlayerComponent = nil
+
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 for _, component in pairs(script:GetChildren()) do
 	LoadedComponents[component.Name] = require(component)
@@ -23,7 +26,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 			if (component[i]) then return component[i] end
 		end
 		return LocalPlayerComponent[i]
-	end}) :: any & LocalPlayerInterfaces.IAbilityMethods
+	end}) :: any & LocalPlayerInterfaces.IClientPlayerComponent
 	
 	self.Instance = player
 	self.ClientData = self:LoadClientData()
@@ -35,19 +38,19 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 			
 		}
 	
-	
+	self:SharePlayer()
 	self:ReplicaInit()
 	self:SetupCharacter()
-	
 	self:UpdateControls(self.ClientData.Controls)
 	self:ReplicateKeys()
 	self.CreateSmoothShiftLock(self)
 	self:InitClientVFX()
 	self:InitCamera()
-	self:SharePlayer()
+	
 	
 	PlayerComponent = self
 	
+	BindableGlobal:BindableFire('PlayerInitialized')
 	print(self)
 	return self
 end

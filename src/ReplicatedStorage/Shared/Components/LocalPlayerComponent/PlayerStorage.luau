@@ -11,6 +11,7 @@ local PlayerStorage = {}
 
 function PlayerStorage.SharePlayer(self: ILocalPlayer)
 	Player = self
+	print(Player)
 end
 
 function PlayerStorage:GetPlayer()
