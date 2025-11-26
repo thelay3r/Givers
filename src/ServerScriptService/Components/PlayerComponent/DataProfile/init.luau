@@ -8,13 +8,18 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Templates = Shared:WaitForChild('Templates')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local Utilities = Shared:WaitForChild('Utilities')
+local NetWork = Utilities:WaitForChild('NetWork')
+
+--local profilestore = require(ServerScriptService.ServerPackages.profilestore)
 local ProfileStore = require(Services:WaitForChild('ProfileStore'))
 local ReplicaService = require(Services:WaitForChild('ReplicaService'))
 
 local PlayerInterfaces = require(Interfaces:WaitForChild('PlayerInterfaces'))
-
 local ProfileTemplate = require(Templates:WaitForChild('ProfileStoreTemplate'))
 local SessionTemplate = require(Templates:WaitForChild('SessionData')) 
+
+
 
 type IProfile = typeof(ProfileTemplate())
 type iSession = typeof(SessionTemplate())
@@ -54,6 +59,7 @@ function DataProfile.LoadProfile(self: PlayerInterfaces.IServerPlayerComponent)
 end
 
 function DataProfile.LoadReplica(self: PlayerInterfaces.IServerPlayerComponent)
+	
 	local replica = ReplicaService.New({
 		Token = TOKEN;
 		Data = {Profile = self.Profile.Data, Session = self.SessionData} :: {Profile: IProfile, Session: iSession};

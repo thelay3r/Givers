@@ -53,7 +53,7 @@ States.Abilities = {
 
 		TaskManager:CreateThread(Ability, Ability.Name..'OnStart', RunService.Heartbeat:Connect(function()
 			if (os.clock() - Ability.StartTime) >= Ability.Duration and Ability.IsActive then
-				Ability:OnEnd()
+				Ability:OnStop()
 				TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
 				return
 			end
@@ -95,14 +95,14 @@ States.Abilities = {
 		end
 
 		if (Ability.StartTime + Ability.MinDuration) <= os.clock() then
-			Ability:OnEnd()
+			Ability:OnStop()
 			TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
 			return
 		end
 
 		TaskManager:CreateThread(Ability, Ability.Name..'OnStart', RunService.Heartbeat:Connect(function()
 			if (os.clock() - Ability.StartTime) >= Ability.Duration and Ability.IsActive then
-				Ability:OnEnd()
+				Ability:OnStop()
 				TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
 				return
 			end

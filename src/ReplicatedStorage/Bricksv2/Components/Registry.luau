@@ -23,10 +23,14 @@ function Registry:Get(name: string)
 	return self.callbacks[name]
 end
 
-function Registry:Clone(registry)
+function Registry:Extends(registries: {any})
 	setmetatable(self.callbacks, {
 		__index = function(t, i)
-			return registry.callbacks[i]
+			for _, registry in pairs(registries) do
+				if (registry.callbacks[i]) then return registry.callbacks[i] end
+			end
+
+			return nil
 		end
 	})
 

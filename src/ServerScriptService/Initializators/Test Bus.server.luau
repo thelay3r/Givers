@@ -13,6 +13,10 @@ local AbilityHandler = require(ServerScriptService:WaitForChild('Components'):Wa
 -- local t = AbilityHandler.new('test',123,{})
 -- AbilityHandler.OnStart('test')
 
-local t = AbilityHandler.AddAbility(123,'Default','Equip')
-AbilityHandler.OnStart('Equip',123)
+local t = AbilityHandler.createByName('Default','Equip')
+t:BindToEntity('Equip', 123)
+print(t)
+t:Destroy()
+print(t)
+
 

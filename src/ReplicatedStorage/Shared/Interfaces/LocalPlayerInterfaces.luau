@@ -4,7 +4,6 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared.Templates
 
-local AbilityInterfaces = require(Interfaces:WaitForChild('AbilityInerfaces'))
 local ClientData = require(Templates:WaitForChild('ClientData'))
 local EventBusInterfaces = require(Interfaces:WaitForChild('EventBusInterfaces'))
 
@@ -16,15 +15,8 @@ export type IReplicaData = {
 }
 
 export type IAbilityMethods = {
-	AddPack: (self: IAbilityMethods, AbilitiesFolder: Folder) -> (),
-	GetPack: (self: IAbilityMethods, PackName: string) -> (),
-	RemovePack: (self: IAbilityMethods, PackName: string) -> (),
-	RemoveAllPacks: (self: IAbilityMethods) -> (),
-
-	AddAbility: (self: IAbilityMethods, AbilitiesFolder: Folder, AbilityName: string) -> (),
-	GetAbility: (self: IAbilityMethods, Scope: string, AbilityName: string) -> (),
-	RemoveAbility: (self: IAbilityMethods, Scope: string, AbilityName: string) -> (),
-	RemoveAllAbilities: (self: IAbilityMethods) -> (),
+	AppendAbility: (self: IClientPlayerComponent, packName: string, name: string) -> (),
+	RemoveAbility: (self: IClientPlayerComponent, packName: string,name: string) -> (),
 }
 
 export type IClientPlayerMethods = {
@@ -34,8 +26,6 @@ export type IClientPlayerMethods = {
 	SharePlayer: (self: IClientPlayerComponent) ->(),
 	
 	LoadDefaultInput: (self: IClientPlayerComponent) -> (),
-	UpdateAbilities: (self: IClientPlayerComponent, abilities: {AbilityInterfaces.ILocalAbilityComponent}) -> (),
-	
 }
 
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {

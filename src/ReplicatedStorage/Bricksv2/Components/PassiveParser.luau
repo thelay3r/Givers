@@ -1,6 +1,6 @@
 
-local ServerScriptService = game:GetService('ServerScriptService')
-local Bricks = ServerScriptService:WaitForChild('Bricksv2')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Components = Bricks:WaitForChild('Components')
 
 local Registry = require(Components:WaitForChild('Registry'))
@@ -43,7 +43,7 @@ function PassiveParser:TransferIntoNodes(structure: any)
 
 	rootNode.InjectedCallback = function()
 		if (not scope) then return end
-		scope(self, rootNode)
+		return scope(self, rootNode)
 	end
 
 	return rootNode

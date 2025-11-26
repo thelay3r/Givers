@@ -5,11 +5,14 @@ local Utilities = Shared:WaitForChild('Utilities')
 local NetWork = Utilities:WaitForChild('NetWork')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local Replicator = require(NetWork:WaitForChild('Replicator'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 local DefaultInputs = require(script.ActionComponent.DefaultInput)
 local EventBus = require(NetWork:WaitForChild('EventBus'))
 local LoadedComponents = {}
 local PlayerComponent = nil
+
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 for _, component in pairs(script:GetChildren()) do
 	LoadedComponents[component.Name] = require(component)
@@ -18,12 +21,12 @@ end
 local LocalPlayerComponent = {}
 
 function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClientPlayerComponent
-	local self: LocalPlayerInterfaces.IClientPlayerComponent = setmetatable({}, {__index = function(t, i)
+	local self = setmetatable({}, {__index = function(t, i)
 		for _, component in pairs(LoadedComponents) do
 			if (component[i]) then return component[i] end
 		end
 		return LocalPlayerComponent[i]
-	end})
+	end}) :: any & LocalPlayerInterfaces.IClientPlayerComponent
 	
 	self.Instance = player
 	self.ClientData = self:LoadClientData()
@@ -35,21 +38,20 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 			
 		}
 	
-	
+	self:SharePlayer()
 	self:ReplicaInit()
 	self:SetupCharacter()
-	
 	self:UpdateControls(self.ClientData.Controls)
 	self:ReplicateKeys()
 	self.CreateSmoothShiftLock(self)
 	self:InitClientVFX()
-	self:LoadMovement()
 	self:InitCamera()
-	self:SharePlayer()
+	
 	
 	PlayerComponent = self
 	
-	
+	BindableGlobal:BindableFire('PlayerInitialized')
+	print(self)
 	return self
 end
 

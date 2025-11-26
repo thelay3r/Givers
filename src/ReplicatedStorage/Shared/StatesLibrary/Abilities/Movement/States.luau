@@ -165,7 +165,7 @@ States.Vaulting = {
 				{
 					Scope = 'Movement';
 					Name = 'Vault';
-					State = 'OnEnd'
+					State = 'OnStop'
 				})
 			
 			StatusEffects.Vaulting = false
@@ -217,7 +217,7 @@ States.Dash = {
 				})
 		end
 		
-		Sprint:OnEnd()
+		Sprint:OnStop()
 		
 		local Speed = 50
 		local coefficient = 1.2
@@ -338,7 +338,7 @@ States.Dash = {
 				{
 					Scope = 'Movement';
 					Name = 'Dash';
-					State = 'OnEnd'
+					State = 'OnStop'
 				})
 			
 			SpeedController:Revert({

@@ -57,6 +57,8 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 
 	self:AppendPassive("Default", "Test")
 	EntityComponent.AddToList(_Id,self)
+	self:AppendAbility('Default','Equip')
+	print(self)
 	return self :: any --:: PlayerInterfaces.IServerPlayerComponent
 end
 

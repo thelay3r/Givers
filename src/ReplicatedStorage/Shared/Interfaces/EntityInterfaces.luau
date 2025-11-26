@@ -4,7 +4,6 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared.Templates
 
-local AbilityInteraces = require(Interfaces:WaitForChild('AbilityInerfaces'))
 
 local SessionData = require(Templates.SessionData)
 local ValuesInterface = require(script.Parent.ValuesInterface)
@@ -17,7 +16,7 @@ export type IEntityMethods = {
 	AppendPassive: (self: IEntityMethods, scope : string, passiveName: string) -> (),
 }
 
-export type IEntityComponent = IEntityMethods & AbilityInteraces.IAbilityMethods & IValues & {
+export type IEntityComponent = IEntityMethods & IValues & {
 	SessionData: ISessionData,
 }
 

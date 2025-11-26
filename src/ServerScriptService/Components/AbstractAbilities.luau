@@ -14,7 +14,7 @@ local AbstractAbilities = {}
 function AbstractAbilities.OnStart()
 end
 
-function AbstractAbilities.OnEnd()
+function AbstractAbilities.OnStop()
 end
 
 function AbstractAbilities:SetupData(level: number)
