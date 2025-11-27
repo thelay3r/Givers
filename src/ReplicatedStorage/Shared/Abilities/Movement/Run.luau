@@ -29,6 +29,17 @@ return
                     AccelerationTime = .4;
                     Name = 'RunSpeedBoost';
                 }
+            };
+
+            {
+                Name = 'Action.PlayVFX';
+                RequestedTags = {['Owner'] = 'Owner'};
+                Config = {
+                    Name = 'Run';
+                    Side = 'Client';
+                    State = 'Start';
+                    Pack = 'Movement';
+                }
             }
         }
     };

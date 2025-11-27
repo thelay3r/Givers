@@ -1,12 +1,14 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local RunService = game:GetService("RunService")
+
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
-
+local NetWork = Utilities:WaitForChild('NetWork')
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
-
+local Replicator = require(NetWork:WaitForChild('Replicator'))
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
@@ -16,6 +18,8 @@ local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
+local GlobalBindable = Replicator:GetRemote('BindableGlobal')
+local GlobalEvent = Replicator:GetRemote('Global')
 
 behaviorRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
@@ -53,6 +57,14 @@ end)
 
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
+end)
+
+behaviorRegistry:Register('PlayVFX', function(self,node)  
+	if (RunService:IsClient()) and (node.Config.Side ~= 'Client') then
+		GlobalEvent:Fire('PlayVFX',node.Config)
+	else
+		GlobalBindable:BindableFire('PlayVFX',node.Config)
+	end
 end)
 
 behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)

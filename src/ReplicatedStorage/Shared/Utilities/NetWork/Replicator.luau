@@ -123,15 +123,9 @@ local function CreateBindableRemote(object : BindableEvent)
 	newRemote.Instance = object
 	newRemote.CallBacks = {}
 
-	if RunService:IsServer() then
-		object.Event:Connect(function(name,...)
-			for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
-		end)
-	else
-		object.Event:Connect(function(name,...)
-			for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
-		end)
-	end
+	object.Event:Connect(function(name,...)
+		for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
+	end)
 	
 	Remotes[object.Name] = newRemote
 

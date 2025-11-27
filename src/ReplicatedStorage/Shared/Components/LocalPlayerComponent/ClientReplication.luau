@@ -14,6 +14,9 @@ local Replicator = require(NetWork:WaitForChild('Replicator'))
 local ClientReplication = {}
 local CachedModules = {}
 
+local VfxRemote = Replicator:GetRemote('VFX')
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
+
 local function PreLoadAssets()
 	
 	local Packet = {}
@@ -52,6 +55,16 @@ local function PreLoadAssets()
 	
 end
 
+local function fireVfx(args,...)
+		local pack = args.Pack
+		local name = args.Name
+		local scope = args.State
+		local side = args.Side
+		
+		if not CachedModules[pack] or not CachedModules[pack][name] or not CachedModules[pack][name][side][scope] then return end
+		return CachedModules[pack][name][side][scope](...)
+end
+
 function ClientReplication:InitClientVFX()
 	PreLoadAssets()
 	for _,folder in pairs(VFXs.Replica:GetChildren()) do
@@ -63,13 +76,11 @@ function ClientReplication:InitClientVFX()
 		end
 	end
 	
-	Replicator:GetRemote('VFX'):Connect('VFX',function(arg,...)
-		local pack = arg.Pack
-		local name = arg.Name
-		local scope = arg.Scope
-		
-		if not CachedModules[pack] or not CachedModules[pack][name] or not CachedModules[pack][name][scope] then return end
-		return CachedModules[pack][name][scope](...)
+	VfxRemote:Connect('VFX',function(arg,...)
+		fireVfx(arg)
+	end)
+	BindableGlobal:Connect('PlayVFX',function(arg,...)
+		fireVfx(arg)
 	end)
 end
 

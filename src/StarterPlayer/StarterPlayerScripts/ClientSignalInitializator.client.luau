@@ -90,6 +90,7 @@ BindableGlobal:Connect('LocalAbility', function(args)
 	ability[args.State](ability)
 end)
 
+
 BindableGlobal:Connect('ServerAbility', function(args)
 	local _Player = LocalPlayerComponent:GetPlayer()
 	local ClientReplica = _Player.Replica
