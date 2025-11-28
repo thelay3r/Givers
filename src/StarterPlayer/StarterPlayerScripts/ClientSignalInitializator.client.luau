@@ -10,13 +10,13 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
-local AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
+local _AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
 
 local Replicator = require(NetWork:WaitForChild('Replicator'))
-local PacketManager = require(NetWork:WaitForChild('Packets'))
+local _PacketManager = require(NetWork:WaitForChild('Packets'))
 local Replica = require(NetWork:WaitForChild('ReplicaClient'))
 
 local Packets = require(NetWork:WaitForChild('Packets'))
@@ -85,6 +85,7 @@ end)
 
 BindableGlobal:Connect('LocalAbility', function(args)
 	_Player = LocalPlayerComponent:GetPlayer()
+	if not _Player.ClientData.Abilities[args.Name] then return end
 	local abilityName = _Player.ClientData.Abilities[args.Name].Name
 	local ability = _Player:GetAbility(abilityName)
 	ability[args.State](ability)

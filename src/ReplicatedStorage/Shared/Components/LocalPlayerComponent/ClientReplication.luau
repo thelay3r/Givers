@@ -56,23 +56,24 @@ local function PreLoadAssets()
 end
 
 local function fireVfx(args,...)
-		local pack = args.Pack
-		local name = args.Name
-		local scope = args.State
-		local side = args.Side
-		
-		if not CachedModules[pack] or not CachedModules[pack][name] or not CachedModules[pack][name][side][scope] then return end
-		return CachedModules[pack][name][side][scope](...)
+	local splitted = string.split(args.VFXType :: string, '.')
+	if #splitted < 2 then return end
+
+	local type = splitted[1]
+	local name = splitted[2]
+
+	local module = CachedModules[type] and CachedModules[type][name]
+	if not module then return end
+	module(args.VfxCFG,...)
 end
 
 function ClientReplication:InitClientVFX()
 	PreLoadAssets()
 	for _,folder in pairs(VFXs.Replica:GetChildren()) do
 		if not folder:IsA('Folder') then continue end
-		CachedModules[folder.Name] = {}
 		for _,module in pairs(folder:GetChildren()) do
 			if not module:IsA('ModuleScript') then continue end
-			CachedModules[folder.Name][module.Name] = require(module)
+			CachedModules[module.Name] = require(module)
 		end
 	end
 	

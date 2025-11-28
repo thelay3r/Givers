@@ -11,6 +11,7 @@ function TreeNode.new(config: any)
 		Name = (config and config.name) or nil,
 		Config = config.config or {},
 		RequestedTags = (config and config.requestedTags or {}),
+		SendParams = (config and config.sendParams or {}),
 		Additional = {},
 		Children = (config and config.children) or {},
 		Parent = nil,

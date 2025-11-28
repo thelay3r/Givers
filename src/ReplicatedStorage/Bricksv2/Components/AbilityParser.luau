@@ -37,7 +37,8 @@ function AbilityParser:TransferIntoNodes(structure: any)
 		children = children,
 		config = structure.Config,
 		tag = structure.Tag,
-		requestedTags = structure.RequestedTags
+		requestedTags = structure.RequestedTags,
+		sendParams = structure.SendParams, 
 	})
 
 

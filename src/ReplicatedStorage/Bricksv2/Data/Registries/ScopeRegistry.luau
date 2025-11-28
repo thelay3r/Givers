@@ -10,16 +10,37 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local scopeRegistry = Registry.new()
 
+local function traversePath(obj, path)
+    if not path then return obj end
+    for _, key in ipairs(path) do
+        if not obj then break end
+        obj = obj[key]
+    end
+    return obj
+end
+
 scopeRegistry:Register('Action', function(self, node) 
 	for key, tag in pairs(node.RequestedTags or {}) do
 		node.Additional[key] = self.Tags[tag] or {}
 	end
+
+	 for configKey, paramSpec in pairs(node.SendParams or {}) do
+        local fromKey = paramSpec.From
+        local path = paramSpec.Path
+
+        if self.Tags[fromKey] then
+            local value = traversePath(self.Tags[fromKey], path)
+			if not node.Config['VfxCFG'] then node.Config['VfxCFG'] = {} end
+            node.Config['VfxCFG'][configKey] = value
+        end
+    end
 
 	local behavior = self.BehaviorRegistry:Get(node.Name)
 	if (behavior) then behavior(self, node) end
 	if (node.Tag) then
 		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
 	end
+
 
 	for _, child in (node.Children or {}) do
 		child:Execute()

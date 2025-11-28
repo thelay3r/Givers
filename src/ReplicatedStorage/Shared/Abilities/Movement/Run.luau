@@ -33,12 +33,17 @@ return
 
             {
                 Name = 'Action.PlayVFX';
-                RequestedTags = {['Owner'] = 'Owner'};
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
                 Config = {
-                    Name = 'Run';
-                    Side = 'Client';
-                    State = 'Start';
-                    Pack = 'Movement';
+                    VFXType = 'Camera.ChangeFOV';
+                    Client = true;
+                    VfxCFG = {
+                        Time = .8;
+                        FOV = 85;
+                        EasingStyle = Enum.EasingStyle.Sine;
+                        EasingDirection = Enum.EasingDirection.InOut;
+                    };
+                    
                 }
             }
         }
@@ -54,6 +59,21 @@ return
             {
                 Name = 'Action.DeAcceleratMoveSpeed';
                 RequestedTags = {['Owner'] = 'Owner',['Config'] = 'AcceleratMoveSpeed'};
+            };
+            {
+                Name = 'Action.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Camera.ChangeFOV';
+                    Client = true;
+                    VfxCFG = {
+                        Time = .5;
+                        FOV = 70;
+                        EasingStyle = Enum.EasingStyle.Sine;
+                        EasingDirection = Enum.EasingDirection.InOut;
+                    };
+                    
+                }
             }
         }
     }

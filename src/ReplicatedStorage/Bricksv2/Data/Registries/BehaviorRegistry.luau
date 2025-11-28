@@ -12,10 +12,10 @@ local Replicator = require(NetWork:WaitForChild('Replicator'))
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
-local Registries = Data:WaitForChild('Registries')
+local _Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
-local AbilityParser = require(Components:WaitForChild('AbilityParser'))
+local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
 local GlobalBindable = Replicator:GetRemote('BindableGlobal')
@@ -59,12 +59,15 @@ behaviorRegistry:Register('Wait', function(self, node)
 	task.wait(node.Config.Wait)
 end)
 
-behaviorRegistry:Register('PlayVFX', function(self,node)  
-	if (RunService:IsClient()) and (node.Config.Side ~= 'Client') then
+behaviorRegistry:Register('PlayVFX', function(self,node) 
+
+	if (RunService:IsClient()) and (not node.Config.Client) then
+		print(node.Config)
 		GlobalEvent:Fire('PlayVFX',node.Config)
 	else
 		GlobalBindable:BindableFire('PlayVFX',node.Config)
 	end
+
 end)
 
 behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
