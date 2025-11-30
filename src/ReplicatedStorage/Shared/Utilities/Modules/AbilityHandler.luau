@@ -25,11 +25,12 @@ local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry')
 local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
 
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
+local networkRegistry = require(Registries:WaitForChild('NetWorkRegistry'))
 
 local InjectedRegistries = {
     abilityRegistry, conditionRegistry,
     defaultRegistry, eventRegistry, 
-    projectileRegistry,behaviorRegistry
+    projectileRegistry,behaviorRegistry,networkRegistry,
 }
 
 local AbilityHandler = {}
@@ -64,9 +65,9 @@ end
 
 function AbilityHandler.new(config: {}) : typeof(AbilityParser)
     local ability = AbilityParser.new()
-    local behaviorRegistry = Registry.new():Extends(InjectedRegistries)
+    local _behaviorRegistry = Registry.new():Extends(InjectedRegistries)
 
-    ability.BehaviorRegistry = behaviorRegistry
+    ability.BehaviorRegistry = _behaviorRegistry
     ability.ScopeRegistry = scopeRegistry
     print(ability.ScopeRegistry)
     ability:Create(config)

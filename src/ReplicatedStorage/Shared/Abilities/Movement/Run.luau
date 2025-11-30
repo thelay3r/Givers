@@ -24,6 +24,7 @@ return
                 RequestedTags = {['Owner'] = 'Owner',['Config'] = 'Main'};
                 Config = 
                 {
+                    
                     Acceleration = 2;
                     BaseSpeed = 12;
                     AccelerationTime = .4;
@@ -32,7 +33,7 @@ return
             };
 
             {
-                Name = 'Action.PlayVFX';
+                Name = 'NetWork.PlayVFX';
                 SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
                 Config = {
                     VFXType = 'Camera.ChangeFOV';
@@ -42,6 +43,60 @@ return
                         FOV = 85;
                         EasingStyle = Enum.EasingStyle.Sine;
                         EasingDirection = Enum.EasingDirection.InOut;
+                    };
+                    
+                },
+            },
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Effects.Trail';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Default';
+                        Parent = 'Right Arm'
+                    };
+                    
+                }
+            },
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Effects.Trail';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Default';
+                        Parent = 'Left Arm'
+                    };
+                    
+                }
+            },
+              {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Animations.Run';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Default';
+                    };
+                    
+                }
+            },
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Camera.Woobling';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Default';
                     };
                     
                 }
@@ -61,7 +116,7 @@ return
                 RequestedTags = {['Owner'] = 'Owner',['Config'] = 'AcceleratMoveSpeed'};
             };
             {
-                Name = 'Action.PlayVFX';
+                Name = 'NetWork.PlayVFX';
                 SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
                 Config = {
                     VFXType = 'Camera.ChangeFOV';
@@ -71,6 +126,32 @@ return
                         FOV = 70;
                         EasingStyle = Enum.EasingStyle.Sine;
                         EasingDirection = Enum.EasingDirection.InOut;
+                    };
+                    
+                }
+            },
+             {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Animations.Run';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Stop';
+                        Pack = 'Default';
+                    };
+                    
+                }
+            },
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+                Config = {
+                    VFXType = 'Camera.Woobling';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Stop';
+                        Pack = 'Default';
                     };
                     
                 }

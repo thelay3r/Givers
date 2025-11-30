@@ -21,14 +21,14 @@ function Methods.Stop(self: IAnimation, Data: IData)
 	track:Stop()
 end
 
-function Methods.Swap(self: IAnimation, Data: IData)
+function Methods.Play(self: IAnimation, Data: IData)
 	
 	local trackData = self:GetData(Data)
 	
 	local currentTrack = trackData.track
 	if not currentTrack then return end
 	local archivedTrack: AnimationTrack = trackData.Cache[Data._Name]
-	if not archivedTrack then return end
+	if not archivedTrack then archivedTrack = currentTrack end
 	
 	local Speed = (Data.Settings and Data.Settings.Speed) or 1
 	local FadeTime = (Data.Settings and Data.Settings.FadeTime) or .1
@@ -36,32 +36,20 @@ function Methods.Swap(self: IAnimation, Data: IData)
 	
 	archivedTrack.Priority = Data.Priority
 
-	currentTrack:Stop()
+	currentTrack:Stop(FadeTime)
 	archivedTrack:Play(FadeTime,Weight,Speed)
 	
 
 	trackData.track = archivedTrack
+
+	if not Data.Events then return archivedTrack end
+	for name,func in pairs(Data.Events) do
+		archivedTrack:GetPropertyChangedSignal(name):Once(func)
+	end
+
 	return archivedTrack
 end
 
-function Methods.Play(self: IAnimation, Data: IData)
-	local track = self:Get(Data)
-	if not track then return end
-	
-	local Speed = (Data.Settings and Data.Settings.Speed) or 1
-	local FadeTime = (Data.Settings and Data.Settings.FadeTime) or .1
-	local Weight = (Data.Settings and Data.Settings.Weight) or 1
-
-	track.Priority = Data.Priority
-	track:Play(FadeTime,Weight,Speed)
-	
-	if not Data.Events then return track end
-	for name,func in pairs(Data.Events) do
-		track:GetPropertyChangedSignal(name):Once(func)
-	end
-	
-	return track
-end
 
 function Methods.Set(self: IAnimation,track: AnimationTrack, Data: IData)
 	local trackData: ITrack = self:GetData(Data)

@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local Modules = Utilities:WaitForChild('Modules')
@@ -20,7 +21,26 @@ local function ChangeFov(camera,_time,fov,easingStyle, easingDirection)
         }):Play()
 end
 
-function CameraVFXs.ChangeFOV(args)
+local function WooblingEffect(args)
+    local Player = args.Player
+    local Character = Player.Character :: Model
+    local Humanoid = Character:FindFirstChildOfClass('Humanoid') :: Humanoid
+
+  	TaskManager:CreateThread(Player,'CameraWobbling',RunService.Heartbeat:Connect(function(dt)
+		if Humanoid.MoveDirection == Vector3.zero then Humanoid.CameraOffset = Humanoid.CameraOffset:Lerp(Vector3.zero,.05) TaskManager:CancelThread(Player,'CameraWobbling') return end
+		local _time = tick()
+		
+		local x = math.cos(_time*10)/4
+		local y = math.abs(math.sin(_time*10)/5)
+		
+		local result = Vector3.new(x,y,0)
+		Humanoid.CameraOffset = Humanoid.CameraOffset:Lerp(result,.05)
+		
+	end))
+
+end
+
+local function ChangeFOV(args)
 
     local Player = args.Player
     local Camera = workspace.CurrentCamera
@@ -39,6 +59,26 @@ function CameraVFXs.ChangeFOV(args)
     end)
 
 end
+
+CameraVFXs['Woobling'] = 
+{
+    ['Start'] = function(args)
+        WooblingEffect(args)
+    end,
+    ['Stop'] = function(args)
+        local Player = args.Player
+        TaskManager:CancelThread(Player, 'CameraWobbling')
+    end
+
+}
+
+CameraVFXs['ChangeFOV'] = 
+{
+    ['Start'] = function(args)
+        ChangeFOV(args)
+    end,
+}
+
 
 
 return CameraVFXs

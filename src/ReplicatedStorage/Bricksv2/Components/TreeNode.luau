@@ -13,6 +13,7 @@ function TreeNode.new(config: any)
 		RequestedTags = (config and config.requestedTags or {}),
 		SendParams = (config and config.sendParams or {}),
 		Additional = {},
+		EventParams = {},
 		Children = (config and config.children) or {},
 		Parent = nil,
 		InjectedCallback = (config and config.callback) or nil,

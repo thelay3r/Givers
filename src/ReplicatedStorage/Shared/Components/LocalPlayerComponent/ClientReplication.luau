@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContentProvider = game:GetService('ContentProvider')
+local Players = game:GetService('Players')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local VFXs = Shared:WaitForChild('VFXs')
@@ -61,8 +62,9 @@ local function fireVfx(args,...)
 
 	local type = splitted[1]
 	local name = splitted[2]
-
-	local module = CachedModules[type] and CachedModules[type][name]
+	local state = args.VfxCFG['State'] or 'Start'
+	args.VfxCFG['Player'] = (args.Player) or (Players.LocalPlayer)
+	local module = CachedModules[type] and CachedModules[type][name][state]
 	if not module then return end
 	module(args.VfxCFG,...)
 end

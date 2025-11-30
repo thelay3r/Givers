@@ -1,17 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TracerService = game:GetService("TracerService")
+local _TracerService = game:GetService("TracerService")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local Config = require(ReplicatedStorage.Shared.Abilities.Movement.Dash.Config)
+local _Config = require(ReplicatedStorage.Shared.Abilities.Movement.Dash.Config)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
-local Registries = Data:WaitForChild('Registries')
+local _Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
-local AbilityParser = require(Components:WaitForChild('AbilityParser'))
+local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local conditionRegisrty = Registry.new()
 

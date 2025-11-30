@@ -38,37 +38,11 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	-- print(self)
 end)
 
-behaviorRegistry:Register('OnHit', function(self, node) 
-	print(self.Tags) 
-	--print('root created', self)
-end)
-
-behaviorRegistry:Register('SetAbilityActive', function(self, node)
-	node:GetRoot().Config.IsActive = node.Config.Status
-end)
-
-behaviorRegistry:Register('SetCoolDown', function(self, node)
-	node:GetRoot().Config.LastUsed = tick()
-end)
-
-behaviorRegistry:Register('ResetCoolDown', function(self, node)
-	node:GetRoot().Config.LastUsed = 0
-end)
 
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
 end)
 
-behaviorRegistry:Register('PlayVFX', function(self,node) 
-
-	if (RunService:IsClient()) and (not node.Config.Client) then
-		print(node.Config)
-		GlobalEvent:Fire('PlayVFX',node.Config)
-	else
-		GlobalBindable:BindableFire('PlayVFX',node.Config)
-	end
-
-end)
 
 behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 	local Entity = node.Additional['Owner']
