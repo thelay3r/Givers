@@ -52,7 +52,7 @@ local CFGs =
 		['Jump'] = 
 		{
 			Name = 'Jump';
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 			_Name = 'DefaultJump';
 
 			Settings = 
@@ -65,7 +65,7 @@ local CFGs =
 		['Fall'] = 
 		{
 			Name = 'Fall';
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 			_Name = 'DefaultFall';
 
 			Settings = 
@@ -78,7 +78,7 @@ local CFGs =
 		['LandHard'] = 
 		{
 			Name = 'LandHard';
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 			_Name = 'DefaultLandHard';
 
 			Settings = 
@@ -162,56 +162,6 @@ States.Jump = {
 		local Character = CharacterData.Character
 		local Count = CountHandler.Create('JumpCounter',0,2)
 		
-		
-		
-		local Animate = AnimationsComponent.new(Character)
-		
-		
-		if ClientData.StatusEffects.IsRunning then
-			if not Animate:IsPlaying(CFGs.Jump) then 
-				ClientData.Ticks['LastJump'] = tick()
-				Count:Increment()
-			end
-			if (Animate:IsPlaying(CFGs.Jump)) and ((tick() - (ClientData.Ticks['LastJump']) >= .05) or 0) then
-				Count:Increment()
-			end
-			
-			Animate:Load(Animations.JumpRun1,{
-				Name = 'Jump';
-				_Name = Animations.JumpRun1.Name;
-				Priority = Enum.AnimationPriority.Action.Name;
-				Settings = 
-					{
-						['Speed']= 1;
-						['Weight']= 1;
-						['FadeTime']= .1;
-					}
-			})
-			
-			Animate:Load(Animations.JumpRun2,{
-				Name = 'Jump';
-				_Name = Animations.JumpRun2.Name;
-				Priority = Enum.AnimationPriority.Action.Name;
-				Settings = 
-					{
-						['Speed']= 1;
-						['Weight']= 1;
-						['FadeTime']= .1;
-					}
-			})
-			
-			Animate:Swap(
-				{
-					Name = 'Jump';
-					_Name = 'JumpRun'..Count();
-					Priority = Enum.AnimationPriority.Action.Name;
-				})
-			
-			
-			return
-		end
-		
-		Animate:Play(CFGs.Jump)
 
 	end,
 
@@ -230,7 +180,6 @@ States.Fall = {
 		local Animate = AnimationsComponent.new(Character)
 		if Animate:IsPlaying(CFGs.Jump) or Animate:IsPlaying(CFGs.Fall) then return end
 		
-
 		Animate:Play(CFGs.Fall)
 
 		--ClientData.Ticks['FallTime'] = tick()	

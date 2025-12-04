@@ -9,15 +9,11 @@ return
         CoolDown = .1;
         IsActive = false;
     };
-
-
     {
         Name = 'Event.OnStart';
         Tag = 'OnStart';
         {
             Name = 'Condition.CheckBlackList';
-            RequestedTags = {['Owner'] = 'Owner'};
-
             {
                 Name = 'Action.AcceleratMoveSpeed';
                 Tag = 'AcceleratMoveSpeed';
@@ -31,7 +27,6 @@ return
                     Name = 'RunSpeedBoost';
                 }
             };
-
             {
                 Name = 'NetWork.PlayVFX';
                 SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
@@ -47,34 +42,6 @@ return
                     
                 },
             },
-            {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
-                Config = {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
-                    VfxCFG = {
-                        State = 'Start';
-                        Pack = 'Default';
-                        Parent = 'Right Arm'
-                    };
-                    
-                }
-            },
-            {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
-                Config = {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
-                    VfxCFG = {
-                        State = 'Start';
-                        Pack = 'Default';
-                        Parent = 'Left Arm'
-                    };
-                    
-                }
-            },
               {
                 Name = 'NetWork.PlayVFX';
                 SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
@@ -85,7 +52,6 @@ return
                         State = 'Start';
                         Pack = 'Default';
                     };
-                    
                 }
             },
             {
@@ -103,12 +69,11 @@ return
             }
         }
     };
-
     {
         Name = 'Event.OnStop';
         Tag = 'OnStop';
         {
-            Name = 'Condition.CheckBlackList';
+            Name = 'Condition.BlackList?';
             RequestedTags = {['Owner'] = 'Owner'};
 
             {

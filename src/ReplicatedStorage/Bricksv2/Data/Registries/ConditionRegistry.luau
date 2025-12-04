@@ -6,8 +6,11 @@ local Interfaces = Shared:WaitForChild('Interfaces')
 local _Config = require(ReplicatedStorage.Shared.Abilities.Movement.Dash.Config)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 
-local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
+local AbilityFolder = Data:WaitForChild('Abilities')
+local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
+
+local Components = Bricks:WaitForChild('Components')
 local _Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
@@ -49,9 +52,8 @@ conditionRegisrty:Register('IsActive?', function(self,node)
 	return RootCFG.IsActive
 end)
 
-
-
-conditionRegisrty:Register('CheckBlackList', function(self,node)
+conditionRegisrty:Register('BlackList?', function(self,node)
+	
 	local Entity : any & IEntity = node.Additional['Owner']
 	local nodeConfig = node.Config
 	local IgnorList = (nodeConfig.Ignor ) or ({})
@@ -60,20 +62,6 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 	if RootCFG.IsActive then return false end
 	
 	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
-
-	local BlackList = 
-	{
-		'Block';
-		'Click';
-		'Dashing';
-		'GreatStunned';
-		'IsDead';
-		'NockDown';
-		'Parry';
-		'Ragdolled';
-		'Stun';
-		'Vaulting';
-	}
 
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnorList[v]) then 
@@ -91,6 +79,23 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 		})
 
 	return if (CoolDown and true) then true else false
+end)
+
+conditionRegisrty:Register('CheckBlackList', function(self,node)
+	
+	local Status = self:Execute(
+		{
+			Name = 'Condition.BlackList?';
+			RequestedTags = {['Owner'] = 'Owner'};
+			Config = node.Config;
+		})
+
+	self:Execute(
+		{
+			Name = 'Ability.AbilityStatus';
+		})
+
+	return Status
 end)
 
 conditionRegisrty:Register('<=', function(self, node)  

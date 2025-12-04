@@ -3,6 +3,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared:WaitForChild('Templates')
 
+local CacheContainer = require(script.Parent.CacheContainer)
 local AnimationsInterfaces = require(Interfaces:WaitForChild('AnimationsInterfaces'))
 local AnimationTemplate = require(Templates:WaitForChild('Animations'))
 
@@ -24,7 +25,7 @@ end
 function Methods.Play(self: IAnimation, Data: IData)
 	
 	local trackData = self:GetData(Data)
-	
+	print(trackData,Data,self)
 	local currentTrack = trackData.track
 	if not currentTrack then return end
 	local archivedTrack: AnimationTrack = trackData.Cache[Data._Name]
@@ -92,13 +93,13 @@ function Methods.AdjustWeight(self: IAnimation,Data,weight)
 	track:AdjustWeight(weight)
 end
 
-function Methods.IsPlaying(self: IAnimation, Data: IData) : AnimationTrack
+function Methods.IsPlaying(self: IAnimation, Data: IData) : boolean
 	local track: AnimationTrack = self:Get(Data)
-	if not track then return end
+	if not track then return false end
 	return track.IsPlaying
 end
 
-function Methods.Get(self: IAnimation, Data: IData) : AnimationTrack
+function Methods.Get(self: IAnimation, Data: IData) : AnimationTrack?
 	if not self.Tracks[Data.Priority][Data.Name] then return end
 	return self.Tracks[Data.Priority][Data.Name].track
 end
@@ -109,11 +110,9 @@ function Methods.Destroy(self: IAnimation)
 		for _,j: ITrack in pairs(v) do
 			j.track:Stop()
 			j.track:Destroy()
-			j.track = nil
 			for _,k in j.Cache do
 				k:Stop()
 				k:Destroy()
-				k = nil
 			end
 			table.clear(j.Cache)
 		end
@@ -121,14 +120,7 @@ function Methods.Destroy(self: IAnimation)
 	
 	Animators[self.Character] = nil
 	table.clear(self.Tracks)
-	self.Tracks = nil
-	self.Character = nil
-	self.Animator = nil
-	
-	
-	self = setmetatable({},nil)
 	table.clear(self)
-	self = nil
 end
 
 function Methods.StopByName(self: IAnimation,_name)
@@ -139,12 +131,12 @@ function Methods.StopByName(self: IAnimation,_name)
 				{
 					Name = _name;
 					Priority = index
-				})
+				}:: any)
 		end
 	end			
 end
 
-function Methods.Load(self: IAnimation,Animation: AnimationTrack, Data) : IAnimation
+function Methods.Load(self: IAnimation,Animation: Animation, Data) : IAnimation
 	local Cached = self:GetData(Data)
 	local track
 	if Cached then
@@ -154,7 +146,7 @@ function Methods.Load(self: IAnimation,Animation: AnimationTrack, Data) : IAnima
 		end
 	end
 		
-	local track = self.Animator:LoadAnimation(Animation)
+	track = self.Animator:LoadAnimation(Animation)
 	Data.LoadedAnimation = Animation
 	self:Set(track,Data)
 	
@@ -162,21 +154,21 @@ function Methods.Load(self: IAnimation,Animation: AnimationTrack, Data) : IAnima
 end
 
 
-function AnimationComponent.new(Character: Model) : IAnimation
+function AnimationComponent.new(Character: Model) : IAnimation | boolean
 	if Animators[Character] then return Animators[Character] end
 	print(Animators)
-	local self: IAnimation = setmetatable(AnimationTemplate(),
+	local self = setmetatable(AnimationTemplate(),
 		{
 			__index = function(t,key)
 				return Methods[key]
 			end,
-		})
+		}) :: any & IAnimation
 	
 	
 	local Humanoid: Humanoid? = Character:FindFirstChildOfClass('Humanoid')
-	if not Humanoid then return end
+	if not Humanoid then return false end
 	local Animator: Animator? = Humanoid:FindFirstChildOfClass('Animator')
-	if not Animator then return end
+	if not Animator then return false end
 	
 	self.Character = Character
 	self.Animator = Animator
