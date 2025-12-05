@@ -8,6 +8,8 @@ local Assets = VFXs:WaitForChild('Assets')
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
 local AnimationsComponent = require(Modules:WaitForChild('AnimationsComponent'))
 
+local KeyCode = {}
+
 local function RunStart(args)
     local Player: Player = args.Player
     if not Player then return end
@@ -59,6 +61,39 @@ local function RunStop(args)
         })
 end
 
+local function DashStart(args)
+
+    local Player: Player = args.Player
+    if not Player then return end
+    local Character = Player.Character 
+    if not Character then return end
+    local animator = AnimationsComponent.new(Character)
+    if not animator then return end
+
+    local Humanoid = Character:FindFirstChildOfClass('Humanoid')
+    if not Humanoid then return end
+
+    local PackFolder = Assets:FindFirstChild((args.Pack) or ('Default'))
+    if not PackFolder then return end
+    local Defis = (args.DashConfig.MainDirection) or ('Front')
+    local AnimationNedeed = 'Dash_'..Defis
+
+    local animationAsset: Animation = PackFolder:FindFirstChild('Animations')[AnimationNedeed]
+    local _,data = animator:Load(animationAsset,
+        {
+            Name = AnimationNedeed,
+            Priority = Enum.AnimationPriority.Action.Name,
+            _Name = (args.Pack..'Dash') or ('DefaultDash'),
+            Settings =
+            {
+                ['Speed'] = 1,
+                ['Weight'] = 1,
+                ['FadeTime'] = .05,
+            } 
+        })
+    animator:Play(data)
+end
+
 local AnimationsVfxs = {}
 AnimationsVfxs['Run'] = 
 {
@@ -67,6 +102,14 @@ AnimationsVfxs['Run'] =
     end,
     ['Stop'] = function(args)
        RunStop(args)
+    end,
+}
+
+
+AnimationsVfxs['Dash'] = 
+{
+    ['Start'] = function(args)
+        DashStart(args)
     end,
 }
 

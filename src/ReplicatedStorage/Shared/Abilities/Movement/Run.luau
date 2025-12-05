@@ -28,6 +28,13 @@ return
                 }
             };
             {
+                Name = 'Ability.SetAbilityActive';
+                Config = 
+                {
+                    ['Status'] = true;
+                }
+            };
+            {
                 Name = 'NetWork.PlayVFX';
                 SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
                 Config = {
@@ -73,9 +80,15 @@ return
         Name = 'Event.OnStop';
         Tag = 'OnStop';
         {
-            Name = 'Condition.BlackList?';
-            RequestedTags = {['Owner'] = 'Owner'};
-
+            Name = 'Condition.IsActive?';
+            RequestedTags = {['Ability'] = 'Main'};
+            {
+                Name = 'Ability.SetAbilityActive';
+                Config = 
+                {
+                    ['Status'] = false;
+                }
+            };
             {
                 Name = 'Action.DeAcceleratMoveSpeed';
                 RequestedTags = {['Owner'] = 'Owner',['Config'] = 'AcceleratMoveSpeed'};

@@ -38,9 +38,8 @@ end)
 
 
 networkRegistry:Register('PlayVFX', function(self,node) 
-
+	print(node)
 	if (RunService:IsClient()) and (not node.Config.Client) then
-		print(node.Config)
 		GlobalEvent:Fire('PlayVFX',node.Config)
 	else
 		GlobalBindable:BindableFire('PlayVFX',node.Config)

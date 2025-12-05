@@ -3,7 +3,6 @@ local _TracerService = game:GetService("TracerService")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local _Config = require(ReplicatedStorage.Shared.Abilities.Movement.Dash.Config)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 
 local Data = Bricks:WaitForChild('Data')
@@ -48,7 +47,6 @@ end)
 conditionRegisrty:Register('IsActive?', function(self,node)  
 
 	local RootCFG = node.Additional['Ability']
-
 	return RootCFG.IsActive
 end)
 
@@ -56,7 +54,7 @@ conditionRegisrty:Register('BlackList?', function(self,node)
 	
 	local Entity : any & IEntity = node.Additional['Owner']
 	local nodeConfig = node.Config
-	local IgnorList = (nodeConfig.Ignor ) or ({})
+	local IgnoreList = (nodeConfig.Ignore) or ({})
 
 	local RootCFG = node:GetRoot().Config
 	if RootCFG.IsActive then return false end
@@ -64,11 +62,12 @@ conditionRegisrty:Register('BlackList?', function(self,node)
 	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
 
 	for _,v in pairs(BlackList) do 
-		if (sessionData.StatusEffects[v] == true) and (not IgnorList[v]) then 
+		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
 			return false
 		end
 	end
-	
+	if IgnoreList['CoolDown'] then return true end
+
 	local CoolDown = self:Execute(
 		{
 			Name = 'Condition.CheckCoolDown';

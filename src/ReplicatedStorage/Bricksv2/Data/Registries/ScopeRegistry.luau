@@ -44,6 +44,14 @@ scopeRegistry:Register('Action', function(self, node)
 		node.Additional[key] = self.Tags[tag] or {}
 	end
 
+	for configKey, paramSpec in pairs(node.SendParams or {}) do
+        local fromKey = paramSpec.From
+        local path = paramSpec.Path
+
+        if not self.Tags[fromKey] then continue end
+        local value = traversePath(self.Tags[fromKey], path)
+        node['Config'][configKey] = value
+    end
 
 	local behavior = self.BehaviorRegistry:Get(node.Name)
 	if (behavior) then behavior(self, node) end
@@ -63,6 +71,8 @@ scopeRegistry:Register('Condition', function(self,node)
 	for key, tag in pairs(node.RequestedTags or {}) do
 		node.Additional[key] = self.Tags[tag] or {}
 	end
+
+
 
 	local validate = self.BehaviorRegistry:Get(node.Name)
 	if (validate) then validate = validate(self,node) end
@@ -104,7 +114,7 @@ scopeRegistry:Register('NetWork', function(self, node)
         if not self.Tags[fromKey] then continue end
         local value = traversePath(self.Tags[fromKey], path)
         node['EventParams'][configKey] = value
-        
+        node['Config']['VfxCFG'][configKey] = value
     end
 
 	print(node.Name)

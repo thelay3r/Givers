@@ -80,7 +80,7 @@ end)
 BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player = LocalPlayerComponent:GetPlayer()
 	Player:AppendAbility('Movement','Run')
-	
+	Player:AppendAbility('Movement','Dash')
 end)
 
 BindableGlobal:Connect('LocalAbility', function(args)

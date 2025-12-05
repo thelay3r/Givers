@@ -32,13 +32,21 @@ end)
 behaviorRegistry:Register('AbilityStatus', function(self,node)  
 
 	TaskManager:CreateThread(self, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
-		print(dt)
-		if self:Execute(
+		if not self:Execute(
 			{
 				Name = 'Condition.BlackList?';
 				RequestedTags = {['Owner'] = 'Owner'};
+				Config = 
+				{
+					Ignore = 
+					{
+						['CoolDown'] = true
+					}
+				}
 			})
-			then print('aaa') end
+			then
+				print(node:GetRoot().Children['1'])
+			end
 	end))
 
 

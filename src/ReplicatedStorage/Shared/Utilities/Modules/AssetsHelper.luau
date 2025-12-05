@@ -15,7 +15,7 @@ local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 
 local AssetsHelper = {}
 
-function AssetsHelper.CreateBodyVelocity(Data: IBodyVelocity)
+function AssetsHelper.CreateBodyVelocity(Data)
 	
 	local BodyVelocity = Instance.new('BodyVelocity')
 	
@@ -23,9 +23,10 @@ function AssetsHelper.CreateBodyVelocity(Data: IBodyVelocity)
 	
 	BodyVelocity.Parent = Data.Instance.Parent
 	BodyVelocity.MaxForce = Data.Instance.MaxForce
+	BodyVelocity.P = Data.Instance.P
 	BodyVelocity.Velocity = Data.Instance.Velocity or Vector3.zero
 	
-	TaskManager:CreateTask(BodyVelocity, 'Destroy', (Data.Settings.DestroyTime) or 1, function()
+	TaskManager:CreateTask(BodyVelocity, 'Destroy', (Data.Instance.DestroyTime) or 1, function()
 		BodyVelocity:Destroy()
 	end)
 	
