@@ -49,6 +49,26 @@ Effects['Normal'] =
     end
 }
 
+Effects['Cancel'] = 
+{
+    ['Start'] = function(args)
+        local Player = args.Player
+        if not Player then return end
+        local Character = Player.Character :: Model 
+        if not Character then return end
+
+        local neededFolder = Assets:FindFirstChild('Movement')
+        local neededScope = neededFolder:FindFirstChild('Dash')
+        local soundFolder = neededScope:FindFirstChild('Sounds')
+        local VfxFodler = neededScope:FindFirstChild('VFXs')
+        local Effect = VfxFodler:FindFirstChild('dashEffect'):Clone() :: BasePart
+        local sound = soundFolder:FindFirstChild('Dash'):Clone() :: Sound
+
+            
+        
+    end
+}
+
 
 
 

@@ -81,9 +81,9 @@ local function DashStart(args)
     local animationAsset: Animation = PackFolder:FindFirstChild('Animations')[AnimationNedeed]
     local _,data = animator:Load(animationAsset,
         {
-            Name = AnimationNedeed,
+            Name = 'Dash',
             Priority = Enum.AnimationPriority.Action3.Name,
-            _Name = (args.Pack..'Dash') or ('DefaultDash'),
+            _Name = (AnimationNedeed) or ('DefaultDash'),
             Settings =
             {
                 ['Speed'] = 1,
@@ -92,6 +92,43 @@ local function DashStart(args)
             } 
         })
     animator:Play(data)
+end
+
+local function DashCancel(args)
+    print(args)
+    local Player: Player = args.Player
+    if not Player then return end
+    local Character = Player.Character 
+    if not Character then return end
+    local animator = AnimationsComponent.new(Character)
+    if not animator then return end
+
+    local Humanoid = Character:FindFirstChildOfClass('Humanoid')
+    if not Humanoid then return end
+
+    local PackFolder = Assets:FindFirstChild((args.Pack) or ('Default'))
+    if not PackFolder then return end
+
+    local animationAsset: Animation = PackFolder:FindFirstChild('Dash'):FindFirstChild('Animations'):FindFirstChild('Cancels')['Cancel']
+    local _,data = animator:Load(animationAsset,
+        {
+            Name = 'DashCancel',
+            Priority = Enum.AnimationPriority.Action3.Name,
+            _Name = 'DashCancel',
+            Settings =
+            {
+                ['Speed'] = 1,
+                ['Weight'] = 1,
+                ['FadeTime'] = .05,
+            } 
+        })
+    print('Alo')
+    animator:Play(data)
+    animator:Stop(
+        {
+            Name = 'Dash';
+            Priority = Enum.AnimationPriority.Action3.Name;
+        })
 end
 
 local AnimationsVfxs = {}
@@ -113,7 +150,12 @@ AnimationsVfxs['Dash'] =
     end,
 }
 
-
+AnimationsVfxs['DashCancel'] = 
+{
+    ['Start'] = function(args)
+        DashCancel(args)
+    end,
+}
 
 
 return AnimationsVfxs

@@ -59,7 +59,7 @@ end
 local function fireVfx(args,...)
 	local splitted = string.split(args.VFXType :: string, '.')
 	if #splitted < 2 then return end
-
+	print(args)
 	local type = splitted[1]
 	local name = splitted[2]
 	local state = args.VfxCFG['State'] or 'Start'

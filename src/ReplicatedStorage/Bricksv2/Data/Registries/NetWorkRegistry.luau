@@ -36,6 +36,20 @@ networkRegistry:Register('TriggerEvent', function(self, node)
 	if handler then handler(self, selectedBlock) end
 end)
 
+networkRegistry:Register('Feint', function(self,node) 
+	GlobalBindable:Connect('Feint', function()
+		self:Execute(
+			{
+				Name = 'Action.FeintDash';
+				RequestedTags = {['BodyVelocity'] = 'BodyVelocityDash'};
+			})
+		GlobalBindable:Disconnect('Feint')
+	end)
+end)
+
+networkRegistry:Register('UnBindFeint', function(self,node) 
+	GlobalBindable:Disconnect('Feint')
+end)
 
 networkRegistry:Register('PlayVFX', function(self,node) 
 	if (RunService:IsClient()) and (not node.Config.Client) then
@@ -43,7 +57,6 @@ networkRegistry:Register('PlayVFX', function(self,node)
 	else
 		GlobalBindable:BindableFire('PlayVFX',node.Config)
 	end
-
 end)
 
 return networkRegistry

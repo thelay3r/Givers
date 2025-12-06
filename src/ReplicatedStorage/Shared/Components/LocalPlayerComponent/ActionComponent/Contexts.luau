@@ -50,6 +50,10 @@ Contexts['Ability'] = function(_,State, SelectedInput: InputObject)
 	})
 end
 
+Contexts['Feint'] = function(_,State, SelectedInput: InputObject)
+	BindableGlobal:BindableFire('Feint')
+end
+
 Contexts['BackpackButton'] = function(args, State)
 	Replicator:GetRemote('BindableGlobal'):BindableFire('BackPackGUI', args.Additional.Int, State)
 end

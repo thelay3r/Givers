@@ -222,6 +222,48 @@ behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 		})
 end)
 
+behaviorRegistry:Register('FeintDash', function(self,node)
+	
+	local bodyVelocity = node.Additional['BodyVelocity']
+	local _instance = bodyVelocity.BodyVelocityInstance :: BodyVelocity
+	print(bodyVelocity)
+	if not _instance then return end
+	_instance:Destroy()
+
+	self:Execute(
+		{
+			Name = 'NetWork.PlayVFX';
+			SendParams = {
+                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
+                };
+			Config = 
+			{
+				VFXType = 'Dash.Cancel';
+				Client = true;
+                VfxCFG = {
+                    State = 'Start';
+                    Pack = 'Movement';
+                };
+			};
+		})
+		self:Execute({
+			Name = 'NetWork.PlayVFX';
+			SendParams = {
+                 ['Player'] = {From = 'Owner', Path = {'Instance'}}
+            };
+			Config = 
+			{
+				VFXType = 'Animations.DashCancel';
+				Client = true;
+                VfxCFG = {
+                    State = 'Start';
+                    Pack = 'Movement';
+                };
+			};
+		})
+
+end)
+
 behaviorRegistry:Register('AcceleratMoveSpeed', function(self,node)
 	local Entity = node.Additional['Owner']
 	if not Entity then return end

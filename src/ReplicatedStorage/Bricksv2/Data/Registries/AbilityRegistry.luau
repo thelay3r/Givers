@@ -33,15 +33,38 @@ behaviorRegistry:Register('SetStatusEffect', function(self,node)
 	print(sessionData)
 end)
 
+
+
 behaviorRegistry:Register('SetCoolDown', function(self, node)
 	node:GetRoot().Config.LastUsed = tick()
 end)
 
-behaviorRegistry:Register('AbilityStatus', function(self,node)  
-
+behaviorRegistry:Register('AbilityDuration', function(self,node)  
 	local startTime = tick()
 	local MainConfig = node.Additional.Main
 	local duration = (MainConfig.Duration) or (1) 
+	TaskManager:CreateThread(node, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
+		if (tick() - startTime) >= duration then
+			self:Execute(
+				{
+					Name = 'Action.TriggerEvent';
+					Config = 
+					{
+						TagName = 'OnDurationEnd';
+					};
+				},
+				{
+					Name = 'Action.TriggerEvent';
+					Config = 
+					{
+						TagName = 'OnStop';
+					};
+				})
+		end
+	end))
+end)
+
+behaviorRegistry:Register('AbilityStatus', function(self,node)  
 	TaskManager:CreateThread(self, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
 		local Validate = self:Execute(
 			{
@@ -55,9 +78,7 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 					}
 				}
 			})
-		
-		
-		if (not Validate) or (tick() - startTime) >= duration then
+		if (not Validate) then
 			self:Execute(
 				{
 					Name = 'Action.TriggerEvent';
@@ -68,8 +89,6 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 				})
 		end
 	end))
-
-
 end)
 
 

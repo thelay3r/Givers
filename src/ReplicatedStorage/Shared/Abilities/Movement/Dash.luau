@@ -133,6 +133,9 @@ return
                     };
                 }
             };
+            {
+                Name = 'NetWork.Feint';
+            }
         };
         {
             Name = 'Event.OnStop';
@@ -148,6 +151,13 @@ return
                     }
                 };
             },
+        },
+        {
+            Name = 'OnDurationEnd';
+            Tag = 'OnDurationEnd';
+            {
+                Name = 'NetWork.UnBindFeint';
+            };
         }
     }
 }
