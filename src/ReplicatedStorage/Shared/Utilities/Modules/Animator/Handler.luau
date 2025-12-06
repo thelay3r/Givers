@@ -55,8 +55,6 @@ function Handler.OnRunJump(Animate,ClientData,Count)
 end
 
 function Handler.OnJump(Animate,ClientData,Count)
-	if ClientData.StatusEffects.IsRunning then return Handler.OnRunJump(Animate,ClientData,Count) end
-
 	Animate:Play(
 		{
 			Name = 'Jump';

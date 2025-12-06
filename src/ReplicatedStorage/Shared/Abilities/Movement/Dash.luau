@@ -6,8 +6,9 @@ return
     {
         Name = 'Dash';
         KeyCode = Enum.KeyCode.Q;
-        CoolDown = .1;
+        CoolDown = 1.75;
         IsActive = false;
+        Duration = .35;
     };
 
     {
@@ -26,7 +27,9 @@ return
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
-
+            };
+            {
+                Name = 'Ability.SetCoolDown';
             };
             {
                 Name = 'NetWork.PlayVFX';
@@ -44,6 +47,61 @@ return
                     };
                 };
             };
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {
+                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
+                };
+                Config = 
+                {
+                    VFXType = 'Dash.Normal';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Movement';
+
+                    };
+                }
+            };
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {
+                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
+                };
+                Config = 
+                {
+                    VFXType = 'Effects.Trail';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Movement';
+                        
+                        AbilityName = 'Dash';
+                        LifeTime = .5;
+                        Parent = 'Right Arm';
+                    };
+                }
+            };
+            {
+                Name = 'NetWork.PlayVFX';
+                SendParams = {
+                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
+                };
+                Config = 
+                {
+                    VFXType = 'Effects.Trail';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Start';
+                        Pack = 'Movement';
+                        
+                        AbilityName = 'Dash';
+                        LifeTime = .5;
+                        Parent = 'Left Arm';
+                    };
+                }
+            };
+            
             {
                 Name = 'Action.BodyVelocity';
                 SendParams = {
@@ -63,7 +121,7 @@ return
                     };
                 };
                 {
-                    Name = 'Action.SmoothBodyVelocity';
+                    Name = 'Action.UnitSmoothVelocity';
                     RequestedTags = {['BodyVelocity'] = 'BodyVelocityDash'};
 
                     Config = 

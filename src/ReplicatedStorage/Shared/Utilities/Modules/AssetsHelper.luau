@@ -26,12 +26,39 @@ function AssetsHelper.CreateBodyVelocity(Data)
 	BodyVelocity.P = Data.Instance.P
 	BodyVelocity.Velocity = Data.Instance.Velocity or Vector3.zero
 	
-	TaskManager:CreateTask(BodyVelocity, 'Destroy', (Data.Instance.DestroyTime) or 1, function()
+	TaskManager:CreateTask(BodyVelocity, 'Destroy', (Data.Settings.DestroyTime) or 1, function()
 		BodyVelocity:Destroy()
 	end)
 	
 	return BodyVelocity
 	
+end
+
+function AssetsHelper.PlaySound(sound: Sound)
+	sound:Play()
+	sound.Ended:Once(function(a0: string)  
+		sound:Destroy()
+	end)
+end
+
+function AssetsHelper.Emit(Object)
+	if typeof(Object) == 'ParticleEmitter' then Object:Emit((Object:GetAttribute('EmitCount') :: number) or 1) 
+		return 
+	end
+	for _,v in pairs(Object:GetDescendants()) do 
+		if not v:IsA('ParticleEmitter') then continue end
+		v:Emit(v:GetAttribute('EmitCount') :: number)
+	end
+end
+
+function AssetsHelper.FastCast(Data) 
+
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = {Data.Character}
+	
+	local cast = workspace:Raycast(Data.Position, Data.Direction,(Data.Params or params))
+	return cast
 end
 
 function AssetsHelper.CreateTrail(Data: ITrail)

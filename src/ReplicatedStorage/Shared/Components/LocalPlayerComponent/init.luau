@@ -37,9 +37,8 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 			['Character'] = EventBus.new('Character');
 			
 		}
-	
-	self:SharePlayer()
 	self:ReplicaInit()
+	self:SharePlayer()
 	self:SetupCharacter()
 	self:UpdateControls(self.ClientData.Controls)
 	self:ReplicateKeys()

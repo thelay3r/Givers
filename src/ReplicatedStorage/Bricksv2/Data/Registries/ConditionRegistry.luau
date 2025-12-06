@@ -92,6 +92,8 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 	self:Execute(
 		{
 			Name = 'Ability.AbilityStatus';
+			RequestedTags = {['Main'] = 'Main'};
+
 		})
 
 	return Status

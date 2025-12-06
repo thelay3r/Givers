@@ -39,6 +39,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	local fsm = CharacterFSM.new(character)
 	print(CharacterFSM)
 	TaskManager:CreateThread(self,'Jumping',humanoid.Jumping:Connect(function(active)
+		print(self.ClientData.Replica)
 		if not active then return end
 		self.Buses.Character:Fire('OnJump')
 	end))

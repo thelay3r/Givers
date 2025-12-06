@@ -8,6 +8,7 @@ return
         KeyCode = Enum.KeyCode.W;
         CoolDown = .1;
         IsActive = false;
+        Duration = 1e10;
     };
     {
         Name = 'Event.OnStart';
@@ -33,6 +34,17 @@ return
                 {
                     ['Status'] = true;
                 }
+            };
+            {
+                Name = 'Ability.SetStatusEffect';
+                Config = 
+                {
+                    ['Effect'] = 'IsRunning';
+                    ['Status'] = true;
+                }
+            };
+            {
+                Name = 'Ability.SetCoolDown';
             };
             {
                 Name = 'NetWork.PlayVFX';
@@ -86,6 +98,16 @@ return
                 Name = 'Ability.SetAbilityActive';
                 Config = 
                 {
+                    ['Status'] = false;
+                }
+
+                
+            };
+            {
+                Name = 'Ability.SetStatusEffect';
+                Config = 
+                {
+                    ['Effect'] = 'IsRunning';
                     ['Status'] = false;
                 }
             };

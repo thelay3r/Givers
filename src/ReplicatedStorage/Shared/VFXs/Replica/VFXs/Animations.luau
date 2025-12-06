@@ -82,7 +82,7 @@ local function DashStart(args)
     local _,data = animator:Load(animationAsset,
         {
             Name = AnimationNedeed,
-            Priority = Enum.AnimationPriority.Action.Name,
+            Priority = Enum.AnimationPriority.Action3.Name,
             _Name = (args.Pack..'Dash') or ('DefaultDash'),
             Settings =
             {

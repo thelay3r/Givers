@@ -35,9 +35,7 @@ local Angles2 = {
 	Left = {120, 180};
 }
 
-local function CheckAngle(Angle)
 
-end
 
 behaviorRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
@@ -47,13 +45,11 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	
 	selectedBlock.TriggerArgs = node.Config
 
-	--selectedBlock.Config = node.Config
 
 	self.Tags[node.Config.TagName] = node.Config
 
 	if handler then handler(self, selectedBlock) end
-	--print(node.Config.TagName, self.Tags)
-	-- print(self)
+
 end)
 
 behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
@@ -64,7 +60,6 @@ behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
 	local Body = BodyVelocityTag.BodyVelocityInstance
 	if not Body then return end
 
-	warn(BodyVelocityTag)
 	local FrameRate = config.FrameRate;
 	local totalTime = config.TotalTime;
 	local Frames = totalTime/FrameRate;
@@ -72,15 +67,48 @@ behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
 	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
 	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
 
-	local t:BodyVelocity
-	
+
 	TaskManager:CreateTask(node, 'SmoothBodyVelocity', 0, function(a0)  
 		for i=1, Frames do 
 			if (not Body) or (not Body.Parent) then break end
 			local t = i/Frames
 			local lerp = BiezeModule.lerp(config.SPoint, config.EPoint, t, easing, direction)
 			Body.Velocity = Body.Parent.CFrame[BodyVelocityTag.Force] * (BodyVelocityTag.VectorSpeed * lerp)
-			print(Body.Parent.CFrame[BodyVelocityTag.Force] * (BodyVelocityTag.VectorSpeed * lerp))
+			task.wait(FrameRate)
+		end
+	end)
+
+
+end)
+
+behaviorRegistry:Register('UnitSmoothVelocity', function(self,node)
+	local config = node.Config
+	local addition = node.Additional
+	local BodyVelocityTag = addition['BodyVelocity']
+	local DashConfig = addition['Velocity']
+	local Body = BodyVelocityTag.BodyVelocityInstance
+	if not Body then return end
+
+
+	local FrameRate = config.FrameRate;
+	local totalTime = config.TotalTime;
+	local Frames = totalTime/FrameRate;
+
+	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
+	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
+	
+	local Humanoid = BodyVelocityTag.Parent.Parent:FindFirstChild('Humanoid')
+	if not Humanoid then return end
+	local Unit
+
+	TaskManager:CreateTask(node, 'UnitSmoothVelocity', 0, function(a0)  
+		for i=1, Frames do 
+			if (not Body) or (not Body.Parent) then break end
+			Unit = if Humanoid.MoveDirection ~= Vector3.zero then Humanoid.MoveDirection.Unit  else Body.Parent.CFrame[BodyVelocityTag.Force]
+
+			local t = i/Frames
+			local lerp = BiezeModule.lerp(config.SPoint, config.EPoint, t, easing, direction)
+			Body.Velocity = Unit * (BodyVelocityTag.VectorSpeed * lerp)
 			task.wait(FrameRate)
 		end
 	end)
@@ -126,8 +154,6 @@ behaviorRegistry:Register('GetDashDirection', function(self,node)
 	local HumanoidRootPart = Character and Character:FindFirstChild('HumanoidRootPart')
 	if not HumanoidRootPart then return end
 
-	local SPEED = 50
-	local COEFFICIENT = 1.2
 
 	local function getDirectionFromAngle(angle: number, anglesConfig: {[string]: {number}}): string?
 		for direction, range in pairs(anglesConfig) do
@@ -158,8 +184,8 @@ behaviorRegistry:Register('GetDashDirection', function(self,node)
 
 	local DIRECTION_SPEED_MULTIPLIERS = {
 		Front = 1,
-		Back = -1,
-		Left = -1,
+		Back = 1,
+		Left = 1,
 		Right = 1,
 	}
 

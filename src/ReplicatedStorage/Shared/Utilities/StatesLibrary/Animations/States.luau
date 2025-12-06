@@ -52,7 +52,7 @@ local CFGs =
 		['Jump'] = 
 		{
 			Name = 'Jump';
-			Priority = Enum.AnimationPriority.Action2.Name;
+			Priority = Enum.AnimationPriority.Action.Name;
 			_Name = 'DefaultJump';
 
 			Settings = 
@@ -65,7 +65,7 @@ local CFGs =
 		['Fall'] = 
 		{
 			Name = 'Fall';
-			Priority = Enum.AnimationPriority.Action2.Name;
+			Priority = Enum.AnimationPriority.Action.Name;
 			_Name = 'DefaultFall';
 
 			Settings = 
@@ -78,7 +78,7 @@ local CFGs =
 		['LandHard'] = 
 		{
 			Name = 'LandHard';
-			Priority = Enum.AnimationPriority.Action2.Name;
+			Priority = Enum.AnimationPriority.Action.Name;
 			_Name = 'DefaultLandHard';
 
 			Settings = 

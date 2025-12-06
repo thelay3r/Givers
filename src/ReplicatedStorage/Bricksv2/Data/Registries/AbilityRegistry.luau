@@ -25,14 +25,25 @@ behaviorRegistry:Register('SetAbilityActive', function(self, node)
 	node:GetRoot().Config.IsActive = node.Config.Status
 end)
 
+behaviorRegistry:Register('SetStatusEffect', function(self,node)
+	local Entity = self.Tags['Owner']
+  	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
+	local config = node.Config
+	sessionData.StatusEffects[config.Effect] = config.Status
+	print(sessionData)
+end)
+
 behaviorRegistry:Register('SetCoolDown', function(self, node)
 	node:GetRoot().Config.LastUsed = tick()
 end)
 
 behaviorRegistry:Register('AbilityStatus', function(self,node)  
 
+	local startTime = tick()
+	local MainConfig = node.Additional.Main
+	local duration = (MainConfig.Duration) or (1) 
 	TaskManager:CreateThread(self, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
-		if not self:Execute(
+		local Validate = self:Execute(
 			{
 				Name = 'Condition.BlackList?';
 				RequestedTags = {['Owner'] = 'Owner'};
@@ -44,9 +55,18 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 					}
 				}
 			})
-			then
-				print(node:GetRoot().Children['1'])
-			end
+		
+		
+		if (not Validate) or (tick() - startTime) >= duration then
+			self:Execute(
+				{
+					Name = 'Action.TriggerEvent';
+					Config = 
+					{
+							TagName = 'OnStop';
+					};
+				})
+		end
 	end))
 
 

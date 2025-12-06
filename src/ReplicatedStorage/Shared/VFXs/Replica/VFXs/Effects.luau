@@ -24,9 +24,12 @@ Effects['Trail'] =
         local NeedParent = Character:FindFirstChild(args.Parent)
         if not NeedParent then return end
 
-        local scope = Assets:FindFirstChild((args.Pack) or ('Default'))
-        local trailAsset = scope:FindFirstChild('Effects'):FindFirstChild('Trail'):Clone()
-        trailAsset.Trail.Enabled = false
+        local packFolder = Assets:FindFirstChild((args.Pack) or ('Default'))
+        local scope = packFolder:FindFirstChild((args.AbilityName))
+        local vfxsScope = scope:FindFirstChild('VFXs')
+        local trailAsset = vfxsScope:FindFirstChild('Trail'):Clone() :: Trail
+
+        trailAsset.Trail.Enabled = true
 
         trailAsset.Parent = workspace.Map.VFXs
         local weld = Instance.new('Weld')
@@ -34,11 +37,10 @@ Effects['Trail'] =
         weld.Part0 = NeedParent
         weld.Part1 = trailAsset
         weld.C0 = CFrame.new(0,-.5,0)
-        task.delay(.2, function()
-            trailAsset.Trail.Enabled = true
-            task.wait(1)
+
+        TaskManager:CreateTask(Player, args.AbilityName..'Trail'..os.clock(), (args.LifeTime or 1), function(a0)  
             trailAsset.Trail.Enabled = false
-            task.wait(1)
+            task.wait(trailAsset.Trail.Lifetime)
             trailAsset:Destroy()
         end)
     end
