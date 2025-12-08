@@ -56,7 +56,7 @@ return
                         
                         BaseSpeed = 5;
                         MinSpeed = 0;
-                        MaxSpeed = 100;
+                        MaxSpeed = 256;
                         SpeedModifier = 1;
 
                         VerticalDecceleration = 25;
@@ -70,6 +70,17 @@ return
                     Config = {
                             VFXType = 'Animations.Slide';
                             Client = true;
+                        VfxCFG = {
+                            State = 'Start';
+                            Pack = 'Default';
+                        };
+                    };
+                };
+                {
+                    Name = 'NetWork.PlayVFX';
+                    Config = {
+                        VFXType = 'Slide.Client';
+                        Client = true;
                         VfxCFG = {
                             State = 'Start';
                             Pack = 'Default';
@@ -110,6 +121,17 @@ return
                 Config = {
                         VFXType = 'Animations.Slide';
                         Client = true;
+                    VfxCFG = {
+                        State = 'Stop';
+                        Pack = 'Default';
+                    };
+                };
+            };
+            {
+                Name = 'NetWork.PlayVFX';
+                Config = {
+                    VFXType = 'Slide.Client';
+                    Client = true;
                     VfxCFG = {
                         State = 'Stop';
                         Pack = 'Default';
