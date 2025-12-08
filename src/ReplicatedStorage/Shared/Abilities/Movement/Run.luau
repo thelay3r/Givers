@@ -29,6 +29,9 @@ return
                 }
             };
             {
+                Name = 'Condition.CheckVault';
+            };
+            {
                 Name = 'Ability.SetAbilityActive';
                 Config = 
                 {

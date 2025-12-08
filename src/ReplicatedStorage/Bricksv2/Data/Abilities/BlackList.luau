@@ -9,7 +9,8 @@ local BlackList =
 		'Parry';
 		'Ragdolled';
 		'Stun';
-		'Vaulting';
+		'IsVaulting';
+		'IsSliding';
 	}
 
 return BlackList

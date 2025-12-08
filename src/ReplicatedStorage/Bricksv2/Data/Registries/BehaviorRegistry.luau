@@ -10,7 +10,6 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
-local BodyMovers = require(ReplicatedStorage.Shared.VFXs.Replica.VFXs.BodyMovers)
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
@@ -52,6 +51,7 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 
 end)
 
+
 behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
 	local config = node.Config
 	local addition = node.Additional
@@ -77,8 +77,60 @@ behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
 			task.wait(FrameRate)
 		end
 	end)
+end)
+
+behaviorRegistry:Register('Vaulting', function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart'):: BasePart
+	local raycast = node.Additional['RayResult']['RayResult']
+	if not raycast then return end
+	local rayInstance = raycast.Instance :: BasePart
+	if not rayInstance:HasTag('Vault') then return end
+	rayInstance.CanCollide = false 
+
+	Character:FindFirstChildOfClass('Humanoid').JumpPower = 0
 
 
+	self:Execute(
+		{
+			Name = 'Action.DestroyBodyVelocity';
+			Config = {
+				Part = 'HumanoidRootPart'
+			}
+		})
+	self:Execute(
+		{
+			Name = 'Action.BodyVelocity';
+			Config = 
+			{
+				MaxForce = Vector3.one * 15000;
+				P = 15000;
+				DestroyTime = .2;
+				Velocity = RootPart.CFrame.LookVector * 25 + RootPart.CFrame.UpVector * 10;
+				Parent = RootPart;
+			};
+		})
+	TaskManager:CreateTask(node, 'CanCollideOff', .3, function(a0)
+		rayInstance.CanCollide = true 
+		Character:FindFirstChildOfClass('Humanoid').JumpPower = 50
+
+	end)
+end)
+
+behaviorRegistry:Register('DestroyBodyVelocity', function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart')::BasePart
+	local cfg = node.Config
+
+	local body = Character[cfg.Part] :: BasePart
+	if not body then return end
+	local velocity = body:FindFirstChildOfClass('BodyVelocity')
+	if not velocity then return end
+	velocity:Destroy()
 end)
 
 behaviorRegistry:Register('UnitSmoothVelocity', function(self,node)
@@ -116,7 +168,58 @@ behaviorRegistry:Register('UnitSmoothVelocity', function(self,node)
 
 end)
 
+behaviorRegistry:Register('BodyGyro', function(self,node)
+	local config = node.Config
+	local Parent = config.Parent
+	if not Parent then return end
+
+	local BodyGyro = AssetsHelper.CreateBodyGyro(
+		{
+			Instance = 
+			{
+				Priority = (config.Priority) or 1;
+				Parent = Parent;
+				MaxTorque = config.MaxTorque;
+				P = config.P;
+				D = config.D;
+				CFrame = config.CFrame;
+			};
+			Settings = 
+			{
+				DestroyTime = config.DestroyTime;
+			};
+		})
+
+	return BodyGyro
+end)
+
 behaviorRegistry:Register('BodyVelocity', function(self,node)
+	local config = node.Config
+	local Parent = config.Parent
+	if not Parent then return end
+
+
+	
+	local BodyVelocity = AssetsHelper.CreateBodyVelocity(
+		{
+			Instance = 
+			{
+				Priority = (config.Priority) or 1;
+				Parent = Parent;
+				MaxForce = config.MaxForce;
+				P = config.P;
+				Velocity = config.Velocity;
+			};
+			Settings = 
+			{
+				DestroyTime = config.DestroyTime;
+			};
+		})
+
+	return BodyVelocity
+end)
+
+behaviorRegistry:Register('DashBodyVelocity', function(self,node)
 	local Parent = node.Config.Parent
 	if not Parent then return end
 
@@ -238,10 +341,10 @@ behaviorRegistry:Register('FeintDash', function(self,node)
                 };
 			Config = 
 			{
-				VFXType = 'Dash.Cancel';
+				VFXType = 'Animations.Dash';
 				Client = true;
                 VfxCFG = {
-                    State = 'Start';
+                    State = 'Cancel';
                     Pack = 'Movement';
                 };
 			};
@@ -253,7 +356,7 @@ behaviorRegistry:Register('FeintDash', function(self,node)
             };
 			Config = 
 			{
-				VFXType = 'Animations.DashCancel';
+				VFXType = 'Dash.Cancel';
 				Client = true;
                 VfxCFG = {
                     State = 'Start';

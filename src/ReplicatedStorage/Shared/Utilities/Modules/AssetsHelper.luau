@@ -15,6 +15,26 @@ local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 
 local AssetsHelper = {}
 
+function AssetsHelper.CreateBodyGyro(Data)
+	
+	local BodyGyro = Instance.new('BodyGyro') :: BodyGyro
+	
+	BodyGyro:SetAttribute('Priority', Data.Instance.Priority or 1)
+	
+	BodyGyro.MaxTorque = Data.Instance.MaxTorque
+	BodyGyro.P = Data.Instance.P
+	BodyGyro.D = Data.Instance.D
+	BodyGyro.CFrame = Data.Instance.CFrame
+	BodyGyro.Parent = Data.Instance.Parent
+	
+	
+	TaskManager:CreateTask(BodyGyro, 'Destroy', (Data.Settings.DestroyTime) or 1, function()
+		BodyGyro:Destroy()
+	end)
+	
+	return BodyGyro
+end
+
 function AssetsHelper.CreateBodyVelocity(Data)
 	
 	local BodyVelocity = Instance.new('BodyVelocity')

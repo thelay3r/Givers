@@ -30,7 +30,6 @@ behaviorRegistry:Register('SetStatusEffect', function(self,node)
   	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
 	local config = node.Config
 	sessionData.StatusEffects[config.Effect] = config.Status
-	print(sessionData)
 end)
 
 
@@ -43,42 +42,52 @@ behaviorRegistry:Register('AbilityDuration', function(self,node)
 	local startTime = tick()
 	local MainConfig = node.Additional.Main
 	local duration = (MainConfig.Duration) or (1) 
-	TaskManager:CreateThread(node, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
+
+	TaskManager:CreateThread(node, 'AbilityDuration',RunService.Heartbeat:Connect(function(dt: number)
+		print('WorkOut')
 		if (tick() - startTime) >= duration then
 			self:Execute(
 				{
 					Name = 'Action.TriggerEvent';
-					Config = 
-					{
+					Config = {
 						TagName = 'OnDurationEnd';
+						['node'] = node;
 					};
-				},
+				})
+				self:Execute(
 				{
 					Name = 'Action.TriggerEvent';
-					Config = 
-					{
+					Config = {
 						TagName = 'OnStop';
+						['node'] = node;
 					};
 				})
 		end
 	end))
 end)
 
-behaviorRegistry:Register('AbilityStatus', function(self,node)  
+behaviorRegistry:Register('AbilityStatus', function(self,node) 
+	local newCfg = node.Config
+	if not newCfg['Ignore'] then
+		newCfg['Ignore'] = {}
+	end
+
+	newCfg['Ignore']['CoolDown'] = true
+	
+
+	local startTime = tick()
+	local MainConfig = node.Additional.Main
+	local duration = (MainConfig.Duration) or (1) 
+	
 	TaskManager:CreateThread(self, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
 		local Validate = self:Execute(
 			{
 				Name = 'Condition.BlackList?';
 				RequestedTags = {['Owner'] = 'Owner'};
-				Config = 
-				{
-					Ignore = 
-					{
-						['CoolDown'] = true
-					}
-				}
+				Config = newCfg;
+
 			})
-		if (not Validate) then
+		if (not Validate) or ((tick() - startTime) >= duration) then
 			self:Execute(
 				{
 					Name = 'Action.TriggerEvent';

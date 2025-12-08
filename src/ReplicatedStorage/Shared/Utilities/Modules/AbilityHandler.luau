@@ -26,11 +26,12 @@ local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
 
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
 local networkRegistry = require(Registries:WaitForChild('NetWorkRegistry'))
+local abilitiesRegistry = require(Registries:WaitForChild('AbilitiesRegistry'))
 
 local InjectedRegistries = {
     abilityRegistry, conditionRegistry,
     defaultRegistry, eventRegistry, 
-    projectileRegistry,behaviorRegistry,networkRegistry,
+    projectileRegistry,behaviorRegistry,networkRegistry,abilitiesRegistry,
 }
 
 local AbilityHandler = {}
@@ -88,6 +89,7 @@ function AbilityHandler:Build()
 end
 
 function AbilityHandler:OnStart()
+    print('Alo')
     self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
@@ -99,6 +101,7 @@ function AbilityHandler:OnStart()
 end
 
 function AbilityHandler:OnStop()
+    print('Alo 2')
     self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';

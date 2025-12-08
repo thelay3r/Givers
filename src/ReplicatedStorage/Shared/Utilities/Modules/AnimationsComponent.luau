@@ -22,24 +22,65 @@ function Methods.Stop(self: IAnimation, Data: IData)
 	track:Stop()
 end
 
+function Methods.StopByPriority(self: IAnimation,Priority: string,_track: AnimationTrack)
+	local temp = {}
+	for _,trackTable in pairs(self.Tracks[Priority]) do 
+		local track = trackTable.track :: AnimationTrack
+		if (not track.IsPlaying) then continue end
+		temp[track.Name] = track
+		track:Stop(.2)
+	end
+	if not _track then return end
+
+	_track.Ended:Once(function(...)
+		for _,trackTable in pairs(temp) do 
+			trackTable:Play(.1,1,1)
+		end
+	end)
+end
+
+function Methods.FadeLayer(self: IAnimation, Priority: string,_track: AnimationTrack)
+	local temp = {}
+
+	for _,trackTable in pairs(self.Tracks[Priority]) do 
+		local track = trackTable.track :: AnimationTrack
+		temp[track.Name] = {
+			['W'] = track.WeightCurrent;
+			['T'] = track;
+		}
+		track:AdjustWeight(0)
+	end
+
+	if not _track then return end
+
+	_track.Ended:Once(function(...)
+		for _,trackTable in pairs(self.Tracks[Priority]) do 
+			local track = trackTable.track :: AnimationTrack
+			if not track.IsPlaying then continue end
+			track:AdjustWeight(temp[track.Name])
+		end
+	end)
+end
+
 function Methods.Play(self: IAnimation, Data: IData)
 	
 	local trackData = self:GetData(Data)
 	print(trackData,Data,self)
-	local currentTrack = trackData.track
+	local currentTrack = trackData.track :: AnimationTrack
 	if not currentTrack then return end
-	local archivedTrack: AnimationTrack = trackData.Cache[Data._Name]
-	if not archivedTrack then archivedTrack = currentTrack end
+	local archivedTrack = trackData.Cache[Data._Name] :: AnimationTrack
+	if not archivedTrack then archivedTrack = currentTrack :: AnimationTrack end
 	
 	local Speed = (Data.Settings and Data.Settings.Speed) or 1
-	local FadeTime = (Data.Settings and Data.Settings.FadeTime) or .1
+	local FadeTime = (Data.Settings and Data.Settings.FadeTime) or .2
 	local Weight = (Data.Settings and Data.Settings.Weight) or 1
 	
-	archivedTrack.Priority = Data.Priority
+	archivedTrack.Priority = Data.Priority 
 
 	currentTrack:Stop(FadeTime)
 	archivedTrack:Play(FadeTime,Weight,Speed)
-	
+
+
 
 	trackData.track = archivedTrack
 

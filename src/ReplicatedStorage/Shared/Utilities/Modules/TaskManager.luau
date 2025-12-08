@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 
 local Tasks = {
 }
@@ -35,6 +36,13 @@ function TaskManager:CancelTask(Object: any, TaskName: string)
     Tasks[Object] = Tasks[Object] or {}
     
     if Tasks[Object][TaskName] then
+        if (Tasks[Object][TaskName] == coroutine.running()) then
+            task.defer(function()
+                task.cancel(Tasks[Object][TaskName])
+                Tasks[Object][TaskName] = nil
+            end)
+            return
+        end
         task.cancel(Tasks[Object][TaskName])
         Tasks[Object][TaskName] = nil
     end

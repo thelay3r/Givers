@@ -81,6 +81,8 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player = LocalPlayerComponent:GetPlayer()
 	Player:AppendAbility('Movement','Run')
 	Player:AppendAbility('Movement','Dash')
+	Player:AppendAbility('Movement','Vault')
+	Player:AppendAbility('Movement','Slide')
 end)
 
 BindableGlobal:Connect('LocalAbility', function(args)
@@ -88,6 +90,8 @@ BindableGlobal:Connect('LocalAbility', function(args)
 	if not _Player.ClientData.Abilities[args.Name] then return end
 	local abilityName = _Player.ClientData.Abilities[args.Name].Name
 	local ability = _Player:GetAbility(abilityName)
+	print(abilityName)
+	print(args.State)
 	ability[args.State](ability)
 end)
 

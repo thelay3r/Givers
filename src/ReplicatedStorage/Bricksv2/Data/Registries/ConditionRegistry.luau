@@ -1,8 +1,10 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local _TracerService = game:GetService("TracerService")
+local RunService = game:GetService("RunService")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 
 local Data = Bricks:WaitForChild('Data')
@@ -36,12 +38,24 @@ conditionRegisrty:Register('<', function(self, node)
 end)
 
 conditionRegisrty:Register('CheckCoolDown', function(self,node)
-	local nodeConfig = node.Additional['Main']
+	local nodeConfig = self.Tags['Main']
 	local lastUsed = (nodeConfig.LastUsed) or (0)
+	print(lastUsed)
 	if tick() - lastUsed <= nodeConfig.CoolDown then return false end
-	nodeConfig.lastUsed = tick()
+	--nodeConfig.LastUsed = tick()
 	
 	return true
+end)
+
+conditionRegisrty:Register('ResumeRun?',function(self,node)
+
+	local owner = self.Tags['Owner']
+	local ClientData = owner.ClientData
+	local PressedKeys = ClientData.PressedKeys
+	if not PressedKeys['W'] then return end
+
+	local ability = owner:GetAbility('Run')
+	ability['OnStart'](ability)
 end)
 
 conditionRegisrty:Register('IsActive?', function(self,node)  
@@ -50,6 +64,58 @@ conditionRegisrty:Register('IsActive?', function(self,node)
 	return RootCFG.IsActive
 end)
 
+conditionRegisrty:Register('RayCheck',function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+	local cfg = node.Config
+
+	local castData = {
+		Position = RootPart.Position;
+		Direction = RootPart.CFrame[(cfg.Vector) or 'LookVector'] * (cfg.Range or 1);
+		Character = Character
+	}
+	local cast = AssetsHelper.FastCast(castData)
+	if not cast then return false end
+
+	node.Config['RayResult'] = {
+		Instance = cast.Instance;
+		Normal = cast.Normal;
+		Position = cast.Position;
+		Distance = cast.Distance;
+	}
+	return cast
+end)
+
+conditionRegisrty:Register('RootRayCheck',function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+	local cfg = node.Config
+
+	local castData = {
+		Position = RootPart.Position;
+		Direction = RootPart.CFrame.LookVector * (cfg.Range or 1);
+		Character = Character
+	}
+	local cast = AssetsHelper.FastCast(castData)
+	if not cast then  return false end
+	if not cast.Instance:HasTag('Vault') then return false end
+
+
+	node.Config['RayResult'] = {
+		Instance = cast.Instance;
+		Normal = cast.Normal;
+		Position = cast.Position;
+		Distance = cast.Distance;
+	}
+	return cast
+end)
+
+
+
 conditionRegisrty:Register('BlackList?', function(self,node)
 	
 	local Entity : any & IEntity = node.Additional['Owner']
@@ -57,6 +123,7 @@ conditionRegisrty:Register('BlackList?', function(self,node)
 	local IgnoreList = (nodeConfig.Ignore) or ({})
 
 	local RootCFG = node:GetRoot().Config
+	
 	if RootCFG.IsActive then return false end
 	
 	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
@@ -66,22 +133,25 @@ conditionRegisrty:Register('BlackList?', function(self,node)
 			return false
 		end
 	end
-	if IgnoreList['CoolDown'] then return true end
+	
 
-	local CoolDown = self:Execute(
-		{
-			Name = 'Condition.CheckCoolDown';
-			RequestedTags = {
-				['Main'] = 'Main';
-				['Owner'] = 'Owner';
-			},
-		})
 
-	return if (CoolDown and true) then true else false
+	
+	return true
+end)
+
+conditionRegisrty:Register('CheckVault', function(self,node)
+	local Owner = self.Tags['Owner']
+	TaskManager:CreateTask(self, 'CheckVaultRun', 0,function(a0) 
+		while task.wait(1/30) do
+			local ability = Owner:GetAbility('Vault')
+			ability['OnStart'](ability)
+		end
+	end)
 end)
 
 conditionRegisrty:Register('CheckBlackList', function(self,node)
-	
+	print(node.Config)
 	local Status = self:Execute(
 		{
 			Name = 'Condition.BlackList?';
@@ -93,10 +163,18 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 		{
 			Name = 'Ability.AbilityStatus';
 			RequestedTags = {['Main'] = 'Main'};
-
+			Config = node.Config;
 		})
 
-	return Status
+	local CoolDown = self:Execute(
+		{
+			Name = 'Condition.CheckCoolDown';
+			RequestedTags = {
+				['Owner'] = 'Owner';
+			},
+		})
+
+	return if (CoolDown and Status) then true else false
 end)
 
 conditionRegisrty:Register('<=', function(self, node)  

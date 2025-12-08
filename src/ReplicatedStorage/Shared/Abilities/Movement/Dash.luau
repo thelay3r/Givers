@@ -22,8 +22,14 @@ return
                 {
                     ['Status'] = true;
                 };
-            };
-            {
+
+                {
+                    Name = 'Ability.AbilityDuration';
+                    RequestedTags = {['Main'] = 'Main'};
+                    Config = {};
+                };
+
+                {
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
@@ -103,7 +109,7 @@ return
             };
             
             {
-                Name = 'Action.BodyVelocity';
+                Name = 'Action.DashBodyVelocity';
                 SendParams = {
                     ['DashConfig'] = {From = 'DashDirection'};
                     ['Parent'] = {From = 'Owner', Path = {'Instance','Character','HumanoidRootPart'}}
@@ -136,6 +142,7 @@ return
             {
                 Name = 'NetWork.Feint';
             }
+            };
         };
         {
             Name = 'Event.OnStop';
@@ -153,7 +160,7 @@ return
             },
         },
         {
-            Name = 'OnDurationEnd';
+            Name = 'Event.OnDurationEnd';
             Tag = 'OnDurationEnd';
             {
                 Name = 'NetWork.UnBindFeint';

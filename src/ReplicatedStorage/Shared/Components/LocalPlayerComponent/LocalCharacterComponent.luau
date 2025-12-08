@@ -29,6 +29,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	local humanoid = character:WaitForChild('Humanoid') :: Humanoid
 	local humanoidRootPart = character:WaitForChild('HumanoidRootPart') :: BasePart
 	humanoid.WalkSpeed = 12
+	humanoid.UseJumpPower = true
 
 	characterData.Humanoid = humanoid
 	characterData.HumanoidRootPart = humanoidRootPart
@@ -36,8 +37,8 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	Animator.InitAnimations(self)
 	self:InitDirection()
 	
-	local fsm = CharacterFSM.new(character)
-	print(CharacterFSM)
+	--local fsm = CharacterFSM.new(character)
+	--print(CharacterFSM)
 	TaskManager:CreateThread(self,'Jumping',humanoid.Jumping:Connect(function(active)
 		print(self.ClientData.Replica)
 		if not active then return end
@@ -50,7 +51,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 		humanoidRootPart = newCharacter:FindFirstChild('HumanoidRootPart')
 		
 		humanoid.WalkSpeed = 12
-
+		humanoid.UseJumpPower = true
 		
 		characterData.Character = newCharacter
 		characterData.Humanoid = humanoid
@@ -65,9 +66,9 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 		self:ReplicateKeys()
 		self:InitDirection()
 		Animator.InitAnimations(self)
-		if fsm then fsm:Destroy() end
-		fsm = CharacterFSM.new(newCharacter)
-		print(fsm)
+		--if fsm then fsm:Destroy() end
+		--fsm = CharacterFSM.new(newCharacter)
+		--print(fsm)
 	
 	end)
 end
