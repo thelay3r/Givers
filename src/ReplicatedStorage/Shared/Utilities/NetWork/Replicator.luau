@@ -1,14 +1,8 @@
-local ServerScriptService = game:GetService("ServerScriptService")
-local ServerStorage = game:GetService("ServerStorage")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local PlayersService = game:GetService("Players")
+
 local RunService = game:GetService("RunService")
 
 local Replicator = {}
 
-local GlobalRemote = script:WaitForChild("Global")
-
-local TryTime = 1
 
 local RemoteController = {}
 
@@ -65,7 +59,7 @@ function RemoteController:Wait(name)
 	
 end
 
-function RemoteController:Disconnect(name): typeof(RemoteController)
+function RemoteController:Disconnect(name)
 	if (not self.CallBacks[name]) then return end
 	table.clear(self.CallBacks[name])
 	self.CallBacks[name] = nil
@@ -123,15 +117,10 @@ local function CreateBindableRemote(object : BindableEvent)
 	newRemote.Instance = object
 	newRemote.CallBacks = {}
 
-	if RunService:IsServer() then
-		object.Event:Connect(function(name,...)
-			for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
-		end)
-	else
-		object.Event:Connect(function(name,...)
-			for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
-		end)
-	end
+	object.Event:Connect(function(name,...)
+		if not newRemote.CallBacks[name] then return end
+		for _,v in pairs(newRemote.CallBacks[name]) do v(...) end
+	end)
 	
 	Remotes[object.Name] = newRemote
 
@@ -174,9 +163,12 @@ local function CreateRemoteFunction(object : RemoteFunction)
 end
 
 for _, v in pairs(script:GetChildren()) do
-	if v:IsA("RemoteEvent") then CreateRemote(v) continue end
-	if v:IsA("BindableEvent") then CreateBindableRemote(v) continue end
-	if v:IsA("RemoteFunction") then CreateRemoteFunction(v) continue end
+	if v:IsA("RemoteEvent") then CreateRemote(v) 
+	continue end
+	if v:IsA("BindableEvent") then CreateBindableRemote(v) 
+	continue end
+	if v:IsA("RemoteFunction") then CreateRemoteFunction(v) 
+	continue end
 end
 
 return Replicator

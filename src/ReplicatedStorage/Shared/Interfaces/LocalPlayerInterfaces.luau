@@ -26,6 +26,8 @@ export type IClientPlayerMethods = {
 	SharePlayer: (self: IClientPlayerComponent) ->(),
 	
 	LoadDefaultInput: (self: IClientPlayerComponent) -> (),
+	ReplicateKeys: (self: IClientPlayerComponent) -> (),
+	InitDirection: (self: IClientPlayerComponent) -> (),
 }
 
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {

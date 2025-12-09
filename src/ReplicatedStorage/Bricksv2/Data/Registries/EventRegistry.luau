@@ -6,6 +6,8 @@ local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
@@ -16,16 +18,50 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	local handler = self.ScopeRegistry:Get('EventAction')
 
 	local selectedBlock = self.Events[node.Config.TagName]
-	
+	if not selectedBlock then
+		self:Execute({
+			Name = 'Event.'..node.Config.TagName;
+			Tag = node.Config.TagName;
+		})
+		selectedBlock = self.Events[node.Config.TagName]
+	end
 	selectedBlock.TriggerArgs = node.Config
 
 	--selectedBlock.Config = node.Config
-
 	self.Tags[node.Config.TagName] = node.Config
 
 	if handler then handler(self, selectedBlock) end
 	--print(node.Config.TagName, self.Tags)
 	-- print(self)
+end)
+
+behaviorRegistry:Register('OnStart', function(self,node)
+
+end)
+
+behaviorRegistry:Register('OnDurationEnd', function(self,node)
+	TaskManager:CancelAllTasks(node.TriggerArgs['node'])
+	TaskManager:CancelAllThreads(node.TriggerArgs['node'])
+	print('Ended?')
+end)
+
+behaviorRegistry:Register('OnStop', function(self,node)
+	TaskManager:CancelAllThreads(self)
+	TaskManager:CancelAllTasks(self)
+end)
+
+behaviorRegistry:Register('Raycast', function(self,node)
+	local cfg = node.Config
+
+	local castData = {
+		Position = cfg.Position;
+		Direction = cfg.Direction;
+		Character = cfg.Character
+	}
+	local cast = AssetsHelper.FastCast(castData)
+
+	node.Config['Cast'] = cast
+	return cast
 end)
 
 behaviorRegistry:Register('TriggerPassive', function(self, node)

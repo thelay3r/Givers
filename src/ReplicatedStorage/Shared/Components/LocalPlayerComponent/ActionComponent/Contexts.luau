@@ -35,6 +35,7 @@ end
 
 
 Contexts['LocalAbility'] = function(_,State, SelectedInput: InputObject)
+	print(State)
 	BindableGlobal:BindableFire('LocalAbility', {
 		Name = SelectedInput;
 		State = GetState(State);
@@ -48,6 +49,14 @@ Contexts['Ability'] = function(_,State, SelectedInput: InputObject)
 		Name = SelectedInput;
 		State = GetState(State);
 	})
+end
+
+Contexts['Feint'] = function(_,State, SelectedInput: InputObject)
+	BindableGlobal:BindableFire('Feint')
+end
+
+Contexts['SlideJump'] = function(_,State, SelectedInput: InputObject)
+	BindableGlobal:BindableFire('SlideJump')
 end
 
 Contexts['BackpackButton'] = function(args, State)

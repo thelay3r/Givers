@@ -20,6 +20,8 @@ local EntitiesComponent = require(ServerComponents:WaitForChild('EntitiesStorage
 local Ability = Packets.Ability
 local ReplicateKeys = Packets.ReplicateKeys
 
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
+
 ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
 
@@ -48,8 +50,14 @@ Ability.OnServerEvent:Connect(function(Player, args)
 end)
 
 
-Replicator:GetRemote('BindableGlobal'):Connect('SetUp', function(UserId: string)
+BindableGlobal:Connect('SetUp', function(UserId: string)
 	
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
 	
+end)
+
+BindableGlobal:Connect('PlayVFX',function(args)
+	if not args.FirePosition then args.FirePosition = Vector3.zero end
+
+	Replicator:GetRemote('VFX'):FireInRadius(args.FirePosition,512, args)
 end)

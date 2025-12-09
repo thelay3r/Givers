@@ -111,7 +111,22 @@ return {
 			Enum.KeyCode.Space;
 		};
 		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
+	};
+	['Feint'] =
+	{
+		Name = 'Feint';
+		Codes = {
+			Enum.UserInputType.MouseButton2;
+		};
+		States = {Enum.UserInputState.Begin};
+	};
+
+	['SlideJump'] =
+	{
+		Name = 'SlideJump';
+		Codes = {
+			Enum.KeyCode.Space;
+		};
+		States = {Enum.UserInputState.Begin};
 	}
-	
-	
 }

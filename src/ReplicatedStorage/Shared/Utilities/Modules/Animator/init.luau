@@ -60,7 +60,7 @@ local CFGs =
 		['Jump'] = 
 		{
 			Name = 'Jump';
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 			_Name = 'DefaultJump';
 
 			Settings = 
@@ -151,7 +151,7 @@ function Animator.InitAnimations(self: LocalPlayerInterfaces.IClientPlayerCompon
 		})
 	
 	local Count = CountHadnler.Create('JumpCount',1,2)
-	Listhener.Subscribe(Animate,ClientData,Count)
+	Listhener.Subscribe(Animate,self,Count)
 	
 	Humanoid.Died:Once(function()
 		--States:Destroy()
