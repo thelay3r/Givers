@@ -87,6 +87,17 @@ return
                         };
                     };
                 };
+                                {
+                    Name = 'NetWork.PlayVFX';
+                    Config = {
+                        VFXType = 'Slide.Client';
+                        Client = true;
+                        VfxCFG = {
+                            State = 'Test';
+                            Pack = 'Default';
+                        };
+                    };
+                };
             }
 
         }

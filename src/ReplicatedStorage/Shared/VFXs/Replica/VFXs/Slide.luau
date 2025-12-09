@@ -41,6 +41,25 @@ Effects['Client'] =
             end 
         end)
     end;
+    ['Test'] = function(args)
+        local Player = args.Player
+        if not Player then return end
+        local Character = Player.Character :: Model 
+        if not Character then return end
+        local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+        if not RootPart then return end
+        local test = script:WaitForChild('Test'):Clone() :: Model
+        
+        local weld = Instance.new('WeldConstraint')
+        weld.Part0 = RootPart
+        weld.Part1 = test.PrimaryPart
+
+        weld.Parent = test.PrimaryPart
+        test:PivotTo(RootPart.CFrame - Vector3.new(0,1,0))
+        test.Parent = workspace
+
+  
+    end;
     ['Stop'] = function(args)
         local Player = args.Player
         if not Player then return end
