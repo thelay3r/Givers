@@ -1,4 +1,3 @@
-
 local Registry = {}
 Registry.__index = Registry
 
@@ -35,6 +34,26 @@ function Registry:Extends(registries: {any})
 	})
 
 	return self
+end
+
+function Registry:Destroy()
+	if self._destroyed then return end
+	self._destroyed = true
+
+	if type(self.callbacks) == "table" then
+		-- remove metatable that may reference other registries
+		if getmetatable(self.callbacks) then
+			setmetatable(self.callbacks, nil)
+		end
+
+		-- clear entries
+		for k in pairs(self.callbacks) do
+			self.callbacks[k] = nil
+		end
+	end
+
+	-- drop reference to callbacks table
+	self.callbacks = nil
 end
 
 return Registry

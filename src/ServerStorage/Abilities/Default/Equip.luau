@@ -1,4 +1,9 @@
-return {
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Registry = require(ReplicatedStorage.Bricksv2.Components.Registry)
+
+local registry = Registry.new()
+
+local ability = {
 	Name = 'Action.Root';
 	Tag = 'Main',
 	Config = 
@@ -71,4 +76,9 @@ return {
 		};
 		
 	}    
+}
+
+return {
+	Ability = ability,
+	Registry = registry,
 }
