@@ -55,10 +55,7 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
 
 
-	self:AppendPassive("Default", "Test")
 	EntityComponent.AddToList(_Id,self)
-	self:AppendAbility('Default','Equip')
-	print(self)
 	return self :: any --:: PlayerInterfaces.IServerPlayerComponent
 end
 

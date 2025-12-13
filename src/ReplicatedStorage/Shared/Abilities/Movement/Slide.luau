@@ -61,7 +61,7 @@ return
 
                         VerticalDecceleration = 25;
                         HorizontalAcceleration = 15; --25
-                        HorizontalDecceleration = 225;
+                        HorizontalDecceleration = 35;
                         DefaultSpeed = 5;
                     }
                 };
@@ -87,17 +87,7 @@ return
                         };
                     };
                 };
-                                {
-                    Name = 'NetWork.PlayVFX';
-                    Config = {
-                        VFXType = 'Slide.Client';
-                        Client = true;
-                        VfxCFG = {
-                            State = 'Test';
-                            Pack = 'Default';
-                        };
-                    };
-                };
+            
             }
 
         }

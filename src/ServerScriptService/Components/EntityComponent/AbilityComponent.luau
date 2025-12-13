@@ -1,9 +1,10 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
 local PlayersService = game:GetService('Players')
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local AbilityHandler = require(ServerScriptService.Components.AbilityHandler)
+local AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
+
+
 
 type IEntity = EntityInterfaces.IEntityComponent & PlayerInterfaces.IServerPlayerComponent
 

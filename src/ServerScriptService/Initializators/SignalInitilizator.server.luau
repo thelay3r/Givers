@@ -38,7 +38,7 @@ end)
 
 
 Ability.OnServerEvent:Connect(function(Player, args)
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
+	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 
 	print(args)
@@ -52,8 +52,9 @@ end)
 
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	
+	local Entity = EntitiesComponent:Get(UserId) :: EntityInterfaces.IEntityComponent
+	Entity:AppendAbility('Default','Equip')
+
 end)
 
 BindableGlobal:Connect('PlayVFX',function(args)

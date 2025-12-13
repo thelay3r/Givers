@@ -9,10 +9,9 @@ local PlayerInterfaces = require(Interfaces:WaitForChild('PlayerInterfaces'))
 
 local SessionDataTemplate = require(Templates:WaitForChild('SessionData'))
 
-local Packets = require(NetWork:WaitForChild('Packets'))
+local _Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
-type IPlayerComponent = PlayerInterfaces.IPlayerClientComponent
 type IServerPlayerComponent = PlayerInterfaces.IServerPlayerComponent
 type IServerPlayerMethods = PlayerInterfaces.IServerPlayerMethods
 
@@ -23,8 +22,8 @@ local Players = Entities:WaitForChild('Players')
 local CharacterComponent = {}
 
 function CharacterComponent.SetupCharacter(self: IServerPlayerComponent)
-	local player: Player = self.Instance
-	local character: Model = player.Character
+	local player = self.Instance :: Player
+	local character = player.Character :: Model
 	if (not character) then character = player.CharacterAdded:Wait() end
 	
 	local characterData = self.SessionData.CharacterData

@@ -1,20 +1,20 @@
 
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RunService = game:GetService("RunService")
+local _RunService = game:GetService("RunService")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
-local Registries = Data:WaitForChild('Registries')
+local _Registries = Data:WaitForChild('Registries')
 
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
 local Registry = require(Components:WaitForChild('Registry'))
-local AbilityParser = require(Components:WaitForChild('AbilityParser'))
+local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local AbilityFolder = Data:WaitForChild('Abilities')
-local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
+local _BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
@@ -32,7 +32,7 @@ behaviorRegistry:Register('SlideStop', function(self, node)
 	
 	local Character = owner.Instance.Character :: Model
 	local Humanoid = Character:FindFirstChildOfClass('Humanoid') :: Humanoid
-	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+	local _RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
 
 	Humanoid.HipHeight = 0
 	SlideTag.BodyVelocity:Destroy()
@@ -110,7 +110,7 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 			Name = 'Action.BodyVelocity';
 			Config = 
 			{
-				MaxForce = Vector3.new(45000,75,45000);
+				MaxForce = Vector3.new(45000,15000,45000);
 				P = 95000;
 				DestroyTime = 1e10;
 				Velocity = Vector3.one;
@@ -162,17 +162,39 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 				local DeltaY = (CurrentlyY - prevY) / config.Delta
 
 				prevY = CurrentlyY
-				BodyVelocity.Velocity = (RootPart.CFrame.LookVector * math.clamp(config.BaseSpeed * speedMod, 0, config.MaxSpeed))
+				BodyVelocity.Velocity = (RootPart.CFrame.LookVector * math.clamp(config.BaseSpeed * speedMod, 0, config.MaxSpeed)) - Vector3.new(0,75,0)
 				
 				if speedMod < 1 then
-					self:Execute(
-							{
-								Name = 'Action.TriggerEvent';
-								Config = {
-									TagName = 'OnStop';
-								}
-							})
+					self:Execute({
+							Name = 'Action.TriggerEvent';
+							Config = {
+								TagName = 'OnStop';
+							};
+						})
 					return
+				end
+
+				local fastCast = AssetsHelper.FastCast({
+					Position =  RootPart.Position;
+					Direction = RootPart.CFrame.LookVector * 4;
+					Character = Character;
+				})
+				if fastCast then
+					if speedMod > 15 then
+						self:Execute({
+							Name = 'NetWork.PlayVFX';
+							Config = {
+								VFXType = 'Slide.Client';
+								Client = true;
+								VfxCFG = {
+									State = 'Lobo';
+									Pack = 'Default';
+								};
+							};
+						})
+					end
+					speedMod = 0
+					continue
 				end
 
 				if DeltaY < -1 then
@@ -181,7 +203,7 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 				end
 
 				if DeltaY > 1 then
-					speedMod = math.clamp(speedMod - config.HorizontalAcceleration * (1/60), config.MinSpeed, config.MaxSpeed)
+					speedMod = math.clamp(speedMod - config.HorizontalDecceleration * (1/60), config.MinSpeed, config.MaxSpeed)
 					continue
 				end
 				if (DeltaY > -1 and DeltaY < 1) then

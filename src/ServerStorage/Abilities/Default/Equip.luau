@@ -1,74 +1,147 @@
-return {
-	Name = 'Action.Root';
-	Tag = 'Main',
-	Config = 
-	{
-		KeyCode = Enum.KeyCode.E;
+return 
+{
+    Name = 'Action.Root';
+    Tag = 'Main';
+    Config = 
+    {
+        Name = 'Equip';
+        KeyCode = Enum.KeyCode.E;
+        CoolDown = .5;
+        IsActive = false;
+        Duration = 1e10;
+    };
+    {
+        Name = 'Event.OnStart';
+        Tag = 'OnStart';
+        {
+            Name = 'Condition.CheckBlackList';
+            Config = {
+                Ignore = {
+                    ['IsSliding'] = true;
+                }
+            };
+            {
+                Name = 'Condition.RayCheck';
+                Tag = 'SlideCheck';
+                Config = {
+                    Vector = 'UpVector';
+                    Range = -5;
+                };
+                {   Name = 'Ability.SetAbilityActive';
+                    Config = 
+                    {
+                        ['Status'] = true;
+                    }
+                };
+                {
+                    Name = 'Ability.SetStatusEffect';
+                    Config = 
+                    {
+                        ['Effect'] = 'IsSliding';
+                        ['Status'] = true;
+                    }
+                };
+                {
+                    Name = 'Abilities.SlideJump';
+                };
+                {
+                    Name = 'Abilities.SlideStart';
+                    Tag = 'SlideStart';
+                    RequestedTags = {['RayResult'] = 'SlideCheck'};
 
-		Duration = 1;
-		CoolDown = 5;
-		LastUsed = 0;
+                    Config = {
+                        Delta = 1/10;
+                        MaxForce = 35;
+                        MaxVelocity = 60;
+                        
+                        BaseSpeed = 5;
+                        MinSpeed = 0;
+                        MaxSpeed = 256;
+                        SpeedModifier = 1;
 
-		IsActive = false;
-	},
-	{
-		Name = 'Event.OnStart';
-		Tag = 'OnStart';
-		{
-			Name = 'Condition.CheckBlackList';
-			RequestedTags = {
-				['OnStart'] = 'OnStart';
-				['Owner'] = 'Owner';
-			};
+                        VerticalDecceleration = 25;
+                        HorizontalAcceleration = 15; --25
+                        HorizontalDecceleration = 35;
+                        DefaultSpeed = 5;
+                    }
+                };
+                {
+                    Name = 'NetWork.PlayVFX';
+                    Config = {
+                            VFXType = 'Animations.Slide';
+                            Client = true;
+                        VfxCFG = {
+                            State = 'Start';
+                            Pack = 'Default';
+                        };
+                    };
+                };
+                {
+                    Name = 'NetWork.PlayVFX';
+                    Config = {
+                        VFXType = 'Slide.Client';
+                        Client = true;
+                        VfxCFG = {
+                            State = 'Start';
+                            Pack = 'Default';
+                        };
+                    };
+                };
+            
+            }
 
-			{
-				Name = 'Action.SetAbilityActive';
-				Config = {Status = true};
-			};
-			{
-				Name = 'Action.SetCoolDown';
-			};
-			
-			{
+        }
+    };
+    {
+        Name = 'Event.OnStop';
+        Tag = 'OnStop';
+        {
+            Name = 'Condition.IsActive?';
+            RequestedTags = {['Ability'] = 'Main'};
+            {
+                Name = 'Ability.SetAbilityActive';
+                Config = 
+                {
+                    ['Status'] = false;
+                }
+            };
+            {
+                Name = 'Ability.SetStatusEffect';
+                Config = 
+                {
+                    ['Effect'] = 'IsSliding';
+                    ['Status'] = false;
+                }
+            };
 
-			Name = 'Action.SpawnProjectile';
-			Tag = '111';
-
-			Config = {
-				Speed = 1,
-				Direction = Vector3.new(0,0,1),
-				StartVelocity = 10,
-				Damage = 15,
-			}
-
-		}
-		};
-
-		
-	};
-	{
-		Name = 'Event.OnStop';
-		Tag = 'OnStop';
-		{
-			Name = 'Condition.IsActive?';
-			RequestedTags = {['Ability'] = 'Main'};
-			
-		{
-			Name = 'Action.SpawnProjectile';
-			Config = {
-				Speed = 1,
-				Direction = Vector3.new(0,0,1),
-				StartVelocity = 10,
-				Damage = 15,
-			}
-
-		};
-		{
-			Name = 'Action.SetAbilityCoolDown';
-			Config = {Status = false};
-		};
-
-		};
-		
-	}    
+            {
+                Name = 'Abilities.SlideStop';
+            };
+            {
+                Name = 'NetWork.PlayVFX';
+                Config = {
+                        VFXType = 'Animations.Slide';
+                        Client = true;
+                    VfxCFG = {
+                        State = 'Stop';
+                        Pack = 'Default';
+                    };
+                };
+            };
+            {
+                Name = 'NetWork.PlayVFX';
+                Config = {
+                    VFXType = 'Slide.Client';
+                    Client = true;
+                    VfxCFG = {
+                        State = 'Stop';
+                        Pack = 'Default';
+                    };
+                };
+            };
+            {
+                Name = 'Condition.ResumeRun?'
+            }
+        }
+    }
 }

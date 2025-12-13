@@ -101,7 +101,6 @@ function AbilityHandler:OnStart()
 end
 
 function AbilityHandler:OnStop()
-    print('Alo 2')
     self.Instance:Execute(
         {
             Name = 'Action.TriggerEvent';
