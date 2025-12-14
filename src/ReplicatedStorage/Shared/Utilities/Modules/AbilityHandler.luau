@@ -1,11 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local _Modules = Utilities:WaitForChild('Modules')
-
 local AbilitesFolder = Shared:WaitForChild('Abilities')
+
+-- use ServerStorage abilities (as in init)
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
@@ -14,25 +14,21 @@ local Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
-
-local abilityRegistry = require(Registries:WaitForChild('AbilityRegistry'))
-local conditionRegistry = require(Registries:WaitForChild('ConditionRegistry'))
-
-local defaultRegistry = require(Registries:WaitForChild('DefaultRegistry'))
-local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
-
-local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
-local behaviorRegistry = require(Registries:WaitForChild('BehaviorRegistry'))
-
+local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
-local networkRegistry = require(Registries:WaitForChild('NetWorkRegistry'))
-local abilitiesRegistry = require(Registries:WaitForChild('AbilitiesRegistry'))
+local BehaviorRegistries = Data:WaitForChild('Registries'):WaitForChild('BehaviorRegistries')
 
-local InjectedRegistries = {
-    abilityRegistry, conditionRegistry,
-    defaultRegistry, eventRegistry, 
-    projectileRegistry,behaviorRegistry,networkRegistry,abilitiesRegistry,
-}
+local InjectedRegistries = {}
+
+for i,v in pairs(BehaviorRegistries:GetChildren()) do
+	InjectedRegistries[i] = require(v)
+end
+
+local defaultBehaviorRegistry = Registry.new():Extends(InjectedRegistries)
+local defaultScopeRegistry = Registry.new():Extends({scope_registry = scopeRegistry}) -- placeholder if needed
+
+-- create a shared parser instance for faster reuse (matches init behavior)
+local abilityParser = AbilityParser.new()
 
 local AbilityHandler = {}
 local Abilities = {}
@@ -43,35 +39,50 @@ local function addToCache(name, entityId, ability)
 end
 
 local function GetFromCache(name, entityId)
+    if not Abilities[entityId] then return nil end
     return Abilities[entityId][name]
 end
-function AbilityHandler.GetByKeyCode(name, entityId)
-    local ability = Abilities[entityId][name]
+
+local Test = {}
+
+function Test:Execute(structure)
+	abilityParser:Execute(structure, self.Instance)
+end
+
+function AbilityHandler.GetByKeyCode(name, entityId, key)
+    local ability = GetFromCache(name, entityId)
     if not ability then return end
-    local config = Abilities[entityId][name].Config
+
+    local config = ability.Instance.Config
     if not config then return end
-    return Abilities[entityId][name].Config.KeyCode.Name
+
+    if config.KeyCode.Name ~= key then return end
+    return ability
 end
 
 function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHandler)
-    assert(AbilitesFolder:FindFirstChild(packName), `{packName} doesnt exist!`)
-    assert(AbilitesFolder[packName]:FindFirstChild(abilityName), `{abilityName} in {packName} pack doesnt exist!`)
+    assert(AbilitesFolder:FindFirstChild(packName), (`%s doesnt exist!`):format(packName))
+    assert(AbilitesFolder[packName]:FindFirstChild(abilityName), (`%s in %s pack doesnt exist!`):format(abilityName, packName))
 
     local ability = AbilityHandler.new(
         require(AbilitesFolder[packName][abilityName])
     )
 
+	print(ability)
     return ability
 end
 
-function AbilityHandler.new(config: {}) : typeof(AbilityParser)
-    local ability = AbilityParser.new()
-    local _behaviorRegistry = Registry.new():Extends(InjectedRegistries)
-
-    ability.BehaviorRegistry = _behaviorRegistry
-    ability.ScopeRegistry = scopeRegistry
-    print(ability.ScopeRegistry)
-    ability:Create(config)
+function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(AbilityParser)
+	-- create parser-backed ability instance using shared parser factory
+	local ability = AbilityParseObject.new()
+	
+	print(defaultBehaviorRegistry, 'tag11')
+	
+	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
+	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
+	
+    print(config)
+	abilityParser:Create(config.Ability, ability)
 
     local createdAbility = setmetatable({
         Instance = ability
@@ -80,7 +91,7 @@ function AbilityHandler.new(config: {}) : typeof(AbilityParser)
             return AbilityHandler[i]
         end
     })
-
+	
     return createdAbility
 end
 
@@ -89,26 +100,23 @@ function AbilityHandler:Build()
 end
 
 function AbilityHandler:OnStart()
-    print('Alo')
-    self.Instance:Execute(
-        {
-            Name = 'Action.TriggerEvent';
-            Config = 
-            {
-                TagName = 'OnStart';
-            }
-        })
+	self.Instance:Execute({
+		Name = 'Action.TriggerEvent';
+		Config = 
+			{
+				TagName = 'OnStart';
+			}
+	})
 end
 
 function AbilityHandler:OnStop()
-    self.Instance:Execute(
-        {
-            Name = 'Action.TriggerEvent';
-            Config = 
-            {
-                TagName = 'OnStop';
-            }
-        })
+	self.Instance:Execute({
+		Name = 'Action.TriggerEvent';
+		Config = 
+			{
+				TagName = 'OnStop';
+			}
+	})
 end
 
 function AbilityHandler.GetAbility(name,entityId)
@@ -122,9 +130,14 @@ end
 
 function AbilityHandler:UnBindToEntity(name:string,entityId:number)
     local ability = GetFromCache(name,entityId)
-    ability.Instance:Destroy()
+    if not ability then return end
+    if ability.Instance and type(ability.Instance.Destroy) == "function" then
+        ability.Instance:Destroy()
+    end
     ability.Instance = nil
-    ability = nil
+    if Abilities[entityId] then
+        Abilities[entityId][name] = nil
+    end
 end
 
 return AbilityHandler

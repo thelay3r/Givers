@@ -1,6 +1,17 @@
-return 
-{
-    Name = 'Action.Root';
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Bricks = ReplicatedStorage.Bricksv2
+
+local _Components = Bricks:WaitForChild('Components')
+local Data = Bricks:WaitForChild('Data')
+local _Registries = Data:WaitForChild('Registries')
+local Registry = require(_Components.Registry)
+
+
+
+local registry = Registry.new()
+
+local ability = {
+Name = 'Action.Root';
     Tag = 'Main';
     Config = 
     {
@@ -144,4 +155,9 @@ return
             }
         }
     }
+}
+
+return {
+    Ability = ability;
+    Registry = registry;
 }

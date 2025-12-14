@@ -10,13 +10,7 @@ local Parser = {}
 Parser.__index = Parser
 
 function Parser.new()
-	local self = setmetatable({
-		ScopeRegistry = Registry.new(),
-		Events = {},
-		Tags = {},
-		Threads = {},
-		Tree = nil,
-	}, Parser)
+	local self = setmetatable({}, Parser)
 
 	return self
 end
