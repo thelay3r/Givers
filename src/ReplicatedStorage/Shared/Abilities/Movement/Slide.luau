@@ -54,6 +54,7 @@ Name = 'Action.Root';
                 };
                 {
                     Name = 'Abilities.SlideJump';
+                    RequestedTags = {['Slide'] = 'SlideStart'};
                 };
                 {
                     Name = 'Abilities.SlideStart';
@@ -70,9 +71,9 @@ Name = 'Action.Root';
                         MaxSpeed = 256;
                         SpeedModifier = 1;
 
-                        VerticalDecceleration = 25;
-                        HorizontalAcceleration = 15; --25
-                        HorizontalDecceleration = 35;
+                        VerticalDecceleration = 35;
+                        VerticalAcceleration = 15; --25
+                        HorizontalDecceleration = 15;
                         DefaultSpeed = 5;
                     }
                 };

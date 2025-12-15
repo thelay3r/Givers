@@ -24,9 +24,6 @@ behaviorRegistry:Register('Root', function(self, node)
     print('New Root Behavior')
 end)
 
-
-
-
 behaviorRegistry:Register('SlideStop', function(self, node)
 	local owner = self.Tags['Owner']
 	local SlideTag = self.Tags['SlideStart']
@@ -54,6 +51,7 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 
 	BindableGlobal:Connect('SlideJump', function()
 		BindableGlobal:Disconnect('SlideJump')
+
 		self:Execute({
 			Name = 'Action.TriggerEvent';
 			Config = {
@@ -72,21 +70,35 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 				};
 			};
 		})
+
+		local slide = self.Tags['Slide']
+
+		--[[
 		local BodyVelocity = self:Execute(
 		{
 			Name = 'Action.BodyVelocity';
 			Config = 
 			{
-				MaxForce = Vector3.new(0,15000,0);
+				MaxForce = Vector3.one * 15000;
 				P = 95000;
 				DestroyTime = .1;
-				Velocity = Vector3.new(0,50,0);
+				Velocity = Vector3.new(0,50,0); --+ slide.SlideVelocity * Vector3.new(1,0,1);
 				Parent = RootPart;
 			};
 		}) :: BodyVelocity
-		TaskManager:CreateTask(BodyVelocity, 'DelayJumpPower', .2, function()
+		]]
+		print('tag4')
+		print('tag4', slide) --!! slide нельзя получить, т.к SlideJump инициализирован раньше чем SlideStart 
+		
+		--RootPart:ApplyImpulse(slide.SlideVelocity * RootPart.AssemblyMass * Vector3.new(1,0,1) + Vector3.new(0, 60, 0) * RootPart.AssemblyMass)
+
+		--Humanoid.JumpPower = 50
+
+		--[[
+		TaskManager:CreateTask(RootPart, 'DelayJumpPower', .2, function()
 			Humanoid.JumpPower = 50
 		end)
+		]]
 	end)
 end)
 
@@ -119,105 +131,115 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 				Parent = RootPart;
 			};
 		}) :: BodyVelocity
+
 	local BodyGyro = self:Execute(
 		{
 			Name = 'Action.BodyGyro';
 			Config = 
 			{
-				MaxTorque = Vector3.new(3e5,3e5,3e5);
-				P = 10000;
-				D = 150;
+				MaxTorque = Vector3.one * 3e4;
+				P = 1000;
+				D = 250;
 				DestroyTime = 1e10;
 				CFrame = CFrame.new(Vector3.zero);
 				Parent = RootPart;
 			};
 		}) :: BodyGyro
+
+	local prevY = RootPart.Position.Y
+	local rightVector = RootPart.CFrame.RightVector
+	local updateLookVector = rightVector:Cross(rayResult.Normal)
 	
-		local prevY = RootPart.Position.Y
-		local rightVector = RootPart.CFrame.RightVector
-		local updateLookVector = rightVector:Cross(rayResult.Normal)
-		local newCFrame = CFrame.fromMatrix(RootPart.Position, rightVector, rayResult.Normal,updateLookVector)
-		BodyGyro.CFrame = newCFrame
-		
-		local cast
-		local angle = math.clamp(math.deg(math.acos(RootPart.CFrame.UpVector:Dot(rayResult.Normal))),20,config.MaxForce) 
+	local cast
+	local angle = math.clamp(math.deg(math.acos(RootPart.CFrame.UpVector:Dot(rayResult.Normal))),20,config.MaxForce) 
+	
+	local speedMod = math.clamp(config.BaseSpeed + angle/2,config.DefaultSpeed,10)
+	
+	local newCFrame = CFrame.fromMatrix(RootPart.Position, rightVector, rayResult.Normal, updateLookVector)
+	BodyGyro.CFrame = newCFrame
 
-		local speedMod = math.clamp(config.BaseSpeed + angle/2,config.DefaultSpeed,10)
-		
-		TaskManager:CreateTask(self, 'Slide', 0, function(a0)  
-			while task.wait(1/60) do
-				cast = AssetsHelper.FastCast({
-					Direction = Vector3.new(0,-4,0);
-					Position = RootPart.Position;
-					Character = Character;
-				})
-				if not cast then
-					continue
-				end
+	TaskManager:CreateTask(self, 'Slide', 0, function(a0)  
+		while task.wait(1/60) do
+			cast = AssetsHelper.FastCast({
+				Direction = Vector3.new(0,-8,0);
+				Position = RootPart.Position;
+				Character = Character;
+			})
 
-				rightVector = RootPart.CFrame.RightVector
-				updateLookVector = rightVector:Cross(rayResult.Normal)
-				newCFrame = CFrame.fromMatrix(RootPart.Position, rightVector, rayResult.Normal,updateLookVector)
-				BodyGyro.CFrame = newCFrame
-
-				local CurrentlyY = RootPart.Position.Y
-				local DeltaY = (CurrentlyY - prevY) / config.Delta
-
-				prevY = CurrentlyY
-				BodyVelocity.Velocity = (RootPart.CFrame.LookVector * math.clamp(config.BaseSpeed * speedMod, 0, config.MaxSpeed)) - Vector3.new(0,75,0)
-				
-				if speedMod < 1 then
-					self:Execute({
-							Name = 'Action.TriggerEvent';
-							Config = {
-								TagName = 'OnStop';
-							};
-						})
-					return
-				end
-
-				local fastCast = AssetsHelper.FastCast({
-					Position =  RootPart.Position;
-					Direction = RootPart.CFrame.LookVector * 4;
-					Character = Character;
-				})
-				if fastCast then
-					if speedMod > 15 then
-						self:Execute({
-							Name = 'NetWork.PlayVFX';
-							Config = {
-								VFXType = 'Slide.Client';
-								Client = true;
-								VfxCFG = {
-									State = 'Lobo';
-									Pack = 'Default';
-								};
-							};
-						})
-					end
-					speedMod = 0
-					continue
-				end
-
-				if DeltaY < -1 then
-					speedMod = math.clamp(speedMod + config.HorizontalAcceleration * (1/60), config.MinSpeed, config.MaxSpeed)
-					continue
-				end
-
-				if DeltaY > 1 then
-					speedMod = math.clamp(speedMod - config.HorizontalDecceleration * (1/60), config.MinSpeed, config.MaxSpeed)
-					continue
-				end
-				if (DeltaY > -1 and DeltaY < 1) then
-					speedMod = math.clamp(speedMod - config.VerticalDecceleration * (1/60), config.MinSpeed, config.MaxSpeed)
-					continue
-				end
+			if not cast then
+				continue
 			end
 
-		end)
+			rightVector = RootPart.CFrame.RightVector
+			updateLookVector = rightVector:Cross(cast.Normal)
+			newCFrame = CFrame.fromMatrix(RootPart.Position, rightVector, cast.Normal, updateLookVector)
+			BodyGyro.CFrame = BodyGyro.CFrame:Lerp(newCFrame, 1/10) 
 
-		node.Config['BodyVelocity'] = BodyVelocity;
-		node.Config['BodyGyro'] = BodyGyro;
+			local CurrentlyY = RootPart.Position.Y
+			local DeltaY = (CurrentlyY - prevY) / config.Delta
+
+			local speedModifier = math.clamp(config.BaseSpeed * speedMod, 0, config.MaxSpeed)
+
+			prevY = CurrentlyY
+			BodyVelocity.Velocity = (RootPart.CFrame.LookVector * speedModifier) - Vector3.new(0,75,0)
+			
+			node.Config['SlideVelocity'] = BodyVelocity.Velocity + Vector3.new(0,75,0)
+
+			if speedMod < 1 then
+				self:Execute({
+						Name = 'Action.TriggerEvent';
+						Config = {
+							TagName = 'OnStop';
+						};
+					})
+				return
+			end
+
+			local fastCast = AssetsHelper.FastCast({
+				Position =  RootPart.Position;
+				Direction = RootPart.CFrame.LookVector * 4;
+				Character = Character;
+			})
+			if fastCast then
+				--[[
+				if speedMod > 15 then
+					self:Execute({
+						Name = 'NetWork.PlayVFX';
+						Config = {
+							VFXType = 'Slide.Client';
+							Client = true;
+							VfxCFG = {
+								State = 'Lobo';
+								Pack = 'Default';
+							};
+						};
+					})
+				end
+				]]
+				speedMod = 0
+				continue
+			end
+
+			if DeltaY < -1 then
+				speedMod = math.clamp(speedMod + config.VerticalAcceleration * (1/60), config.MinSpeed, config.MaxSpeed)
+				continue
+			end
+
+			if DeltaY > 1 then
+				speedMod = math.clamp(speedMod - config.VerticalDecceleration * (1/60), config.MinSpeed, config.MaxSpeed)
+				continue
+			end
+
+			if (DeltaY > -1 and DeltaY < 1) then
+				speedMod = math.clamp(speedMod - config.HorizontalDecceleration * (1/60), config.MinSpeed, config.MaxSpeed)
+				continue
+			end
+		end
+
+	end)
+
+	node.Config['BodyVelocity'] = BodyVelocity;
+	node.Config['BodyGyro'] = BodyGyro;
 
 end)
 
