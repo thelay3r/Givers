@@ -8,7 +8,6 @@ local Registry = require(Components:WaitForChild('Registry'))
 local TreeNode = require(Components:WaitForChild('TreeNode'))
 local Parser = require(Components:WaitForChild('Parser'))
 
-
 local AbilityParser = {}
 AbilityParser.__index = AbilityParser
 setmetatable(AbilityParser, { __index = Parser })
