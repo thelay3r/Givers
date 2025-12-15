@@ -62,6 +62,9 @@ local ability = {
 				Name = 'Ability.SetCoolDown';
 			};
 			{
+				Name = 'Condition.CheckVault';
+			};
+			{
 				Name = 'NetWork.PlayVFX';
 				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
 				Config = {
@@ -73,7 +76,6 @@ local ability = {
 						EasingStyle = Enum.EasingStyle.Sine;
 						EasingDirection = Enum.EasingDirection.InOut;
 					};
-
 				},
 			},
 			{
@@ -108,7 +110,6 @@ local ability = {
 		Tag = 'OnStop';
 		{
 			Name = 'Condition.IsActive?';
-			RequestedTags = {['Ability'] = 'Main'};
 			{
 				Name = 'Ability.SetAbilityActive';
 				Config = 

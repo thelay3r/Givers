@@ -39,6 +39,25 @@ scopeRegistry:Register('Abilities', function(self, node)
 	return true
 end)
 
+scopeRegistry:Register('Entity', function(self, node) 
+	for key, tag in pairs(node.RequestedTags or {}) do
+		node.Additional[key] = self.Tags[tag] or {}
+	end
+
+
+	local behavior = self.BehaviorRegistry:Get(node.Name)
+	if (behavior) then behavior(self, node) end
+	if (node.Tag) then
+		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
+	end
+
+	for _, child in (node.Children or {}) do
+		child:Execute()
+	end	
+	
+	return true
+end)
+
 scopeRegistry:Register('Ability', function(self, node) 
 	for key, tag in pairs(node.RequestedTags or {}) do
 		node.Additional[key] = self.Tags[tag] or {}

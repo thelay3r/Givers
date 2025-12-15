@@ -17,7 +17,7 @@ Name = 'Action.Root';
     {
         Name = 'Slide';
         KeyCode = Enum.KeyCode.LeftControl;
-        CoolDown = .5;
+        CoolDown = 1;
         IsActive = false;
         Duration = 1e10;
     };
@@ -127,6 +127,9 @@ Name = 'Action.Root';
 
             {
                 Name = 'Abilities.SlideStop';
+            };
+            {
+                Name = 'Ability.SetCoolDown';
             };
             {
                 Name = 'NetWork.PlayVFX';

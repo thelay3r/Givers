@@ -76,12 +76,10 @@ function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(Abi
 	-- create parser-backed ability instance using shared parser factory
 	local ability = AbilityParseObject.new()
 	
-	print(defaultBehaviorRegistry, 'tag11')
 	
 	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
 	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
 	
-    print(config)
 	abilityParser:Create(config.Ability, ability)
 
     local createdAbility = setmetatable({

@@ -60,7 +60,7 @@ end)
 
 conditionRegisrty:Register('IsActive?', function(self,node)  
 
-	local RootCFG = node.Additional['Ability']
+	local RootCFG = self.Tags['Main']
 	return RootCFG.IsActive
 end)
 
@@ -103,7 +103,13 @@ conditionRegisrty:Register('RootRayCheck',function(self,node)
 	local cast = AssetsHelper.FastCast(castData)
 	if not cast then  return false end
 	if not cast.Instance:HasTag('Vault') then return false end
+	
+	local RootPartPosition = RootPart.Position
+	local InstancePosition = cast.Instance.Position
+	local InstanceSize = cast.Instance.Size
 
+	local Diff = (InstancePosition.Y + InstanceSize.Y/2) - RootPartPosition.Y
+	if math.abs(Diff) > 1.5 then return false end
 
 	node.Config['RayResult'] = {
 		Instance = cast.Instance;

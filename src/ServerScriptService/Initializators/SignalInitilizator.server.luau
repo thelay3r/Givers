@@ -15,6 +15,7 @@ local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 local EntitiesComponent = require(ServerComponents:WaitForChild('EntitiesStorage'))
+local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 
 
 local Ability = Packets.Ability
@@ -53,7 +54,9 @@ end)
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
 	local Entity = EntitiesComponent:Get(UserId) :: EntityInterfaces.IEntityComponent
+	print(EntitiesComponent:Get(tostring(UserId)),UserId)
 	Entity:AppendAbility('Default','Equip')
+	
 
 end)
 

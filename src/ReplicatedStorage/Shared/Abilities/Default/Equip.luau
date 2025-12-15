@@ -10,7 +10,6 @@ local _Registries = Data:WaitForChild('Registries')
 local registry = Registry.new()
 
 
-
 local ability = {
 	Name = 'Action.Root';
 	Tag = 'Main',
@@ -28,59 +27,22 @@ local ability = {
 		Name = 'Event.OnStart';
 		Tag = 'OnStart';
 		{
-			Name = 'Action.SpawnProjectile';
-			Tag = '111';
-
-			Config = {
-				Speed = 1,
-				Direction = Vector3.new(0,0,1),
-				StartVelocity = 10,
-				Damage = 15,
-			};
-		{
 			Name = 'Condition.CheckBlackList';
-			RequestedTags = {
-				['OnStart'] = 'OnStart';
-				['Owner'] = 'Owner';
-			};
+			{
 
-			{
-				Name = 'Action.SetAbilityActive';
-				Config = {Status = true};
-			};
-			{
-				Name = 'Action.SetCoolDown';
-			};
+				Name = 'Entity.SwapWeapon';
+				
+			}
 
 		}
-		};
-
-		
-	};
+	},
 	{
 		Name = 'Event.OnStop';
 		Tag = 'OnStop';
+
 		{
-			Name = 'Condition.IsActive?';
-			RequestedTags = {['Ability'] = 'Main'};
-			
-			{
-				Name = 'Action.SpawnProjectile';
-				Config = {
-					Speed = 1,
-					Direction = Vector3.new(0,0,1),
-					StartVelocity = 10,
-					Damage = 15,
-				}
-
-			};
-			{
-				Name = 'Action.SetCoolDown';
-				Config = {Status = false};
-			};
-
-		};
-		
+			Name = 'Condition.IsActive?',
+		}
 	}    
 }
 

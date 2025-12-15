@@ -92,7 +92,6 @@ behaviorRegistry:Register('Vaulting', function(self,node)
 
 	Character:FindFirstChildOfClass('Humanoid').JumpPower = 0
 
-
 	self:Execute(
 		{
 			Name = 'Action.DestroyBodyVelocity';
@@ -115,7 +114,6 @@ behaviorRegistry:Register('Vaulting', function(self,node)
 	TaskManager:CreateTask(node, 'CanCollideOff', .3, function(a0)
 		rayInstance.CanCollide = true 
 		Character:FindFirstChildOfClass('Humanoid').JumpPower = 50
-
 	end)
 end)
 

@@ -24,6 +24,7 @@ end
 function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(AbilityParseObject.new()))
 	local children = {}
 	
+	if not structure.Name then return end
 	local splitted = string.split(structure.Name :: string, '.')
 	if (#splitted < 2) then return end
 
