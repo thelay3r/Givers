@@ -13,11 +13,15 @@ local Handler = require(Modules:WaitForChild('Animator'):WaitForChild('Handler')
 
 local Listhener = {}
 
-function Listhener.Subscribe(Animate,ClientData,Count)
-	
+function Listhener.Subscribe(Animate,self,Count)
+	local session = self.Replica.Data.Session
 	local CharacterBus = EventBus.new('Character')
 	CharacterBus:Subscribe('OnJump',function()
-		Handler.OnJump(Animate,ClientData,Count)
+		if session.StatusEffects['IsRunning'] then
+			Handler.OnRunJump(Animate,self.ClientData,Count)
+		else
+			Handler.OnJump(Animate,self.ClientData,Count)
+		end
 	end)
 	
 	

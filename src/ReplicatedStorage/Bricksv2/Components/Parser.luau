@@ -14,6 +14,7 @@ function Parser.new()
 		ScopeRegistry = Registry.new(),
 		Events = {},
 		Tags = {},
+		Threads = {},
 		Tree = nil,
 	}, Parser)
 

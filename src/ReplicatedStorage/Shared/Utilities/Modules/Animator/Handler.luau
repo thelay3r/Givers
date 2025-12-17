@@ -7,6 +7,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local Modules = Utilities:WaitForChild('Modules')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local Enums = require(ReplicatedStorage.Shared.Utilities.NetWork.PacketManager.Types.Enums)
 local TaskManager = require(Modules:FindFirstChild('TaskManager'))
 local AnimationsComponent = require(Modules:FindFirstChild('AnimationsComponent'))
 local StateManager = require(Modules:FindFirstChild('StateManager'))
@@ -23,7 +24,7 @@ function Handler.OnRunJump(Animate,ClientData,Count)
 	Animate:Load(DefaultAnimations.JumpRun1,{
 		Name = 'Jump';
 		_Name = DefaultAnimations.JumpRun1.Name;
-		Priority = Enum.AnimationPriority.Action.Name;
+		Priority = Enum.AnimationPriority.Action2.Name;
 		Settings = 
 			{
 				['Speed']= 1;
@@ -35,7 +36,7 @@ function Handler.OnRunJump(Animate,ClientData,Count)
 	Animate:Load(DefaultAnimations.JumpRun2,{
 		Name = 'Jump';
 		_Name = DefaultAnimations.JumpRun2.Name;
-		Priority = Enum.AnimationPriority.Action.Name;
+		Priority = Enum.AnimationPriority.Action2.Name;
 		Settings = 
 			{
 				['Speed']= 1;
@@ -44,22 +45,20 @@ function Handler.OnRunJump(Animate,ClientData,Count)
 			}
 	})
 
-	Animate:Swap(
+	Animate:Play(
 		{
 			Name = 'Jump';
 			_Name = 'JumpRun'..Count();
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 		})
 	Count:Increment()
 end
 
 function Handler.OnJump(Animate,ClientData,Count)
-	if ClientData.StatusEffects.IsRunning then return Handler.OnRunJump(Animate,ClientData,Count) end
-
-	Animate:Swap(
+	Animate:Play(
 		{
 			Name = 'Jump';
-			Priority = Enum.AnimationPriority.Action.Name;
+			Priority = Enum.AnimationPriority.Action2.Name;
 			_Name = 'DefaultJump';
 
 			Settings = 

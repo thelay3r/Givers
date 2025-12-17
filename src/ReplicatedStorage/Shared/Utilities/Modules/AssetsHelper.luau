@@ -15,7 +15,27 @@ local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 
 local AssetsHelper = {}
 
-function AssetsHelper.CreateBodyVelocity(Data: IBodyVelocity)
+function AssetsHelper.CreateBodyGyro(Data)
+	
+	local BodyGyro = Instance.new('BodyGyro') :: BodyGyro
+	
+	BodyGyro:SetAttribute('Priority', Data.Instance.Priority or 1)
+	
+	BodyGyro.MaxTorque = Data.Instance.MaxTorque
+	BodyGyro.P = Data.Instance.P
+	BodyGyro.D = Data.Instance.D
+	BodyGyro.CFrame = Data.Instance.CFrame
+	BodyGyro.Parent = Data.Instance.Parent
+	
+	
+	TaskManager:CreateTask(BodyGyro, 'Destroy', (Data.Settings.DestroyTime) or 1, function()
+		BodyGyro:Destroy()
+	end)
+	
+	return BodyGyro
+end
+
+function AssetsHelper.CreateBodyVelocity(Data)
 	
 	local BodyVelocity = Instance.new('BodyVelocity')
 	
@@ -23,6 +43,7 @@ function AssetsHelper.CreateBodyVelocity(Data: IBodyVelocity)
 	
 	BodyVelocity.Parent = Data.Instance.Parent
 	BodyVelocity.MaxForce = Data.Instance.MaxForce
+	BodyVelocity.P = Data.Instance.P
 	BodyVelocity.Velocity = Data.Instance.Velocity or Vector3.zero
 	
 	TaskManager:CreateTask(BodyVelocity, 'Destroy', (Data.Settings.DestroyTime) or 1, function()
@@ -31,6 +52,33 @@ function AssetsHelper.CreateBodyVelocity(Data: IBodyVelocity)
 	
 	return BodyVelocity
 	
+end
+
+function AssetsHelper.PlaySound(sound: Sound)
+	sound:Play()
+	sound.Ended:Once(function(a0: string)  
+		sound:Destroy()
+	end)
+end
+
+function AssetsHelper.Emit(Object)
+	if typeof(Object) == 'ParticleEmitter' then Object:Emit((Object:GetAttribute('EmitCount') :: number) or 1) 
+		return 
+	end
+	for _,v in pairs(Object:GetDescendants()) do 
+		if not v:IsA('ParticleEmitter') then continue end
+		v:Emit(v:GetAttribute('EmitCount') :: number)
+	end
+end
+
+function AssetsHelper.FastCast(Data) 
+
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = {Data.Character}
+	
+	local cast = workspace:Raycast(Data.Position, Data.Direction,(Data.Params or params))
+	return cast
 end
 
 function AssetsHelper.CreateTrail(Data: ITrail)

@@ -31,6 +31,8 @@ t:AddState(States.Regist('Test2'))
 print(tz)
 print(t)
 
+
+
 for i=1,30 do
 	
 	t:Update(i,Vector3.one * math.random(-5,5))

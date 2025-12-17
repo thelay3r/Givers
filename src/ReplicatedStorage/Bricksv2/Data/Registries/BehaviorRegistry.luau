@@ -1,21 +1,40 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local RunService = game:GetService("RunService")
+
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
-
+local NetWork = Utilities:WaitForChild('NetWork')
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
-
+local Replicator = require(NetWork:WaitForChild('Replicator'))
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
-local Registries = Data:WaitForChild('Registries')
+local _Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
-local AbilityParser = require(Components:WaitForChild('AbilityParser'))
+local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
+local GlobalBindable = Replicator:GetRemote('BindableGlobal')
+local GlobalEvent = Replicator:GetRemote('Global')
+
+local Angles1 = {
+	Front = {0, 60};
+	Back = {120, 180};
+};
+	
+local Angles2 = {
+	Right = {0, 60};
+	Left = {120, 180};
+}
+
+
 
 behaviorRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
@@ -25,35 +44,267 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	
 	selectedBlock.TriggerArgs = node.Config
 
-	--selectedBlock.Config = node.Config
 
 	self.Tags[node.Config.TagName] = node.Config
 
 	if handler then handler(self, selectedBlock) end
-	--print(node.Config.TagName, self.Tags)
-	-- print(self)
+
 end)
 
-behaviorRegistry:Register('OnHit', function(self, node) 
-	print(self.Tags) 
-	--print('root created', self)
+
+behaviorRegistry:Register('SmoothBodyVelocity', function(self,node)
+	local config = node.Config
+	local addition = node.Additional
+	local BodyVelocityTag = addition['BodyVelocity']
+	local DashConfig = addition['Velocity']
+	local Body = BodyVelocityTag.BodyVelocityInstance
+	if not Body then return end
+
+	local FrameRate = config.FrameRate;
+	local totalTime = config.TotalTime;
+	local Frames = totalTime/FrameRate;
+
+	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
+	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
+
+
+	TaskManager:CreateTask(node, 'SmoothBodyVelocity', 0, function(a0)  
+		for i=1, Frames do 
+			if (not Body) or (not Body.Parent) then break end
+			local t = i/Frames
+			local lerp = BiezeModule.lerp(config.SPoint, config.EPoint, t, easing, direction)
+			Body.Velocity = Body.Parent.CFrame[BodyVelocityTag.Force] * (BodyVelocityTag.VectorSpeed * lerp)
+			task.wait(FrameRate)
+		end
+	end)
 end)
 
-behaviorRegistry:Register('SetAbilityActive', function(self, node)
-	node:GetRoot().Config.IsActive = node.Config.Status
+behaviorRegistry:Register('Vaulting', function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart'):: BasePart
+	local raycast = node.Additional['RayResult']['RayResult']
+	if not raycast then return end
+	local rayInstance = raycast.Instance :: BasePart
+	if not rayInstance:HasTag('Vault') then return end
+	rayInstance.CanCollide = false 
+
+	Character:FindFirstChildOfClass('Humanoid').JumpPower = 0
+
+
+	self:Execute(
+		{
+			Name = 'Action.DestroyBodyVelocity';
+			Config = {
+				Part = 'HumanoidRootPart'
+			}
+		})
+	self:Execute(
+		{
+			Name = 'Action.BodyVelocity';
+			Config = 
+			{
+				MaxForce = Vector3.one * 15000;
+				P = 15000;
+				DestroyTime = .2;
+				Velocity = RootPart.CFrame.LookVector * 25 + RootPart.CFrame.UpVector * 10;
+				Parent = RootPart;
+			};
+		})
+	TaskManager:CreateTask(node, 'CanCollideOff', .3, function(a0)
+		rayInstance.CanCollide = true 
+		Character:FindFirstChildOfClass('Humanoid').JumpPower = 50
+
+	end)
 end)
 
-behaviorRegistry:Register('SetCoolDown', function(self, node)
-	node:GetRoot().Config.LastUsed = tick()
+behaviorRegistry:Register('DestroyBodyVelocity', function(self,node)
+	local Owner = self.Tags['Owner']
+	local _Instance = Owner.Instance
+	local Character = _Instance.Character :: Model
+	local RootPart = Character:FindFirstChild('HumanoidRootPart')::BasePart
+	local cfg = node.Config
+
+	local body = Character[cfg.Part] :: BasePart
+	if not body then return end
+	local velocity = body:FindFirstChildOfClass('BodyVelocity')
+	if not velocity then return end
+	velocity:Destroy()
 end)
 
-behaviorRegistry:Register('ResetCoolDown', function(self, node)
-	node:GetRoot().Config.LastUsed = 0
+behaviorRegistry:Register('UnitSmoothVelocity', function(self,node)
+	local config = node.Config
+	local addition = node.Additional
+	local BodyVelocityTag = addition['BodyVelocity']
+	local DashConfig = addition['Velocity']
+	local Body = BodyVelocityTag.BodyVelocityInstance
+	if not Body then return end
+
+
+	local FrameRate = config.FrameRate;
+	local totalTime = config.TotalTime;
+	local Frames = totalTime/FrameRate;
+
+	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
+	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
+	
+	local Humanoid = BodyVelocityTag.Parent.Parent:FindFirstChild('Humanoid')
+	if not Humanoid then return end
+	local Unit
+
+	TaskManager:CreateTask(node, 'UnitSmoothVelocity', 0, function(a0)  
+		for i=1, Frames do 
+			if (not Body) or (not Body.Parent) then break end
+			Unit = if Humanoid.MoveDirection ~= Vector3.zero then Humanoid.MoveDirection.Unit  else Body.Parent.CFrame[BodyVelocityTag.Force]
+
+			local t = i/Frames
+			local lerp = BiezeModule.lerp(config.SPoint, config.EPoint, t, easing, direction)
+			Body.Velocity = Unit * (BodyVelocityTag.VectorSpeed * lerp)
+			task.wait(FrameRate)
+		end
+	end)
+
+
+end)
+
+behaviorRegistry:Register('BodyGyro', function(self,node)
+	local config = node.Config
+	local Parent = config.Parent
+	if not Parent then return end
+
+	local BodyGyro = AssetsHelper.CreateBodyGyro(
+		{
+			Instance = 
+			{
+				Priority = (config.Priority) or 1;
+				Parent = Parent;
+				MaxTorque = config.MaxTorque;
+				P = config.P;
+				D = config.D;
+				CFrame = config.CFrame;
+			};
+			Settings = 
+			{
+				DestroyTime = config.DestroyTime;
+			};
+		})
+
+	return BodyGyro
+end)
+
+behaviorRegistry:Register('BodyVelocity', function(self,node)
+	local config = node.Config
+	local Parent = config.Parent
+	if not Parent then return end
+
+
+	
+	local BodyVelocity = AssetsHelper.CreateBodyVelocity(
+		{
+			Instance = 
+			{
+				Priority = (config.Priority) or 1;
+				Parent = Parent;
+				MaxForce = config.MaxForce;
+				P = config.P;
+				Velocity = config.Velocity;
+			};
+			Settings = 
+			{
+				DestroyTime = config.DestroyTime;
+			};
+		})
+
+	return BodyVelocity
+end)
+
+behaviorRegistry:Register('DashBodyVelocity', function(self,node)
+	local Parent = node.Config.Parent
+	if not Parent then return end
+
+
+	local BodyVelocityCFG = node.Config.BodyVelocity
+	local DashCFG = node.Config.DashConfig
+	local BodyVelocity = AssetsHelper.CreateBodyVelocity(
+		{
+			Instance = 
+			{
+				Priority = BodyVelocityCFG.Priority;
+				Parent = Parent;
+				MaxForce = BodyVelocityCFG.MaxForce;
+				P = BodyVelocityCFG.P;
+				Velocity = Parent.CFrame[DashCFG.Vector] * ((BodyVelocityCFG.Speed) or (50)) * (DashCFG.Speed)
+			};
+			Settings = 
+			{
+				DestroyTime = BodyVelocityCFG.DestroyTime;
+			};
+		})
+
+	node.Config['BodyVelocityInstance'] = BodyVelocity
+	node.Config['VectorSpeed'] = ((BodyVelocityCFG.Speed) or (50)) * (DashCFG.Speed)
+	node.Config['Force'] = DashCFG.Vector
+	
+end)
+
+behaviorRegistry:Register('GetDashDirection', function(self,node) 
+
+	local Entity = node.Additional['Owner']
+	if not Entity then return end
+
+	local Character = Entity.Instance.Character
+	local HumanoidRootPart = Character and Character:FindFirstChild('HumanoidRootPart')
+	if not HumanoidRootPart then return end
+
+
+	local function getDirectionFromAngle(angle: number, anglesConfig: {[string]: {number}}): string?
+		for direction, range in pairs(anglesConfig) do
+			if angle >= range[1] and angle <= range[2] then
+				return direction
+			end
+		end
+		return nil
+	end
+
+	local velocity = HumanoidRootPart.Velocity.Unit
+	local cframe = HumanoidRootPart.CFrame
+
+	local lookAngle = math.deg(math.acos(cframe.LookVector:Dot(velocity)))
+	local rightAngle = math.deg(math.acos(cframe.RightVector:Dot(velocity)))
+
+	local direction1 = getDirectionFromAngle(lookAngle, Angles1)
+	local direction2 = getDirectionFromAngle(rightAngle, Angles2)
+
+	local mainDirection = direction1 or direction2 or 'Front'
+
+	local DIRECTION_VECTORS = {
+		Front = 'LookVector',
+		Back = 'LookVector',
+		Left = 'RightVector',
+		Right = 'RightVector',
+	}
+
+	local DIRECTION_SPEED_MULTIPLIERS = {
+		Front = 1,
+		Back = 1,
+		Left = 1,
+		Right = 1,
+	}
+
+	local _vector = DIRECTION_VECTORS[mainDirection]
+	local speed = (DIRECTION_SPEED_MULTIPLIERS[mainDirection] or 1)
+
+	node.Config['MainDirection'] = mainDirection;
+	node.Config['Vector'] = _vector;
+	node.Config['Speed'] = speed;
+
 end)
 
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
 end)
+
 
 behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 	local Entity = node.Additional['Owner']
@@ -72,6 +323,48 @@ behaviorRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 			Name = config.Name or ('AcceleratMoveSpeed')..Character.Name;
 			Recursive = false;
 		})
+end)
+
+behaviorRegistry:Register('FeintDash', function(self,node)
+	
+	local bodyVelocity = node.Additional['BodyVelocity']
+	local _instance = bodyVelocity.BodyVelocityInstance :: BodyVelocity
+	print(bodyVelocity)
+	if not _instance then return end
+	_instance:Destroy()
+
+	self:Execute(
+		{
+			Name = 'NetWork.PlayVFX';
+			SendParams = {
+                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
+                };
+			Config = 
+			{
+				VFXType = 'Animations.Dash';
+				Client = true;
+                VfxCFG = {
+                    State = 'Cancel';
+                    Pack = 'Movement';
+                };
+			};
+		})
+		self:Execute({
+			Name = 'NetWork.PlayVFX';
+			SendParams = {
+                 ['Player'] = {From = 'Owner', Path = {'Instance'}}
+            };
+			Config = 
+			{
+				VFXType = 'Dash.Cancel';
+				Client = true;
+                VfxCFG = {
+                    State = 'Start';
+                    Pack = 'Movement';
+                };
+			};
+		})
+
 end)
 
 behaviorRegistry:Register('AcceleratMoveSpeed', function(self,node)
