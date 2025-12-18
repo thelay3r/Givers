@@ -15,12 +15,11 @@ local ability = {
 	Tag = 'Main',
 	Config = 
 	{
-		Name = 'Equip';
-
-		KeyCode = Enum.KeyCode.E;
+        Name = 'Fists_M1';
+		KeyCode = Enum.UserInputType.MouseButton1;
 
 		Duration = 1;
-		CoolDown = 5;
+		CoolDown = .5;
 		LastUsed = 0;
 
 		IsActive = false;
@@ -28,24 +27,33 @@ local ability = {
 	{
 		Name = 'Event.OnStart';
 		Tag = 'OnStart';
-		{
-			Name = 'Condition.CheckBlackList';
+		{	
+			Name = 'Condition.IsEquipped?';
 			{
+				Name = 'Condition.CheckBlackList';
+				{
+					{
+						Name = 'Ability.SetCoolDown';
+					};
+					Name = 'Combat.Combo';
+					Config = {
+						Combo = {
+							'Fist';
+						}
+					}
+						
+				};
+		};
+	}
+},
+{
+	Name = 'Event.OnStop';
+	Tag = 'OnStop';
 
-				Name = 'Entity.SwapWeapon';
-				
-			}
-
-		}
-	},
 	{
-		Name = 'Event.OnStop';
-		Tag = 'OnStop';
-
-		{
-			Name = 'Condition.IsActive?',
-		}
-	}    
+		Name = 'Condition.IsActive?',
+	}
+}    
 }
 
 return {

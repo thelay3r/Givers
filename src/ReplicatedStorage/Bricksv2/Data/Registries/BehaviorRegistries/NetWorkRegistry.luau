@@ -7,6 +7,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
 local NetWork = Utilities:WaitForChild('NetWork')
+local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
@@ -20,6 +21,8 @@ local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 local networkRegistry = Registry.new()
 local GlobalBindable = Replicator:GetRemote('BindableGlobal')
 local GlobalEvent = Replicator:GetRemote('Global')
+local VFXEvent = Replicator:GetRemote('VFX')
+
 
 networkRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
@@ -52,11 +55,17 @@ networkRegistry:Register('UnBindFeint', function(self,node)
 end)
 
 networkRegistry:Register('PlayVFX', function(self,node) 
-	if (RunService:IsClient()) and (not node.Config.Client) then
-		GlobalEvent:Fire('PlayVFX',node.Config)
+	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
+	local Character = Entity.Instance.Character
+	local RootPart = Character.PrimaryPart
+
+	if (RunService:IsServer()) and (not node.Config.Client) then
+		print('alo','tag1')
+		VFXEvent:FireInRadius(RootPart.Position,512,'PlayVFX',node.Config)
 	else
 		GlobalBindable:BindableFire('PlayVFX',node.Config)
 	end
+
 end)
 
 return networkRegistry

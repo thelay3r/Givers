@@ -7,7 +7,6 @@ local _Registries = Data:WaitForChild('Registries')
 local Registry = require(_Components.Registry)
 
 
-
 local registry = Registry.new()
 
 local ability = {
@@ -53,10 +52,6 @@ Name = 'Action.Root';
                     }
                 };
                 {
-                    Name = 'Abilities.SlideJump';
-                    RequestedTags = {['Slide'] = 'SlideStart'};
-                };
-                {
                     Name = 'Abilities.SlideStart';
                     Tag = 'SlideStart';
                     RequestedTags = {['RayResult'] = 'SlideCheck'};
@@ -76,6 +71,10 @@ Name = 'Action.Root';
                         HorizontalDecceleration = 15;
                         DefaultSpeed = 5;
                     }
+                };
+                {
+                    Name = 'Abilities.SlideJump';
+                    RequestedTags = {['Slide'] = 'SlideStart'};
                 };
                 {
                     Name = 'NetWork.PlayVFX';

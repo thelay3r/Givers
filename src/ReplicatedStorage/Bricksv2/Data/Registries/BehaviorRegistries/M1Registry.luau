@@ -25,32 +25,39 @@ end)
 
 
 
-EntityRegistry:Register('SwapWeapon', function(self, node)
+EntityRegistry:Register('Fist', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.Replica.Data.Session
-
-	local current = Session.CurrentEquipped
-	local weapon = Session.Equipment.Weapon
-	local pressed = Session.PressedKeys
-	local shiftDown = pressed and (pressed['LeftShift'] ~= nil or pressed['Shift'] ~= nil)
-
-	local targetToEquip = if shiftDown then (weapon ~= 'none' and weapon or 'Fists') else 'Fists'
-
-	if current ~= 'none' then
-		targetToEquip = 'none'
-	end
-	
-	self:Execute({
+	print(Session.StatusEffects.CurrentCombo)
+    self:Execute({
 		Name = 'NetWork.PlayVFX';
 		Config = {
-			VFXType = 'Fists.Idle';
+			Client = true;
+			VFXType = 'Fists.M1';
 			VfxCFG = {
-				State = targetToEquip ~= 'none' and 'Equip' or 'Unequip';
-			};
+				State = 'OnStart';
+				Combo = Session.StatusEffects.CurrentCombo;
+			}
 		}
 	})
 
-	Session.CurrentEquipped = targetToEquip
 end)
 
+EntityRegistry:Register('Spear', function(self, node)
+	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
+	local Session = Entity.Replica.Data.Session
+	print(Session.StatusEffects.CurrentCombo)
+    self:Execute({
+		Name = 'NetWork.PlayVFX';
+		Config = {
+			Client = true;
+			VFXType = 'Spear.M1';
+			VfxCFG = {
+				State = 'OnStart';
+				Combo = Session.StatusEffects.CurrentCombo;
+			}
+		}
+	})
+
+end)
 return EntityRegistry

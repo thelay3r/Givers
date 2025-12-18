@@ -58,6 +58,7 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 				TagName = 'OnStop';
 			}
 		})
+
 		self:Execute({
 			Name = 'NetWork.PlayVFX';
 			Config = {
@@ -71,34 +72,17 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 			};
 		})
 
-		local slide = self.Tags['Slide']
-
-		--[[
-		local BodyVelocity = self:Execute(
-		{
-			Name = 'Action.BodyVelocity';
-			Config = 
-			{
-				MaxForce = Vector3.one * 15000;
-				P = 95000;
-				DestroyTime = .1;
-				Velocity = Vector3.new(0,50,0); --+ slide.SlideVelocity * Vector3.new(1,0,1);
-				Parent = RootPart;
-			};
-		}) :: BodyVelocity
-		]]
-		print('tag4')
-		print('tag4', slide) --!! slide нельзя получить, т.к SlideJump инициализирован раньше чем SlideStart 
+		local slide = self.Tags['SlideStart']
 		
-		--RootPart:ApplyImpulse(slide.SlideVelocity * RootPart.AssemblyMass * Vector3.new(1,0,1) + Vector3.new(0, 60, 0) * RootPart.AssemblyMass)
+		
+		RootPart:ApplyImpulse(slide.SlideVelocity * RootPart.AssemblyMass * Vector3.new(1,0,1) + Vector3.new(0, 60, 0) * RootPart.AssemblyMass)
 
-		--Humanoid.JumpPower = 50
-
-		--[[
+		
 		TaskManager:CreateTask(RootPart, 'DelayJumpPower', .2, function()
 			Humanoid.JumpPower = 50
 		end)
-		]]
+		
+		
 	end)
 end)
 

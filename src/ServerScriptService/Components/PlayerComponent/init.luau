@@ -53,7 +53,7 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 		task.wait(1/2)
 	end
 	self:SetupCharacter()
-	
+	self:InitVFX()
 	
 	local Character : Model? = self.Instance.Character
 	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
