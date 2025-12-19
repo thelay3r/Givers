@@ -43,11 +43,9 @@ end)
 behaviorRegistry:Register('SlideJump', function(self,node)
 	local owner = self.Tags['Owner']
 
-	
 	local Character = owner.Instance.Character :: Model
 	local Humanoid = Character:FindFirstChildOfClass('Humanoid') :: Humanoid
 	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
-	
 
 	BindableGlobal:Connect('SlideJump', function()
 		BindableGlobal:Disconnect('SlideJump')

@@ -79,15 +79,20 @@ local ability = {
 				},
 			},
 			{
-				Name = 'NetWork.PlayVFX';
-				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+				Name = 'Network.PlayRemoteEvent';
+				InjectParams = {['Player'] = 'Owner.Instance'};
 				Config = {
-					VFXType = 'Animations.Run';
-					Client = true;
-					VfxCFG = {
-						State = 'Start';
-						Pack = 'Default';
-					};
+					EventType = '', -- All, One, Close
+					EventName = '',
+
+					EventData = {
+						VFXType = 'Animations.Run';
+						VFXConfig = {
+							State = 'Start';
+							Pack = 'Default';
+						};
+					}
+
 				}
 			},
 			{

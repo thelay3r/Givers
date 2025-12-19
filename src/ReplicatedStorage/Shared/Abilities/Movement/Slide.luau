@@ -134,8 +134,8 @@ Name = 'Action.Root';
             {
                 Name = 'NetWork.PlayVFX';
                 Config = {
-                        VFXType = 'Animations.Slide';
-                        Client = true;
+                    VFXType = 'Animations.Slide';
+                    Client = true;
                     VfxCFG = {
                         State = 'Stop';
                         Pack = 'Default';

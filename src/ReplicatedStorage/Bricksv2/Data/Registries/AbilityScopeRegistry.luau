@@ -24,7 +24,6 @@ scopeRegistry:Register('Abilities', function(self, node)
 		node.Additional[key] = self.Tags[tag] or {}
 	end
 
-
 	local behavior = self.BehaviorRegistry:Get(node.Name)
 	if (behavior) then behavior(self, node) end
 	if (node.Tag) then
