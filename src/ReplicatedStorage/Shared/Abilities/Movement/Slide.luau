@@ -6,8 +6,14 @@ local Data = Bricks:WaitForChild('Data')
 local _Registries = Data:WaitForChild('Registries')
 local Registry = require(_Components.Registry)
 
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
+
+local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 local registry = Registry.new()
+
 
 local ability = {
 Name = 'Action.Root';
