@@ -3,6 +3,7 @@ local RunService = game:GetService("RunService")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
+local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
@@ -40,7 +41,6 @@ end)
 conditionRegisrty:Register('CheckCoolDown', function(self,node)
 	local nodeConfig = self.Tags['Main']
 	local lastUsed = (nodeConfig.LastUsed) or (0)
-	print(lastUsed)
 	if tick() - lastUsed <= nodeConfig.CoolDown then return false end
 	--nodeConfig.LastUsed = tick()
 	
@@ -60,8 +60,16 @@ end)
 
 conditionRegisrty:Register('IsActive?', function(self,node)  
 
-	local RootCFG = node.Additional['Ability']
+	local RootCFG = self.Tags['Main']
 	return RootCFG.IsActive
+end)
+
+conditionRegisrty:Register('IsEquipped?', function(self,node)  
+
+	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
+	local session = Entity.Replica.Data.Session
+	print(session)
+	return if session.CurrentEquipped ~= 'none' then true else false
 end)
 
 conditionRegisrty:Register('RayCheck',function(self,node)
@@ -103,7 +111,13 @@ conditionRegisrty:Register('RootRayCheck',function(self,node)
 	local cast = AssetsHelper.FastCast(castData)
 	if not cast then  return false end
 	if not cast.Instance:HasTag('Vault') then return false end
+	
+	local RootPartPosition = RootPart.Position
+	local InstancePosition = cast.Instance.Position
+	local InstanceSize = cast.Instance.Size
 
+	local Diff = (InstancePosition.Y + InstanceSize.Y/2) - RootPartPosition.Y
+	if math.abs(Diff) > 1.5 then return false end
 
 	node.Config['RayResult'] = {
 		Instance = cast.Instance;
@@ -151,7 +165,6 @@ conditionRegisrty:Register('CheckVault', function(self,node)
 end)
 
 conditionRegisrty:Register('CheckBlackList', function(self,node)
-	print(node.Config)
 	local Status = self:Execute(
 		{
 			Name = 'Condition.BlackList?';

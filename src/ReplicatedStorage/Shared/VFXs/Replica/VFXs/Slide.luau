@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
+local _RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local Modules = Utilities:WaitForChild('Modules')
@@ -67,6 +67,46 @@ Effects['Client'] =
         if not Character then return end
             
         TaskManager:CancelTask(Player, 'SlideCameraEffect')
+    end;
+    ['Lobo'] = function(args)
+        local Player = args.Player :: Player
+        if not Player then return end
+        local Character = Player.Character :: Model 
+        if not Character then return end
+
+        local sounds = Assets:WaitForChild('Sounds')
+        local soundFolder = sounds:WaitForChild('Slide')
+        
+        local newHitSound = soundFolder:FindFirstChild('Hit'):Clone()
+        local LoboSound = soundFolder:FindFirstChild('Sound'):Clone()
+
+        newHitSound.Parent = args.Player.Character.PrimaryPart
+        LoboSound.Parent = args.Player.Character.PrimaryPart
+
+        AssetsHelper.PlaySound(newHitSound)
+        AssetsHelper.PlaySound(LoboSound)
+
+        task.delay(.1,function()
+            Character.PrimaryPart:ApplyAngularImpulse(Vector3.new(1500,0,3500))
+        end)
+
+        Shaker:ShakeOnce(5, 50, 0, 1.3)
+
+        local PlayerGui = Player.PlayerGui :: PlayerGui
+        local NewGui = Instance.new('ScreenGui')
+        NewGui.IgnoreGuiInset = true
+
+        NewGui.Parent = PlayerGui
+        local Lobo = Instance.new('Frame') :: Frame
+        Lobo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Lobo.Size = UDim2.fromScale(1,1)
+        Lobo.Parent = NewGui
+
+        TweenService:Create(Lobo, TweenInfo.new(5,Enum.EasingStyle.Sine), {
+           Transparency = 1;
+           BackgroundTransparency = 1
+        }):Play()
+
     end
 }
 

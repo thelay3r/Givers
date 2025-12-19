@@ -21,7 +21,7 @@ local SessionTemplate = require(Templates:WaitForChild('SessionData'))
 
 
 
-type IProfile = typeof(ProfileTemplate())
+type IProfile = typeof(ProfileTemplate)
 type iSession = typeof(SessionTemplate())
 
 local LiveIndex = require(script.LiveIndex)
@@ -58,20 +58,24 @@ function DataProfile.LoadProfile(self: PlayerInterfaces.IServerPlayerComponent)
 	
 end
 
-function DataProfile.LoadReplica(self: PlayerInterfaces.IServerPlayerComponent)
+function DataProfile.LoadReplica(self: PlayerInterfaces.IServerPlayerComponent & any)
 	
 	local replica = ReplicaService.New({
 		Token = TOKEN;
-		Data = {Profile = self.Profile.Data, Session = self.SessionData} :: {Profile: IProfile, Session: iSession};
+		Data = {Profile = self:LoadProfile(), Session = SessionTemplate()} :: {Profile: IProfile, Session: iSession};
 		Tags = 
 			{
 				UserId = self.Instance.UserId;
 			};
 	})
-	replica:Subscribe(self.Instance)
 	
 	self.Replica = replica
+	self.Replica.Data.Session.UserId = tostring( self.Instance.UserId )
+
+	--if true then return replica end
+	replica:Subscribe(self.Instance)
 	
+
 	
 	return replica
 end

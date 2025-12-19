@@ -26,7 +26,7 @@ function Object.new()
 		Threads = {},
 		Tree = nil,
 	}, Object)
-
+	
 	return self
 end
 

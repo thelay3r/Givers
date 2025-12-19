@@ -1,12 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local _Modules = Utilities:WaitForChild('Modules')
+local AbilitesFolder = Shared:WaitForChild('Abilities')
 
 -- use ServerStorage abilities (as in init)
-local AbilitesFolder = ServerStorage:WaitForChild('Abilities')
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
@@ -15,22 +14,15 @@ local Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
-
-local abilityRegistry = require(Registries:WaitForChild('AbilityRegistry'))
-local conditionRegistry = require(Registries:WaitForChild('ConditionRegistry'))
-
-local defaultRegistry = require(Registries:WaitForChild('DefaultRegistry'))
-local eventRegistry = require(Registries:WaitForChild('EventRegistry'))
-
-local projectileRegistry = require(Registries:WaitForChild('ProjectileRegistry'))
+local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
-local abilityScopeRegistry = require(Registries:WaitForChild('AbilityScopeRegistry'))
+local BehaviorRegistries = Data:WaitForChild('Registries'):WaitForChild('BehaviorRegistries')
 
-local InjectedRegistries = {
-    abilityRegistry, conditionRegistry,
-    defaultRegistry, eventRegistry,
-    projectileRegistry
-}
+local InjectedRegistries = {}
+
+for i,v in pairs(BehaviorRegistries:GetChildren()) do
+	InjectedRegistries[i] = require(v)
+end
 
 local defaultBehaviorRegistry = Registry.new():Extends(InjectedRegistries)
 local defaultScopeRegistry = Registry.new():Extends({scope_registry = scopeRegistry}) -- placeholder if needed
@@ -49,6 +41,12 @@ end
 local function GetFromCache(name, entityId)
     if not Abilities[entityId] then return nil end
     return Abilities[entityId][name]
+end
+
+local Test = {}
+
+function Test:Execute(structure)
+	abilityParser:Execute(structure, self.Instance)
 end
 
 function AbilityHandler.GetByKeyCode(name, entityId, key)
@@ -70,15 +68,19 @@ function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHand
         require(AbilitesFolder[packName][abilityName])
     )
 
+	print(ability)
     return ability
 end
 
-function AbilityHandler.new(config: {Ability: any, Behavior: any?}) : typeof(AbilityParser)
-    -- create parser-backed ability instance using shared parser factory
-    local ability = abilityParser:Create(config.Ability)
-
-    ability.BehaviorRegistry = Registry.new():Extends({defaultBehaviorRegistry, config.Behavior}) 
-    ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
+function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(AbilityParser)
+	-- create parser-backed ability instance using shared parser factory
+	local ability = AbilityParseObject.new()
+	
+	
+	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
+	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
+	
+	abilityParser:Create(config.Ability, ability)
 
     local createdAbility = setmetatable({
         Instance = ability
@@ -87,7 +89,7 @@ function AbilityHandler.new(config: {Ability: any, Behavior: any?}) : typeof(Abi
             return AbilityHandler[i]
         end
     })
-
+	
     return createdAbility
 end
 
@@ -96,25 +98,23 @@ function AbilityHandler:Build()
 end
 
 function AbilityHandler:OnStart()
-    self.Instance:Execute(
-        {
-            Name = 'Action.TriggerEvent';
-            Config = 
-            {
-                TagName = 'OnStart';
-            }
-        })
+	self.Instance:Execute({
+		Name = 'Action.TriggerEvent';
+		Config = 
+			{
+				TagName = 'OnStart';
+			}
+	})
 end
 
 function AbilityHandler:OnStop()
-    self.Instance:Execute(
-        {
-            Name = 'Action.TriggerEvent';
-            Config = 
-            {
-                TagName = 'OnStop';
-            }
-        })
+	self.Instance:Execute({
+		Name = 'Action.TriggerEvent';
+		Config = 
+			{
+				TagName = 'OnStop';
+			}
+	})
 end
 
 function AbilityHandler.GetAbility(name,entityId)

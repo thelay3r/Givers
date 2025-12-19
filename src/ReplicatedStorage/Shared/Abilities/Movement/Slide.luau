@@ -1,12 +1,22 @@
-return 
-{
-    Name = 'Action.Root';
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Bricks = ReplicatedStorage.Bricksv2
+
+local _Components = Bricks:WaitForChild('Components')
+local Data = Bricks:WaitForChild('Data')
+local _Registries = Data:WaitForChild('Registries')
+local Registry = require(_Components.Registry)
+
+
+local registry = Registry.new()
+
+local ability = {
+Name = 'Action.Root';
     Tag = 'Main';
     Config = 
     {
         Name = 'Slide';
         KeyCode = Enum.KeyCode.LeftControl;
-        CoolDown = .5;
+        CoolDown = 1;
         IsActive = false;
         Duration = 1e10;
     };
@@ -42,9 +52,6 @@ return
                     }
                 };
                 {
-                    Name = 'Abilities.SlideJump';
-                };
-                {
                     Name = 'Abilities.SlideStart';
                     Tag = 'SlideStart';
                     RequestedTags = {['RayResult'] = 'SlideCheck'};
@@ -59,11 +66,15 @@ return
                         MaxSpeed = 256;
                         SpeedModifier = 1;
 
-                        VerticalDecceleration = 25;
-                        HorizontalAcceleration = 15; --25
-                        HorizontalDecceleration = 225;
+                        VerticalDecceleration = 35;
+                        VerticalAcceleration = 15; --25
+                        HorizontalDecceleration = 15;
                         DefaultSpeed = 5;
                     }
+                };
+                {
+                    Name = 'Abilities.SlideJump';
+                    RequestedTags = {['Slide'] = 'SlideStart'};
                 };
                 {
                     Name = 'NetWork.PlayVFX';
@@ -87,17 +98,7 @@ return
                         };
                     };
                 };
-                                {
-                    Name = 'NetWork.PlayVFX';
-                    Config = {
-                        VFXType = 'Slide.Client';
-                        Client = true;
-                        VfxCFG = {
-                            State = 'Test';
-                            Pack = 'Default';
-                        };
-                    };
-                };
+            
             }
 
         }
@@ -128,6 +129,9 @@ return
                 Name = 'Abilities.SlideStop';
             };
             {
+                Name = 'Ability.SetCoolDown';
+            };
+            {
                 Name = 'NetWork.PlayVFX';
                 Config = {
                         VFXType = 'Animations.Slide';
@@ -154,4 +158,9 @@ return
             }
         }
     }
+}
+
+return {
+    Ability = ability;
+    Registry = registry;
 }

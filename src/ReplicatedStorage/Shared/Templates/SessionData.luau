@@ -1,5 +1,4 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RunService = game:GetService('RunService')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilites = Shared:WaitForChild('Utilities')
@@ -18,6 +17,7 @@ local SessionData = {
 	Instances = {};
 	
 	CurrentEquipped = 'none';
+	CurrentInArm = 'none';
 
 	Attributes = 
 		{
@@ -30,14 +30,13 @@ local SessionData = {
 	
 	CharacterData = 
 		{
-			Character = nil :: Model;
-			Humanoid = nil :: Humanoid;
-			HumanoidRootPart = nil :: BasePart;
+			Character = nil :: any & Model;
+			Humanoid = nil :: any & Humanoid;
+			HumanoidRootPart = nil :: any & BasePart;
 		};
 	
 	Equipment = 
 		{
-			Style = 'Fists';
 			Weapon = 'none';
 			Armor = 'none';
 			

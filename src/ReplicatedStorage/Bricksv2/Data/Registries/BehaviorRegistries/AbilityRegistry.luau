@@ -38,6 +38,12 @@ behaviorRegistry:Register('SetCoolDown', function(self, node)
 	node:GetRoot().Config.LastUsed = tick()
 end)
 
+behaviorRegistry:Register('SetRootCoolDown', function(self, node)
+	local Main = self.Tags['Main']
+	print(Main)
+	Main.CoolDown = node.Config.CoolDown
+end)
+
 behaviorRegistry:Register('AbilityDuration', function(self,node)  
 	local startTime = tick()
 	local MainConfig = node.Additional.Main

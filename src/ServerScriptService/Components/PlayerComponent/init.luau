@@ -44,21 +44,22 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 		return PlayerComponent[i]
 	end})
 	self.Instance = _player
-	self.Profile = self:LoadProfile()
-	self.SessionData = self:LoadSession()
+	--self.Profile = self:LoadProfile()
+	--self.SessionData = self:LoadSession()
 	self.SessionData.UserId = self.Instance.UserId
 	
-	self:SetupCharacter()
 	self:LoadReplica()
+	while not self.Replica do
+		task.wait(1/2)
+	end
+	self:SetupCharacter()
+	self:InitVFX()
 	
 	local Character : Model? = self.Instance.Character
 	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
 
 
-	self:AppendPassive("Default", "Test")
 	EntityComponent.AddToList(_Id,self)
-	self:AppendAbility('Default','Equip')
-	print(self)
 	return self :: any --:: PlayerInterfaces.IServerPlayerComponent
 end
 
