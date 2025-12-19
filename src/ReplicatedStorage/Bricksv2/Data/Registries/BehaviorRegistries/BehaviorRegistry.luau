@@ -341,7 +341,7 @@ behaviorRegistry:Register('FeintDash', function(self,node)
 			{
 				VFXType = 'Animations.Dash';
 				Client = true;
-                VfxCFG = {
+                EventData = {
                     State = 'Cancel';
                     Pack = 'Movement';
                 };
@@ -356,7 +356,7 @@ behaviorRegistry:Register('FeintDash', function(self,node)
 			{
 				VFXType = 'Dash.Cancel';
 				Client = true;
-                VfxCFG = {
+                EventData = {
                     State = 'Start';
                     Pack = 'Movement';
                 };

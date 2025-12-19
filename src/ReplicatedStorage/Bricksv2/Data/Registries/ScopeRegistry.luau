@@ -234,7 +234,7 @@ scopeRegistry:Register('Network', function(self, node)
 
         local value = traversePath(self.Tags[fromKey], path)
         node['EventParams'][configKey] = value
-        --node['Config']['VfxCFG'][configKey] = value
+        --node['Config']['EventData'][configKey] = value
     end
 
 	local behavior = self.BehaviorRegistry:Get(node.Name)

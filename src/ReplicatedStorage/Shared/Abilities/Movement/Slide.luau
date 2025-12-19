@@ -81,7 +81,7 @@ Name = 'Action.Root';
                     Config = {
                             VFXType = 'Animations.Slide';
                             Client = true;
-                        VfxCFG = {
+                        EventData = {
                             State = 'Start';
                             Pack = 'Default';
                         };
@@ -92,7 +92,7 @@ Name = 'Action.Root';
                     Config = {
                         VFXType = 'Slide.Client';
                         Client = true;
-                        VfxCFG = {
+                        EventData = {
                             State = 'Start';
                             Pack = 'Default';
                         };
@@ -136,7 +136,7 @@ Name = 'Action.Root';
                 Config = {
                     VFXType = 'Animations.Slide';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Stop';
                         Pack = 'Default';
                     };
@@ -147,7 +147,7 @@ Name = 'Action.Root';
                 Config = {
                     VFXType = 'Slide.Client';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Stop';
                         Pack = 'Default';
                     };

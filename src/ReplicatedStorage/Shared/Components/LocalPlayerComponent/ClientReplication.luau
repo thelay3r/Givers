@@ -55,19 +55,18 @@ local function PreLoadAssets()
 
 end
 
-local function FireVFX(args,...)
-	local splitted = string.split(args.VFXType :: string, '.')
+local function FireVFX(EventData,...)
+	local splitted = string.split(EventData.VFXType :: string, '.')
 	if (#splitted < 2) then return end
 
 	local scope = splitted[1]
 	local name = splitted[2]
 
-	local state = args.VfxCFG['State'] or 'Start'
-	args.VfxCFG['Player'] = (args.Player) or (Players.LocalPlayer)
-	
-	local module = CachedModules[type] and CachedModules[type][name][state]
+	local state = EventData['State'] or 'Start'
+	EventData['Player'] = (EventData.Player) or (Players.LocalPlayer)
+	local module = CachedModules[scope] and CachedModules[scope][name][state]
 	if not module then return end
-	module(args.VfxCFG,...)
+	module(EventData,...)
 end
 
 function ClientReplication:InitClientVFX()

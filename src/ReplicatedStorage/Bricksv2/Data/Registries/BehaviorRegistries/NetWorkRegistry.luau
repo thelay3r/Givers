@@ -58,6 +58,7 @@ NetworkRegistry:Register('PlayBindableEvent', function(self, node)
 	local config = node.Config
 	local eventData = config.EventData
 
+	print(config,'EventBindable')
 	GlobalBindable:BindableFire(config.EventName, eventData)
 end)
 

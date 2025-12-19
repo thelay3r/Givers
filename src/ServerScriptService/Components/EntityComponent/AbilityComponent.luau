@@ -4,7 +4,7 @@ local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInter
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
 
-
+local AbilitesFolder = ReplicatedStorage.Shared:WaitForChild('Abilities')
 
 type IEntity = EntityInterfaces.IEntityComponent & PlayerInterfaces.IServerPlayerComponent
 

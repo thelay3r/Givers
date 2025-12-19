@@ -44,14 +44,14 @@ local ability = {
 					}
 			};
 			{
-				Name = 'Ability.SetAbilityActive';
+				Name = 'Action.SetAbilityActive';
 				Config = 
 					{
 						['Status'] = true;
 					}
 			};
 			{
-				Name = 'Ability.SetStatusEffect';
+				Name = 'Action.SetStatusEffect';
 				Config = 
 					{
 						['Effect'] = 'IsRunning';
@@ -59,18 +59,19 @@ local ability = {
 					}
 			};
 			{
-				Name = 'Ability.SetCoolDown';
+				Name = 'Action.SetCoolDown';
 			};
 			{
 				Name = 'Condition.CheckVault';
 			};
 			{
-				Name = 'NetWork.PlayVFX';
+				Name = 'NetWork.PlayBindableEvent';
 				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
 				Config = {
+					EventName = 'PlayVFX';
 					VFXType = 'Camera.ChangeFOV';
 					Client = true;
-					VfxCFG = {
+					EventData = {
 						Time = .8;
 						FOV = 85;
 						EasingStyle = Enum.EasingStyle.Sine;
@@ -79,29 +80,24 @@ local ability = {
 				},
 			},
 			{
-				Name = 'Network.PlayRemoteEvent';
+				Name = 'Network.PlayBindableEvent';
 				InjectParams = {['Player'] = 'Owner.Instance'};
 				Config = {
-					EventType = '', -- All, One, Close
-					EventName = '',
-
+					EventName = 'PlayVFX',
 					EventData = {
 						VFXType = 'Animations.Run';
-						VFXConfig = {
-							State = 'Start';
-							Pack = 'Default';
-						};
+						State = 'Start';
+						Pack = 'Default';
 					}
-
 				}
 			},
 			{
-				Name = 'NetWork.PlayVFX';
+				Name = 'NetWork.PlayBindableEvent';
 				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
 				Config = {
 					VFXType = 'Camera.Woobling';
 					Client = true;
-					VfxCFG = {
+					EventData = {
 						State = 'Start';
 						Pack = 'Default';
 					};
@@ -116,14 +112,14 @@ local ability = {
 		{
 			Name = 'Condition.IsActive?';
 			{
-				Name = 'Ability.SetAbilityActive';
+				Name = 'Action.SetAbilityActive';
 				Config = 
 					{
 						['Status'] = false;
 					}
 			};
 			{
-				Name = 'Ability.SetStatusEffect';
+				Name = 'Action.SetStatusEffect';
 				Config = 
 					{
 						['Effect'] = 'IsRunning';
@@ -135,12 +131,12 @@ local ability = {
 				RequestedTags = {['Owner'] = 'Owner',['Config'] = 'AcceleratMoveSpeed'};
 			};
 			{
-				Name = 'NetWork.PlayVFX';
+				Name = 'NetWork.PlayBindableEvent';
 				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
 				Config = {
 					VFXType = 'Camera.ChangeFOV';
 					Client = true;
-					VfxCFG = {
+					EventData = {
 						Time = .5;
 						FOV = 70;
 						EasingStyle = Enum.EasingStyle.Sine;
@@ -150,25 +146,24 @@ local ability = {
 				}
 			},
 			{
-				Name = 'NetWork.PlayVFX';
-				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
+				Name = 'Network.PlayBindableEvent';
+				InjectParams = {['Player'] = 'Owner.Instance'};
 				Config = {
-					VFXType = 'Animations.Run';
-					Client = true;
-					VfxCFG = {
+					EventName = 'PlayVFX',
+					EventData = {
+						VFXType = 'Animations.Run';
 						State = 'Stop';
 						Pack = 'Default';
-					};
-
+					}
 				}
 			},
 			{
-				Name = 'NetWork.PlayVFX';
+				Name = 'NetWork.PlayBindableEvent';
 				SendParams = {['Player'] = {From = 'Owner', Path = {'Instance'}}};
 				Config = {
+					EventName = 'PlayVFX';
 					VFXType = 'Camera.Woobling';
-					Client = true;
-					VfxCFG = {
+					EventData = {
 						State = 'Stop';
 						Pack = 'Default';
 					};

@@ -58,7 +58,7 @@ local ability = {
                 {
                     VFXType = 'Animations.Dash';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Start';
                         Pack = 'Default';
                     };
@@ -73,7 +73,7 @@ local ability = {
                 {
                     VFXType = 'Dash.Normal';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Start';
                         Pack = 'Movement';
 
@@ -89,7 +89,7 @@ local ability = {
                 {
                     VFXType = 'Effects.Trail';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Start';
                         Pack = 'Movement';
                         
@@ -108,7 +108,7 @@ local ability = {
                 {
                     VFXType = 'Effects.Trail';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Start';
                         Pack = 'Movement';
                         

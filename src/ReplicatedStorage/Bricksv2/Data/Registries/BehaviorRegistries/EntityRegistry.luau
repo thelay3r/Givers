@@ -44,7 +44,7 @@ EntityRegistry:Register('SwapWeapon', function(self, node)
 		Name = 'NetWork.PlayVFX';
 		Config = {
 			VFXType = 'Fists.Idle';
-			VfxCFG = {
+			EventData = {
 				State = targetToEquip ~= 'none' and 'Equip' or 'Unequip';
 			};
 		}

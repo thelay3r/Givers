@@ -62,7 +62,7 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 			Config = {
 				VFXType = 'Animations.Slide';
 				Client = true;
-				VfxCFG = {
+				EventData = {
 					State = 'Jump';
 					Pack = 'Default';
 
@@ -190,7 +190,7 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 						Config = {
 							VFXType = 'Slide.Client';
 							Client = true;
-							VfxCFG = {
+							EventData = {
 								State = 'Lobo';
 								Pack = 'Default';
 							};

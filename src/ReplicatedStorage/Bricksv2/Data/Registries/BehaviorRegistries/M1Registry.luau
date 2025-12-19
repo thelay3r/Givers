@@ -34,7 +34,7 @@ EntityRegistry:Register('Fist', function(self, node)
 		Config = {
 			Client = true;
 			VFXType = 'Fists.M1';
-			VfxCFG = {
+			EventData = {
 				State = 'OnStart';
 				Combo = Session.StatusEffects.CurrentCombo;
 			}
@@ -52,7 +52,7 @@ EntityRegistry:Register('Spear', function(self, node)
 		Config = {
 			Client = true;
 			VFXType = 'Spear.M1';
-			VfxCFG = {
+			EventData = {
 				State = 'OnStart';
 				Combo = Session.StatusEffects.CurrentCombo;
 			}

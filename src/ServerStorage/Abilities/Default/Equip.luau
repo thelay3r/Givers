@@ -70,7 +70,7 @@ return
                     Config = {
                             VFXType = 'Animations.Slide';
                             Client = true;
-                        VfxCFG = {
+                        EventData = {
                             State = 'Start';
                             Pack = 'Default';
                         };
@@ -81,7 +81,7 @@ return
                     Config = {
                         VFXType = 'Slide.Client';
                         Client = true;
-                        VfxCFG = {
+                        EventData = {
                             State = 'Start';
                             Pack = 'Default';
                         };
@@ -122,7 +122,7 @@ return
                 Config = {
                         VFXType = 'Animations.Slide';
                         Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Stop';
                         Pack = 'Default';
                     };
@@ -133,7 +133,7 @@ return
                 Config = {
                     VFXType = 'Slide.Client';
                     Client = true;
-                    VfxCFG = {
+                    EventData = {
                         State = 'Stop';
                         Pack = 'Default';
                     };
