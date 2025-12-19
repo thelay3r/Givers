@@ -69,7 +69,7 @@ NetworkRegistry:Register('PlayRemoteEvent', function(self, node)
 	local eventType = config.EventType
 	local selectedEvent = config.Event or GlobalEvent
 
-	-- make into enums
+	-- make into enums (One, Close, All)
 	if (eventType == 'One') then -- beautify this thing somehow
 		if (RunService:IsClient()) then return end
 		selectedEvent:Fire(config['Player'], config.EventName, eventData)
