@@ -36,7 +36,13 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 end)
 
 behaviorRegistry:Register('OnStart', function(self,node)
-
+	self:Execute({
+		Name = 'Ability.SetStatusEffect';
+		Config = {
+			Effect = 'ActiveSkill';
+			Status = true;
+		};
+	})
 end)
 
 behaviorRegistry:Register('OnDurationEnd', function(self,node)
@@ -48,6 +54,14 @@ end)
 behaviorRegistry:Register('OnStop', function(self,node)
 	TaskManager:CancelAllThreads(self)
 	TaskManager:CancelAllTasks(self)
+
+	self:Execute({
+		Name = 'Ability.SetStatusEffect';
+		Config = {
+			Effect = 'ActiveSkill';
+			Status = false;
+		};
+	})
 end)
 
 behaviorRegistry:Register('Raycast', function(self,node)

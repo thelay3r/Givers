@@ -27,7 +27,7 @@ end)
 
 behaviorRegistry:Register('SetStatusEffect', function(self,node)
 	local Entity = self.Tags['Owner']
-  	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
+  	local sessionData = (Entity.Replica.Data.Session)
 	local config = node.Config
 	sessionData.StatusEffects[config.Effect] = config.Status
 end)
@@ -79,7 +79,7 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 	end
 
 	newCfg['Ignore']['CoolDown'] = true
-	
+	newCfg['Ignore']['ActiveSkill'] = true
 
 	local startTime = tick()
 	local MainConfig = node.Additional.Main

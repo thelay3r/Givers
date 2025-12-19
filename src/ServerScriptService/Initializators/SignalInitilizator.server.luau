@@ -23,11 +23,6 @@ local ReplicateKeys = Packets.ReplicateKeys
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
-BindableGlobal:Connect('PlayVFX', function()
-	
-	
-	
-end)
 
 ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
@@ -63,7 +58,7 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	print(EntitiesComponent:Get(tostring(UserId)),UserId)
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
-
+	Entity:AppendAbility('Fists','Critical')
 end)
 
 BindableGlobal:Connect('PlayVFX',function(args)

@@ -10,6 +10,7 @@ local TweenService = game:GetService("TweenService")
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local Fists = {}
@@ -88,6 +89,54 @@ Fists['M1'] = {
         Animator:Play(_data)
 
     end,
+}
+
+Fists['Critical'] = {
+    ['Start'] = function(args)
+        local Player = args.Player
+        local Character = Player.Character :: Model
+        local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+
+        local Animator = AnimationsComponent.new(Character) :: AnimationsInterfaces.IAnimationsComponent
+        local NeededPack = Assets:FindFirstChild('Fists'):FindFirstChild('Animations')
+        local Animation = NeededPack:FindFirstChild('Critical')
+
+        local animation,_data = Animator:Load(Animation, {
+                Name = 'Critical';
+                _Name = 'Fists_Critical';
+                Priority = Enum.AnimationPriority.Action2.Name;
+                Settings = {
+                    Speed = 1;
+                    Weight = 1;
+                    FadeTime = .15;
+                }
+            })
+        Animator:Play(_data)
+        
+
+        local Speed = 45
+        local BodyVelocity = AssetsHelper.CreateBodyVelocity({
+            Instance = {
+                Parent = RootPart;
+                Velocity = RootPart.CFrame.LookVector * Speed;
+                MaxForce = Vector3.one * 15000 * Vector3.new(1,0,1);
+                P = 15000;
+
+            };
+            Settings = {
+                DestroyTime = .3;
+            }
+        })
+
+
+        for i=1,30 do 
+            local t = i/30
+            local lerp = BiezeModule.lerp(1,0,t,Enum.EasingStyle.Quad,Enum.EasingDirection.Out) * Speed
+            BodyVelocity.Velocity = RootPart.CFrame.LookVector * lerp
+            task.wait(1/60)
+		end
+
+    end
 }
 
 return Fists
