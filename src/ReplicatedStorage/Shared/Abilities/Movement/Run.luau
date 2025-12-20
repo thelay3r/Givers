@@ -6,17 +6,7 @@ local Data = Bricks:WaitForChild("Data")
 local _Registries = Data:WaitForChild("Registries")
 local Registry = require(_Components.Registry)
 
-Registry:Register("ResumeRun?", function(self, node)
-	local owner = self.Tags["Owner"]
-	local ClientData = owner.ClientData
-	local PressedKeys = ClientData.PressedKeys
-	if not PressedKeys["W"] then
-		return
-	end
 
-	local ability = owner:GetAbility("Run")
-	ability["OnStart"](ability)
-end)
 
 local registry = Registry.new()
 

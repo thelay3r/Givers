@@ -64,19 +64,6 @@ behaviorRegistry:Register('OnStop', function(self,node)
 	})
 end)
 
-behaviorRegistry:Register('Raycast', function(self,node)
-	local cfg = node.Config
-
-	local castData = {
-		Position = cfg.Position;
-		Direction = cfg.Direction;
-		Character = cfg.Character
-	}
-	local cast = AssetsHelper.FastCast(castData)
-
-	node.Config['Cast'] = cast
-	return cast
-end)
 
 behaviorRegistry:Register('TriggerPassive', function(self, node)
 	local info = node.Additional.Main

@@ -25,22 +25,13 @@ behaviorRegistry:Register('SetAbilityActive', function(self, node)
 	node:GetRoot().Config.IsActive = node.Config.Status
 end)
 
-behaviorRegistry:Register('SetStatusEffect', function(self,node)
-	local Entity = self.Tags['Owner']
-  	local sessionData = (Entity.Replica.Data.Session)
-	local config = node.Config
-	sessionData.StatusEffects[config.Effect] = config.Status
-end)
 
-
-
-behaviorRegistry:Register('SetCoolDown', function(self, node)
+behaviorRegistry:Register('SetUsed', function(self, node)
 	node:GetRoot().Config.LastUsed = tick()
 end)
 
 behaviorRegistry:Register('SetRootCoolDown', function(self, node)
 	local Main = self.Tags['Main']
-	print(Main)
 	Main.CoolDown = node.Config.CoolDown
 end)
 

@@ -8,6 +8,7 @@ local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
 local NetWork = Utilities:WaitForChild('NetWork')
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
@@ -23,6 +24,44 @@ local GlobalBindable = Replicator:GetRemote('BindableGlobal')
 local GlobalEvent = Replicator:GetRemote('Global')
 local VFXEvent = Replicator:GetRemote('VFX')
 
+local RemoteMap = {
+	[Enums.EventType.Once] = function(self,node)
+		local config = node.Config
+		local eventData = config.EventData
+
+		local selectedEvent = config.Event or GlobalEvent
+
+		assert(RunService:IsClient() == true,'{PlayRemoteEvent} | invocation allowed only on the server')
+		selectedEvent:Fire(config['Player'], config.EventName, eventData)
+	end;
+	[Enums.EventType.Close] = function(self,node)
+		local Owner = self.Tags['Owner'] 
+		local Instance = Owner.Instance :: Player
+		local Character = Instance.Character
+		local RootPart = Character:FindFirstChild('HumanoidRootPart')
+
+		local config = node.Config
+		local eventData = config.EventData
+
+		local selectedEvent = config.Event or GlobalEvent
+		assert(RunService:IsClient() == true,'{PlayRemoteEvent} | invocation allowed only on the server')
+
+		local position = RootPart.Position or config.RemotePosition
+		selectedEvent:FireInRadius(position, 512, config.EventName, eventData)
+	end;
+	[Enums.EventType.All] = function(self,node)
+		local config = node.Config
+		local eventData = config.EventData
+
+		local selectedEvent = config.Event or GlobalEvent
+
+		if (RunService:IsClient()) then
+			selectedEvent:Fire(config.EventName, eventData)
+		else
+			selectedEvent:FireAll(config.EventName, eventData)
+		end
+	end
+}
 
 NetworkRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
@@ -64,41 +103,14 @@ end)
 
 NetworkRegistry:Register('PlayRemoteEvent', function(self, node)  
 	local config = node.Config
-	local eventData = config.EventData
-
 	local eventType = config.EventType
-	local selectedEvent = config.Event or GlobalEvent
-
-	-- make into enums (One, Close, All)
-	if (eventType == 'One') then -- beautify this thing somehow
-		if (RunService:IsClient()) then return end
-		selectedEvent:Fire(config['Player'], config.EventName, eventData)
-		return
-	end
-
-	if (eventType == 'Close') then
-		if (RunService:IsClient()) then return end
-		local position = config['Player'].Character.PrimaryPart.Position or config.RemotePosition
-		-- refactor this pls ^ (asserts, etc)
-		selectedEvent:FireInRadius(position, 512, config.EventName, eventData)
-		return
-	end
-
-	if (RunService:IsClient()) then
-		selectedEvent:Fire(config.EventName, eventData)
-	else
-		selectedEvent:FireAll(config.EventName, eventData)
-	end
-
+	RemoteMap[eventType](self,node)
 end)
 
 NetworkRegistry:Register('PlayVFX', function(self,node) 
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Character = Entity.Instance.Character
 	local RootPart = Character.PrimaryPart
-
-	
-
 end)
 
 return NetworkRegistry

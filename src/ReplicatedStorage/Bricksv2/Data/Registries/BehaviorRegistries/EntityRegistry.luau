@@ -9,6 +9,7 @@ local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
@@ -23,7 +24,60 @@ EntityRegistry:Register('Root', function(self, node)
     print('New Root Behavior')
 end)
 
+EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
+	local Entity = node.Additional['Owner']
+	if not Entity then return end
+	local config = node.Config
+	local Character = Entity.Instance.Character
 
+	local Speed = SpeedController.new(Character)
+	local targetSpeed = config.BaseSpeed * (config.Acceleration or 1)
+	local updTime = config.AccelerationTime * 60
+		
+	local diff = targetSpeed - config.BaseSpeed
+	local speedPerFrame = diff / (updTime)
+	local percentPerFrame = (speedPerFrame / config.BaseSpeed) * 100
+
+	node.Config['Accelerat'] = task.spawn(function() 
+		for i=1, updTime do
+			Speed:Amplify(
+				{
+					Name = (config.Name) or ('AcceleratMoveSpeed')..Character.Name;
+					Type = 'Buff';
+					Percent = percentPerFrame;
+					InitSpeed = config.BaseSpeed;
+				})
+			task.wait(1/60)
+		end
+		node.Config['Accelerat'] = nil
+	end)
+end)
+
+EntityRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
+	local Entity = node.Additional['Owner']
+	if not Entity then return end
+	local config = node.Additional['Config']
+	local Character = Entity.Instance.Character
+
+	if config['Accelerat'] then
+		task.cancel(config['Accelerat'] )
+		config['Accelerat'] = nil
+	end
+
+	local Speed = SpeedController.new(Character)
+	Speed:Revert(
+		{
+			Name = config.Name or ('AcceleratMoveSpeed')..Character.Name;
+			Recursive = false;
+		})
+end)
+
+EntityRegistry:Register('SetStatusEffect', function(self,node)
+	local Entity = self.Tags['Owner']
+  	local sessionData = (Entity.Replica.Data.Session)
+	local config = node.Config
+	sessionData.StatusEffects[config.Effect] = config.Status
+end)
 
 EntityRegistry:Register('SwapWeapon', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent

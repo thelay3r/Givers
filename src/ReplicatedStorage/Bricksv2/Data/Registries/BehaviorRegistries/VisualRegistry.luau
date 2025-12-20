@@ -31,7 +31,6 @@ VisualRegistry:Register('IdleAnimation', function(self,node)
     local Character = Entity.Instance.Character
     local Animator = AnimationsComponent.new(Character) :: AnimationsInterfaces.IAnimationsComponent
     local cfg = node.Config
-    print(cfg)
     local NeededPack = Assets:FindFirstChild(cfg.PackName):FindFirstChild('Animations')
     local NeededAnimation = NeededPack:FindFirstChild(cfg.Animation)
 
