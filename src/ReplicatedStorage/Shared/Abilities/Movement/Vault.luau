@@ -56,7 +56,7 @@ local ability = {
                         {
                             VFXType = 'Animations.Vault';
                             Client = true;
-                            VfxCFG = {
+                            EventData = {
                                 State = 'Start';
                                 Pack = 'Default';
 

@@ -32,12 +32,12 @@ end
 
 local function _DestroyTable(t)
 
-
 	for name,v in pairs(t) do 
 		if (typeof(v) ~= 'table') or (name == 'Parent') then continue end
 		_DestroyTable(v)
 		v = nil
 	end
+
 	table.clear(t)
 end
 

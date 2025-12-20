@@ -43,11 +43,9 @@ end)
 behaviorRegistry:Register('SlideJump', function(self,node)
 	local owner = self.Tags['Owner']
 
-	
 	local Character = owner.Instance.Character :: Model
 	local Humanoid = Character:FindFirstChildOfClass('Humanoid') :: Humanoid
 	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
-	
 
 	BindableGlobal:Connect('SlideJump', function()
 		BindableGlobal:Disconnect('SlideJump')
@@ -64,7 +62,7 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 			Config = {
 				VFXType = 'Animations.Slide';
 				Client = true;
-				VfxCFG = {
+				EventData = {
 					State = 'Jump';
 					Pack = 'Default';
 
@@ -192,7 +190,7 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 						Config = {
 							VFXType = 'Slide.Client';
 							Client = true;
-							VfxCFG = {
+							EventData = {
 								State = 'Lobo';
 								Pack = 'Default';
 							};

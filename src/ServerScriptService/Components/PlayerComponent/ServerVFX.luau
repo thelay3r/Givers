@@ -25,12 +25,12 @@ local function fireVfx(args,Entity,...)
 	print(args)
 	local _type = splitted[1]
 	local name = splitted[2]
-	local state = args.VfxCFG['State'] or 'Start'
-	args.VfxCFG['Player'] = (args.Player) or Entity
+	local state = args.EventData['State'] or 'Start'
+	args.EventData['Player'] = (args.Player) or Entity
 	local module = CachedModules[_type] and CachedModules[_type][name][state]
 	print(module,CachedModules)
 	if not module then return end
-	module(args.VfxCFG,...)
+	module(args.EventData,...)
 end
 
 function ServerVFX:InitVFX()

@@ -18,13 +18,13 @@ local _Registries = Data:WaitForChild('Registries')
 local Registry = require(Components:WaitForChild('Registry'))
 local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
-local networkRegistry = Registry.new()
+local NetworkRegistry = Registry.new()
 local GlobalBindable = Replicator:GetRemote('BindableGlobal')
 local GlobalEvent = Replicator:GetRemote('Global')
 local VFXEvent = Replicator:GetRemote('VFX')
 
 
-networkRegistry:Register('TriggerEvent', function(self, node) 
+NetworkRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
@@ -39,7 +39,7 @@ networkRegistry:Register('TriggerEvent', function(self, node)
 	if handler then handler(self, selectedBlock) end
 end)
 
-networkRegistry:Register('Feint', function(self,node) 
+NetworkRegistry:Register('Feint', function(self,node) 
 	GlobalBindable:Connect('Feint', function()
 		self:Execute(
 			{
@@ -50,22 +50,55 @@ networkRegistry:Register('Feint', function(self,node)
 	end)
 end)
 
-networkRegistry:Register('UnBindFeint', function(self,node) 
+NetworkRegistry:Register('UnBindFeint', function(self,node) 
 	GlobalBindable:Disconnect('Feint')
 end)
 
-networkRegistry:Register('PlayVFX', function(self,node) 
-	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
-	local Character = Entity.Instance.Character
-	local RootPart = Character.PrimaryPart
+NetworkRegistry:Register('PlayBindableEvent', function(self, node)  
+	local config = node.Config
+	local eventData = config.EventData
 
-	if (RunService:IsServer()) and (not node.Config.Client) then
-		print('alo','tag1')
-		VFXEvent:FireInRadius(RootPart.Position,512,'PlayVFX',node.Config)
+	print(config,'EventBindable')
+	GlobalBindable:BindableFire(config.EventName, eventData)
+end)
+
+NetworkRegistry:Register('PlayRemoteEvent', function(self, node)  
+	local config = node.Config
+	local eventData = config.EventData
+
+	local eventType = config.EventType
+	local selectedEvent = config.Event or GlobalEvent
+
+	-- make into enums (One, Close, All)
+	if (eventType == 'One') then -- beautify this thing somehow
+		if (RunService:IsClient()) then return end
+		selectedEvent:Fire(config['Player'], config.EventName, eventData)
+		return
+	end
+
+	if (eventType == 'Close') then
+		if (RunService:IsClient()) then return end
+		local position = config['Player'].Character.PrimaryPart.Position or config.RemotePosition
+		-- refactor this pls ^ (asserts, etc)
+		selectedEvent:FireInRadius(position, 512, config.EventName, eventData)
+		return
+	end
+
+	if (RunService:IsClient()) then
+		selectedEvent:Fire(config.EventName, eventData)
 	else
-		GlobalBindable:BindableFire('PlayVFX',node.Config)
+		selectedEvent:FireAll(config.EventName, eventData)
 	end
 
 end)
 
-return networkRegistry
+NetworkRegistry:Register('PlayVFX', function(self,node) 
+	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
+	local Character = Entity.Instance.Character
+	local RootPart = Character.PrimaryPart
+
+	
+
+end)
+
+return NetworkRegistry
