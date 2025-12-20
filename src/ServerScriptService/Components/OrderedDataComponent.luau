@@ -24,9 +24,7 @@ end
 local OrderedDataComponent = {}
 
 function OrderedDataComponent:UpdateData()
-	for key, config in pairs(OrderedConstants) do
-		
-	end
+
 end
 
 return OrderedDataComponent

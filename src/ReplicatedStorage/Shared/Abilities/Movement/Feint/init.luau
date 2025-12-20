@@ -42,7 +42,7 @@ return function(Player: PlayerInterfaces.IClientPlayerComponent)
 			Entity = Player;
 			LAUNCH = false;
 			Ability = Ability;
-		}
+		} :: any
 	)
 	
 	local ClientData = Player.ClientData

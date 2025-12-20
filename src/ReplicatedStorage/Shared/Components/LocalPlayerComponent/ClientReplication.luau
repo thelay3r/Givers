@@ -18,55 +18,55 @@ local CachedModules = {}
 local VfxRemote = Replicator:GetRemote('VFX')
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
+local MAX_PACKET_SIZE = 50
+
 local function PreLoadAssets()
 	
-	local Packet = {}
-	local MaxSize = 50
-	
+	local Packet = {}	
 	local counter = 0
-	
 
-		for _, v in pairs(Assets:GetDescendants()) do
-			local shouldAdd = false
-			local assetToAdd = v
+	for _, v in pairs(Assets:GetDescendants()) do
+		local shouldAdd = false
+		local assetToAdd = v
 
-			if v:IsA('Animation') or v:IsA('Decal') or v:IsA('Texture') then
-				shouldAdd = true
-			elseif v:IsA('ParticleEmitter') then
-				shouldAdd = true
-				assetToAdd = v.Texture
-			end
-
-			if shouldAdd then
-				if counter >= MaxSize then
-					ContentProvider:PreloadAsync(Packet)
-					table.clear(Packet)
-					counter = 0
-					task.wait(1/10)
-				end
-				table.insert(Packet, assetToAdd)
-				counter += 1
-			end
+		if v:IsA('Animation') or v:IsA('Decal') or v:IsA('Texture') then
+			shouldAdd = true
+		elseif v:IsA('ParticleEmitter') then
+			shouldAdd = true
+			assetToAdd = v.Texture
 		end
 
-		if #Packet > 0 then
+		if (not shouldAdd) then continue end
+
+		if counter >= MAX_PACKET_SIZE then
 			ContentProvider:PreloadAsync(Packet)
+			table.clear(Packet)
+			counter = 0
+			task.wait(1/10)
 		end
 
-	
+		table.insert(Packet, assetToAdd)
+		counter += 1
+	end
+
+	if #Packet > 0 then
+		ContentProvider:PreloadAsync(Packet)
+	end
+
 end
 
-local function fireVfx(args,...)
-	local splitted = string.split(args.VFXType :: string, '.')
-	if #splitted < 2 then return end
-	print(args)
-	local type = splitted[1]
+local function FireVFX(EventData,...)
+	local splitted = string.split(EventData.VFXType :: string, '.')
+	if (#splitted < 2) then return end
+
+	local scope = splitted[1]
 	local name = splitted[2]
-	local state = args.VfxCFG['State'] or 'Start'
-	args.VfxCFG['Player'] = (args.Player) or (Players.LocalPlayer)
-	local module = CachedModules[type] and CachedModules[type][name][state]
+
+	local state = EventData['State'] or 'Start'
+	EventData['Player'] = (EventData.Player) or (Players.LocalPlayer)
+	local module = CachedModules[scope] and CachedModules[scope][name][state]
 	if not module then return end
-	module(args.VfxCFG,...)
+	module(EventData,...)
 end
 
 function ClientReplication:InitClientVFX()
@@ -79,11 +79,12 @@ function ClientReplication:InitClientVFX()
 		end
 	end
 	
-	VfxRemote:Connect('VFX',function(arg,...)
-		fireVfx(arg)
+	VfxRemote:Connect('PlayVFX',function(arg,...)
+		FireVFX(arg)
 	end)
+	
 	BindableGlobal:Connect('PlayVFX',function(arg,...)
-		fireVfx(arg)
+		FireVFX(arg)
 	end)
 end
 

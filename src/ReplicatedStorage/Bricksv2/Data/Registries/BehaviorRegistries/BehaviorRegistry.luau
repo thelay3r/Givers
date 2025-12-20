@@ -7,6 +7,9 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
 local NetWork = Utilities:WaitForChild('NetWork')
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local SpeedComponent = require(UtilModules:WaitForChild('SpeedController'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 
@@ -17,11 +20,14 @@ local _Registries = Data:WaitForChild('Registries')
 local Registry = require(Components:WaitForChild('Registry'))
 local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
-local networkRegistry = Registry.new()
+local behaviorRegistry = Registry.new()
 local GlobalBindable = Replicator:GetRemote('BindableGlobal')
 local GlobalEvent = Replicator:GetRemote('Global')
 
-networkRegistry:Register('TriggerEvent', function(self, node) 
+
+
+
+behaviorRegistry:Register('TriggerEvent', function(self, node) 
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
@@ -29,34 +35,47 @@ networkRegistry:Register('TriggerEvent', function(self, node)
 	
 	selectedBlock.TriggerArgs = node.Config
 
-	--selectedBlock.Config = node.Config
 
 	self.Tags[node.Config.TagName] = node.Config
 
 	if handler then handler(self, selectedBlock) end
+
 end)
 
-networkRegistry:Register('Feint', function(self,node) 
-	GlobalBindable:Connect('Feint', function()
-		self:Execute(
+
+behaviorRegistry:Register('Wait', function(self, node)  
+	task.wait(node.Config.Wait)
+end)
+
+
+behaviorRegistry:Register('Raycast', function(self,node)
+	local config = node.Config
+
+	local castData = {
+		Position = config.Position;
+		Direction = config.Direction;
+		Character = config.Character
+	}
+	local cast = AssetsHelper.FastCast(castData)
+
+	node.Config['Cast'] = cast
+	return cast
+end)
+
+
+behaviorRegistry:Register('TriggerPassive', function(self, node)
+	local info = node.Additional.Main
+	
+	for _, passive in pairs(info.Passives) do
+		passive:Execute(
 			{
-				Name = 'Action.FeintDash';
-				RequestedTags = {['BodyVelocity'] = 'BodyVelocityDash'};
+				Name = 'Action.TriggerEvent',
+				Config = {
+					Projectile = node.Additional.Projectile,
+					TagName = node.Config.PassiveEvent
+				}
 			})
-		GlobalBindable:Disconnect('Feint')
-	end)
-end)
-
-networkRegistry:Register('UnBindFeint', function(self,node) 
-	GlobalBindable:Disconnect('Feint')
-end)
-
-networkRegistry:Register('PlayVFX', function(self,node) 
-	if (RunService:IsClient()) and (not node.Config.Client) then
-		GlobalEvent:Fire('PlayVFX',node.Config)
-	else
-		GlobalBindable:BindableFire('PlayVFX',node.Config)
 	end
 end)
 
-return networkRegistry
+return behaviorRegistry

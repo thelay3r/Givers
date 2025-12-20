@@ -11,6 +11,7 @@ local BlackList =
 		'Stun';
 		'IsVaulting';
 		'IsSliding';
+		'ActiveSkill';
 	}
 
 return BlackList

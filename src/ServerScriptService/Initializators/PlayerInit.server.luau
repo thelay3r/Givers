@@ -35,10 +35,14 @@ Players.PlayerAdded:Connect(function(player: Player)
 	task.wait(3)
 
 	local PlayerComponent = PlayerService:CreateComponent(player)
-	
-	PlayerComponent.SessionData.Equipment = table.clone(PlayerComponent.Profile.Data.Equipment)
+	local Data = PlayerComponent.Replica.Data
+	local Session = Data.Session
+	local Profile = Data.Profile
+	Session.Equipment = table.clone(Profile.Data.Equipment)
 	EntitiesStorage:Add(PlayerComponent)
-	PlayerComponent.SessionData.Settings.Loaded = true
+	Session.Settings.Loaded = true
+
+
 end)
 
 Players.PlayerRemoving:Connect(function(player: Player)

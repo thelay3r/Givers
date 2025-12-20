@@ -15,12 +15,14 @@ local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 local EntitiesComponent = require(ServerComponents:WaitForChild('EntitiesStorage'))
+local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 
 
 local Ability = Packets.Ability
 local ReplicateKeys = Packets.ReplicateKeys
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
+
 
 ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
@@ -38,7 +40,7 @@ end)
 
 
 Ability.OnServerEvent:Connect(function(Player, args)
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
+	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 
 	print(args)
@@ -52,8 +54,11 @@ end)
 
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	
+	local Entity = EntitiesComponent:Get(UserId) :: EntityInterfaces.IEntityComponent
+	print(EntitiesComponent:Get(tostring(UserId)),UserId)
+	Entity:AppendAbility('Default','Equip')
+	Entity:AppendAbility('Fists','M1')
+	Entity:AppendAbility('Fists','Critical')
 end)
 
 BindableGlobal:Connect('PlayVFX',function(args)

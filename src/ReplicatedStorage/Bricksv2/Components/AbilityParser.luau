@@ -3,31 +3,33 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Components = Bricks:WaitForChild('Components')
 
+local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
 local Registry = require(Components:WaitForChild('Registry'))
 local TreeNode = require(Components:WaitForChild('TreeNode'))
 local Parser = require(Components:WaitForChild('Parser'))
-
 
 local AbilityParser = {}
 AbilityParser.__index = AbilityParser
 setmetatable(AbilityParser, { __index = Parser })
 
+type IAbilityParser = typeof(AbilityParseObject.new())
+
+
 function AbilityParser.new()
 	local self = setmetatable(Parser.new(), AbilityParser)
-	self.BehaviorRegistry = Registry.new()
-
 	return self
 end
 
-function AbilityParser:TransferIntoNodes(structure: any)
+function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(AbilityParseObject.new()))
 	local children = {}
-
+	
+	if not structure.Name then return end
 	local splitted = string.split(structure.Name :: string, '.')
 	if (#splitted < 2) then return end
 
 	for key, child in pairs(structure) do
 		if (typeof(key) ~= 'number') then continue end
-		local childNode = self:TransferIntoNodes(child, key)
+		local childNode = self:TransferIntoNodes(child, parent)
 		table.insert(children, childNode)
 	end
 
@@ -41,61 +43,33 @@ function AbilityParser:TransferIntoNodes(structure: any)
 		sendParams = structure.SendParams, 
 	})
 
-
-	local scope = self.ScopeRegistry:Get(splitted[1])
+	local scope = parent.ScopeRegistry:Get(splitted[1])
 
 	rootNode.InjectedCallback = function()
 		if (not scope) then return end
-		return scope(self, rootNode)
+		return scope(parent, rootNode)
 	end
 
 	return rootNode
 end
 
-function AbilityParser:Execute(structure: any)
-	local block = self:TransferIntoNodes(structure)
-	return block:Execute()
+function AbilityParser:Execute(structure: any, parent: IAbilityParser)
+	local tree = AbilityParser:TransferIntoNodes(structure, (parent) or (self))
+	return tree:Execute()
 end
 
-function AbilityParser:Create(structure: any)
-	self.Tree = self:TransferIntoNodes(structure)
-	return self
-end
-
-function AbilityParser:Build()
-	return self.Tree:Execute()
-end
-
-local function _DestroyTree(childrens)
-	if not childrens then return end
-	for _,children in childrens do 
-		_DestroyTree(children.Children)
-		children:Destroy()
-	end
-end
-
-function AbilityParser:Destroy()
-	_DestroyTree(self.Tree.Children)
-	self.Tree:Destroy()
-
-	for name,v in pairs(self.ScopeRegistry.callbacks) do 
-		self.ScopeRegistry.callbacks[name] = nil
-	end
-	for name,v in pairs(self.Tags) do 
-		table.clear(v)
-	end
+function AbilityParser:Create(structure: any, parent: IAbilityParser)
+	--local block = AbilityParseObject.new()
+	print(parent, 'tag1')
+	local oldMetaTable = getmetatable(parent)
+	setmetatable(parent, {
+		__index = function(t, i)
+			return AbilityParser[i] or oldMetaTable[i]
+		end,
+	})
 	
-	table.clear(self.ScopeRegistry)
-	table.clear(self.Events)
-	table.clear(self.BehaviorRegistry)
-
-	self.Events = nil
-	self.ScopeRegistry.callbacks = nil
-	self.ScopeRegistry = nil
-	self.BehaviorRegistry = nil
-	self.Tags = nil
-	self.Tree = nil
-	
+	parent.Tree = self:TransferIntoNodes(structure,parent)
+	return parent
 end
 
 return AbilityParser

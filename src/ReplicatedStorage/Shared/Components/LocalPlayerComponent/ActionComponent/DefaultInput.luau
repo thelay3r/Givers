@@ -96,7 +96,8 @@ return {
 
 			Enum.UserInputType.MouseButton1,
 			Enum.KeyCode.E,
-			Enum.KeyCode.F
+			Enum.KeyCode.R,
+			Enum.KeyCode.F,
 			},
 		States = {Enum.UserInputState.Begin, Enum.UserInputState.End};
 		Additional = {};

@@ -36,7 +36,13 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 end)
 
 behaviorRegistry:Register('OnStart', function(self,node)
-
+	self:Execute({
+		Name = 'Ability.SetStatusEffect';
+		Config = {
+			Effect = 'ActiveSkill';
+			Status = true;
+		};
+	})
 end)
 
 behaviorRegistry:Register('OnDurationEnd', function(self,node)
@@ -48,21 +54,16 @@ end)
 behaviorRegistry:Register('OnStop', function(self,node)
 	TaskManager:CancelAllThreads(self)
 	TaskManager:CancelAllTasks(self)
+
+	self:Execute({
+		Name = 'Ability.SetStatusEffect';
+		Config = {
+			Effect = 'ActiveSkill';
+			Status = false;
+		};
+	})
 end)
 
-behaviorRegistry:Register('Raycast', function(self,node)
-	local cfg = node.Config
-
-	local castData = {
-		Position = cfg.Position;
-		Direction = cfg.Direction;
-		Character = cfg.Character
-	}
-	local cast = AssetsHelper.FastCast(castData)
-
-	node.Config['Cast'] = cast
-	return cast
-end)
 
 behaviorRegistry:Register('TriggerPassive', function(self, node)
 	local info = node.Additional.Main
