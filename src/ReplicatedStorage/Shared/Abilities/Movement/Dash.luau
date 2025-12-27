@@ -4,11 +4,14 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local _Registries = Data:WaitForChild('Registries')
-local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local Registry = require(_Components.Registry)
 
 local registry = Registry.new()
 
+registry.Inject = {
+    'Dash',
+}
 
 
 local ability = {
@@ -34,8 +37,8 @@ local ability = {
                 {
                     ['Status'] = true;
                 };
-
-                {
+            };
+                            {
                     Name = 'Action.AbilityDuration';
                     RequestedTags = {['Main'] = 'Main'};
                     Config = {};
@@ -153,7 +156,6 @@ local ability = {
             };
             {
                 Name = 'NetWork.Feint';
-            }
             };
         };
         {
