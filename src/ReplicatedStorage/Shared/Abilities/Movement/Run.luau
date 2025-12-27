@@ -59,7 +59,7 @@ local ability = {
 				},
 			},
 			{
-				Name = "Action.SetCoolDown",
+				Name = "Action.SetUsed",
 			},
 			{
 				Name = "Condition.CheckVault",

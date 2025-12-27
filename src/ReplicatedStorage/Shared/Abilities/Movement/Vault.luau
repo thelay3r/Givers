@@ -45,7 +45,7 @@ local ability = {
                             };
                     },
                     {
-                        Name = 'Action.SetCoolDown';
+                        Name = 'Action.SetUsed';
                     };
                     {
                         Name = 'Action.Vaulting';

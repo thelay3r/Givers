@@ -39,7 +39,7 @@ end)
 
 
 
-Action.OnServerEvent:Connect(function(Player, args)
+Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 

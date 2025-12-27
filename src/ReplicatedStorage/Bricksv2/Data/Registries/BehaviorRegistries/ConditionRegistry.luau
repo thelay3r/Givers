@@ -190,6 +190,7 @@ conditionRegisrty:Register('CheckBlackList', function(self,node)
 			},
 		})
 
+	print(CoolDown,Status)
 	return if (CoolDown and Status) then true else false
 end)
 

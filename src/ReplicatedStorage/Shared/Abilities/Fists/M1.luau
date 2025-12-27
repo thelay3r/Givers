@@ -33,7 +33,7 @@ local ability = {
 				Name = 'Condition.CheckBlackList';
 				{
 					{
-						Name = 'Action.SetCoolDown';
+						Name = 'Action.SetUsed';
 					};
 					Name = 'Combat.Combo';
 					Config = {

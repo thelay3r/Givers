@@ -47,7 +47,7 @@ local ability = {
                 RequestedTags = {['Owner'] = 'Owner'};
             };
             {
-                Name = 'Action.SetCoolDown';
+                Name = 'Action.SetUsed';
             };
             {
                 Name = 'NetWork.PlayVFX';

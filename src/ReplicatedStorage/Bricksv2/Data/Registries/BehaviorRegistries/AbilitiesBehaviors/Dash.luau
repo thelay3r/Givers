@@ -93,7 +93,6 @@ registry:Register('FeintDash', function(self,node)
 end)
 
 registry:Register('GetDashDirection', function(self,node) 
-
 	local Entity = node.Additional['Owner']
 	if not Entity then return end
 

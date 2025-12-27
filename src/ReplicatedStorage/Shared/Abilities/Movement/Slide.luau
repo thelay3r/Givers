@@ -127,7 +127,7 @@ local ability = {
 				Name = "Abilities.SlideStop",
 			},
 			{
-				Name = "Action.SetCoolDown",
+				Name = "Action.SetUsed",
 			},
 			{
 				Name = "NetWork.PlayVFX",
