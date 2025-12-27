@@ -41,13 +41,13 @@ local ability = {
 					Range = -5,
 				},
 				{
-					Name = "Ability.SetAbilityActive",
+					Name = "Action.SetAbilityActive",
 					Config = {
 						["Status"] = true,
 					},
 				},
 				{
-					Name = "Ability.SetStatusEffect",
+					Name = "Action.SetStatusEffect",
 					Config = {
 						["Effect"] = "IsSliding",
 						["Status"] = true,
@@ -110,13 +110,13 @@ local ability = {
 			Name = "Condition.IsActive?",
 			RequestedTags = { ["Ability"] = "Main" },
 			{
-				Name = "Ability.SetAbilityActive",
+				Name = "Action.SetAbilityActive",
 				Config = {
 					["Status"] = false,
 				},
 			},
 			{
-				Name = "Ability.SetStatusEffect",
+				Name = "Action.SetStatusEffect",
 				Config = {
 					["Effect"] = "IsSliding",
 					["Status"] = false,
@@ -127,7 +127,7 @@ local ability = {
 				Name = "Abilities.SlideStop",
 			},
 			{
-				Name = "Ability.SetCoolDown",
+				Name = "Action.SetCoolDown",
 			},
 			{
 				Name = "NetWork.PlayVFX",

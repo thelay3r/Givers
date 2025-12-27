@@ -27,14 +27,14 @@ return
                     Vector = 'UpVector';
                     Range = -5;
                 };
-                {   Name = 'Ability.SetAbilityActive';
+                {   Name = 'Action.SetAbilityActive';
                     Config = 
                     {
                         ['Status'] = true;
                     }
                 };
                 {
-                    Name = 'Ability.SetStatusEffect';
+                    Name = 'Action.SetStatusEffect';
                     Config = 
                     {
                         ['Effect'] = 'IsSliding';
@@ -99,14 +99,14 @@ return
             Name = 'Condition.IsActive?';
             RequestedTags = {['Ability'] = 'Main'};
             {
-                Name = 'Ability.SetAbilityActive';
+                Name = 'Action.SetAbilityActive';
                 Config = 
                 {
                     ['Status'] = false;
                 }
             };
             {
-                Name = 'Ability.SetStatusEffect';
+                Name = 'Action.SetStatusEffect';
                 Config = 
                 {
                     ['Effect'] = 'IsSliding';

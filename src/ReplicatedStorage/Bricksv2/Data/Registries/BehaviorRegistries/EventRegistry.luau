@@ -37,7 +37,7 @@ end)
 
 behaviorRegistry:Register('OnStart', function(self,node)
 	self:Execute({
-		Name = 'Ability.SetStatusEffect';
+		Name = 'Action.SetStatusEffect';
 		Config = {
 			Effect = 'ActiveSkill';
 			Status = true;
@@ -56,7 +56,7 @@ behaviorRegistry:Register('OnStop', function(self,node)
 	TaskManager:CancelAllTasks(self)
 
 	self:Execute({
-		Name = 'Ability.SetStatusEffect';
+		Name = 'Action.SetStatusEffect';
 		Config = {
 			Effect = 'ActiveSkill';
 			Status = false;

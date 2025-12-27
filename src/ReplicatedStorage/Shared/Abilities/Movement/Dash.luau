@@ -29,14 +29,14 @@ local ability = {
         {
             Name = 'Condition.CheckBlackList';
             {
-                Name = 'Ability.SetAbilityActive';
+                Name = 'Action.SetAbilityActive';
                 Config = 
                 {
                     ['Status'] = true;
                 };
 
                 {
-                    Name = 'Ability.AbilityDuration';
+                    Name = 'Action.AbilityDuration';
                     RequestedTags = {['Main'] = 'Main'};
                     Config = {};
                 };
@@ -47,7 +47,7 @@ local ability = {
                 RequestedTags = {['Owner'] = 'Owner'};
             };
             {
-                Name = 'Ability.SetCoolDown';
+                Name = 'Action.SetCoolDown';
             };
             {
                 Name = 'NetWork.PlayVFX';
@@ -163,7 +163,7 @@ local ability = {
                 Name = 'Condition.IsActive?';
                 RequestedTags = {['Ability'] = 'Main'};
                 {
-                    Name = 'Ability.SetAbilityActive';
+                    Name = 'Action.SetAbilityActive';
                     Config = 
                     {
                         ['Status'] = false;

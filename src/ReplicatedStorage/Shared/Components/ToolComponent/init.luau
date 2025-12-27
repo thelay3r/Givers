@@ -35,13 +35,13 @@ function ToolComponent.new(self: Tool, _Player)
 			if self.Config.Type == 'Ability' then
 				local Ability = Player.ClientData[self.Config.Storage][self.Config.Scope][self.Config.Name]
 				
-				if (Ability.LastUsed - os.clock()) >= Ability.Cooldown then print(Ability.LastUsed - os.clock()) return end
+				if (Action.LastUsed - os.clock()) >= Action.Cooldown then print(Action.LastUsed - os.clock()) return end
 				
 				self.Activated = true
-				Ability.LastUsed = os.clock()
+				Action.LastUsed = os.clock()
 				
 				self.Threads['Duration'] = RunService.Heartbeat:Connect(function()
-					if (os.clock() - Ability.LastUsed) >= Ability.Duration then 
+					if (os.clock() - Action.LastUsed) >= Action.Duration then 
 						self.Activated = false
 						if self.Threads['Duration'] then
 							self.Threads['Duration']:Disconnect()
@@ -59,8 +59,8 @@ function ToolComponent.new(self: Tool, _Player)
 			self.Equipped = false
 			if self.Config.Type == 'Ability' then
 				local Ability = Player.ClientData[self.Config.Storage][self.Config.Scope][self.Config.Name]
-				if os.clock() - Ability.LastUsed < Ability.MinDuration then
-					task.delay(Ability.LastUsed + Ability.MinDuration - os.clock(), function()
+				if os.clock() - Action.LastUsed < Action.MinDuration then
+					task.delay(Action.LastUsed + Action.MinDuration - os.clock(), function()
 						self.Activated = false
 					end)
 				end

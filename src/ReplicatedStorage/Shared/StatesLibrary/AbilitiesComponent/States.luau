@@ -34,27 +34,27 @@ States.Abilities = {
 		end
 
 		if not Additional.IgnoreUsed then
-			if Ability.IsActive then return end
+			if Action.IsActive then return end
 		end
 
 		if not Additional.Bypass then
-			if Ability:CheckBlacklist(Ability.Blacklist, Additional) then return end
+			if Ability:CheckBlacklist(Action.Blacklist, Additional) then return end
 		end
 
 		if self.args.Method == 'OnSpecialStart' then
-			Ability.Functions.StartStatus = Ability.Functions.SpecialStart()
+			Action.Functions.StartStatus = Action.Functions.SpecialStart()
 		else
-			Ability.Functions.StartStatus = Ability.Functions.Start()
+			Action.Functions.StartStatus = Action.Functions.Start()
 		end
 		
 		Ability:SetAbility('IsActive', true)
 
 		Ability:SetAbility('StartTime', os.clock())
 
-		TaskManager:CreateThread(Ability, Ability.Name..'OnStart', RunService.Heartbeat:Connect(function()
-			if (os.clock() - Ability.StartTime) >= Ability.Duration and Ability.IsActive then
+		TaskManager:CreateThread(Ability, Action.Name..'OnStart', RunService.Heartbeat:Connect(function()
+			if (os.clock() - Action.StartTime) >= Action.Duration and Action.IsActive then
 				Ability:OnStop()
-				TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
+				TaskManager.CancelThread(Ability, Action.Name..'OnStart')
 				return
 			end
 		end))
@@ -75,35 +75,35 @@ States.Abilities = {
 			Additional = table.clone(Template)
 		end
 
-		if Ability.IsActive then
+		if Action.IsActive then
 			Additional.CheckCD = false
 		end
 
 		if not Additional.Bypass then
-			if Ability:CheckBlacklist(Ability.Blacklist, Additional) then return end
+			if Ability:CheckBlacklist(Action.Blacklist, Additional) then return end
 		end
 
-		if not Ability.IsActive then
+		if not Action.IsActive then
 			
 			if self.args.Method == 'OnSpecialStart' then
-				Ability.Functions.StartStatus = Ability.Functions.SpecialStart()
+				Action.Functions.StartStatus = Action.Functions.SpecialStart()
 			else
-				Ability.Functions.StartStatus = Ability.Functions.Start()
+				Action.Functions.StartStatus = Action.Functions.Start()
 			end
 			
 			Ability:SetAbility('StartTime', os.clock())
 		end
 
-		if (Ability.StartTime + Ability.MinDuration) <= os.clock() then
+		if (Action.StartTime + Action.MinDuration) <= os.clock() then
 			Ability:OnStop()
-			TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
+			TaskManager.CancelThread(Ability, Action.Name..'OnStart')
 			return
 		end
 
-		TaskManager:CreateThread(Ability, Ability.Name..'OnStart', RunService.Heartbeat:Connect(function()
-			if (os.clock() - Ability.StartTime) >= Ability.Duration and Ability.IsActive then
+		TaskManager:CreateThread(Ability, Action.Name..'OnStart', RunService.Heartbeat:Connect(function()
+			if (os.clock() - Action.StartTime) >= Action.Duration and Action.IsActive then
 				Ability:OnStop()
-				TaskManager.CancelThread(Ability, Ability.Name..'OnStart')
+				TaskManager.CancelThread(Ability, Action.Name..'OnStart')
 				return
 			end
 		end))

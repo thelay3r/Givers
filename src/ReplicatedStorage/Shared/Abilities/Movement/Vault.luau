@@ -38,14 +38,14 @@ local ability = {
                         Range = 5;
                     };
                     {
-                        Name = 'Ability.SetAbilityActive';
+                        Name = 'Action.SetAbilityActive';
                         Config = 
                             {
                                 ['Status'] = true;
                             };
                     },
                     {
-                        Name = 'Ability.SetCoolDown';
+                        Name = 'Action.SetCoolDown';
                     };
                     {
                         Name = 'Action.Vaulting';
@@ -66,7 +66,7 @@ local ability = {
                     
                 };
                 {
-                        Name = 'Ability.SetStatusEffect';
+                        Name = 'Action.SetStatusEffect';
                         Config = 
                         {
                             ['Effect'] = 'IsVaulting';
@@ -85,14 +85,14 @@ local ability = {
                 Name = 'Condition.IsActive?';
                 RequestedTags = {['Ability'] = 'Main'};
                 {
-                    Name = 'Ability.SetAbilityActive';
+                    Name = 'Action.SetAbilityActive';
                     Config = 
                     {
                         ['Status'] = false;
                     }
                 };
                 {
-                    Name = 'Ability.SetStatusEffect';
+                    Name = 'Action.SetStatusEffect';
                     Config = 
                     {
                         ['Effect'] = 'IsVaulting';

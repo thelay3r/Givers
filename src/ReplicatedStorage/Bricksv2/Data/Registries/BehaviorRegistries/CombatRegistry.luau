@@ -64,7 +64,7 @@ EntityRegistry:Register('Combo', function(self, node)
     if Session.StatusEffects.CurrentCombo >= 4 then 
         Session.StatusEffects.CurrentCombo = 0 
         self:Execute({
-            Name = 'Ability.SetRootCoolDown';
+            Name = 'Action.SetRootCoolDown';
             Config = {
                 CoolDown = 2;
             }
@@ -72,7 +72,7 @@ EntityRegistry:Register('Combo', function(self, node)
 
         TaskManager:CreateTask(Entity, 'ClickCoolDown', 2, function()  
             self:Execute({
-                Name = 'Ability.SetRootCoolDown';
+                Name = 'Action.SetRootCoolDown';
                 Config = {
                     CoolDown = .5;
                 }

@@ -18,7 +18,7 @@ Behaviors.Abilities = {
 		check = function(self: StatesInterfaces.IStatesComponent)
 			local Ability: AbilityInterfaces.IAbilityComponent = self.args.Ability
 
-			if Ability.Config.Type == 'Toggle' then
+			if Action.Config.Type == 'Toggle' then
 				return true
 			else
 				return false
