@@ -16,11 +16,15 @@ local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
+local _RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local BehaviorRegistries = Data:WaitForChild('Registries'):WaitForChild('BehaviorRegistries')
+
+
 
 local InjectedRegistries = {}
 
 for i,v in pairs(BehaviorRegistries:GetChildren()) do
+    if not v:IsA('ModuleScript') then continue end
 	InjectedRegistries[i] = require(v)
 end
 

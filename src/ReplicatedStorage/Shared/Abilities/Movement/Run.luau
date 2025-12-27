@@ -14,6 +14,10 @@ registry:Register("Root", function()
 	print("tag10")
 end)
 
+registry.Inject = {
+	"Vault",
+}
+
 local ability = {
 	Name = "Action.Root",
 	Tag = "Main",
