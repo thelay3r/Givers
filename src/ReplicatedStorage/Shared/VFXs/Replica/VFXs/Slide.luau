@@ -41,14 +41,14 @@ Effects['Client'] =
             end 
         end)
     end;
-    ['Test'] = function(args)
+    ['SlideVFX'] = function(args)
         local Player = args.Player
         if not Player then return end
         local Character = Player.Character :: Model 
         if not Character then return end
         local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
         if not RootPart then return end
-        local test = script:WaitForChild('Test'):Clone() :: Model
+        local test = script:WaitForChild('WindBeamSnipe'):Clone() :: Model
         
         local weld = Instance.new('WeldConstraint')
         weld.Part0 = RootPart

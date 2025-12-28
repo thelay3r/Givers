@@ -36,7 +36,6 @@ function Component.AppendAbility(self: IEntity,pack: string,name: string)
 
     if (not Abilities[UserId]) then Abilities[UserId] = {} end
     Abilities[UserId][name] = ability
-    print(ability)
     return 
 end
 

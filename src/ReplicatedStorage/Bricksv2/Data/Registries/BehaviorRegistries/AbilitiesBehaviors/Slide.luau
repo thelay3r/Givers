@@ -25,7 +25,6 @@ registry:Register("SlideStop", function(self, node)
 	SlideTag.BodyVelocity:Destroy()
 	SlideTag.BodyGyro:Destroy()
 
-	print(self)
 end)
 
 registry:Register("SlideJump", function(self, node)
@@ -74,6 +73,7 @@ end)
 registry:Register("SlideStart", function(self, node)
 	local owner = self.Tags["Owner"]
 	local config = node.Config
+
 
 	local Character = owner.Instance.Character :: Model
 	local Humanoid = Character:FindFirstChildOfClass("Humanoid") :: Humanoid
@@ -165,7 +165,7 @@ registry:Register("SlideStart", function(self, node)
 				--[[
 				if speedMod > 15 then
 					self:Execute({
-						Name = 'NetWork.PlayVFX';
+						Name = 'Network.PlayVFX';
 						Config = {
 							VFXType = 'Slide.Client';
 							Client = true;

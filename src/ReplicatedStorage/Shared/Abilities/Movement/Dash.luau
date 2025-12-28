@@ -23,7 +23,8 @@ local ability = {
         KeyCode = Enum.KeyCode.Q;
         CoolDown = 1.75;
         IsActive = false;
-        Duration = .35;
+        Duration = 1;
+        MinDuration = 1;
     };
 
     {
@@ -35,16 +36,23 @@ local ability = {
                 Name = 'Action.SetAbilityActive';
                 Config = 
                 {
-                    ['Status'] = true;
+                    Status = true;
                 };
             };
+            {
+                Name = 'Action.SetUsed';
+            };
+            {
+				Name = 'Action.SetStatusEffect';
+				Config = {
+					Effect = 'ActiveSkill';
+					Status = true;
+				};
+			};
             {
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
-            };
-            {
-                Name = 'Action.SetUsed';
             };
             {
                 Name = 'Network.PlayBindableEvent';
@@ -145,11 +153,20 @@ local ability = {
                 Name = 'Condition.IsActive?';
                 RequestedTags = {['Ability'] = 'Main'};
                 {
-                    Name = 'Action.SetAbilityActive';
-                    Config = 
+                    Name = 'Condition.DurationElapsed';
                     {
-                        ['Status'] = false;
-                    }
+                        Name = 'Action.SetStatusEffect';
+                        Config = {
+                            Effect = 'ActiveSkill';
+                            Status = false;
+                        };
+                    };
+                    {
+                        Name = 'Action.SetAbilityActive';
+                        Config = {
+                            Status = false;
+                        };
+                    };
                 };
             },
         },

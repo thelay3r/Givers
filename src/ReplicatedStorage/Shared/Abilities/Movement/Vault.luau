@@ -24,6 +24,7 @@ local ability = {
             CoolDown = .5;
             IsActive = false;
             Duration = .4;
+            MinDuration = .4;
         };
         {
             Name = 'Event.OnStart';

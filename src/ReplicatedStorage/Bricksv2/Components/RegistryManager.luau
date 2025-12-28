@@ -27,7 +27,6 @@ function RegistryManager:InjectRegistry(registry)
     for i2, v2 in (registry['Inject']) do
         if Registries[v2] then table.insert(Registry, Registries[v2]) end
     end
-    print(Registry,'TagTut')
     registry:Extends(Registry)
 end
 

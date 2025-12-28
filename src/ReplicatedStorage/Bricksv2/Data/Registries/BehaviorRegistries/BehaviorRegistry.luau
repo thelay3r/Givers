@@ -26,29 +26,6 @@ local GlobalEvent = Replicator:GetRemote('Global')
 
 
 
-
-behaviorRegistry:Register('TriggerEvent', function(self, node) 
-	if (not self.Events) then return end
-	local handler = self.ScopeRegistry:Get('EventAction')
-
-	local selectedBlock = self.Events[node.Config.TagName]
-	if not selectedBlock then
-		self:Execute({
-			Name = 'Event.'..node.Config.TagName;
-			Tag = node.Config.TagName;
-		})
-		selectedBlock = self.Events[node.Config.TagName]
-	end
-	selectedBlock.TriggerArgs = node.Config
-
-
-	self.Tags[node.Config.TagName] = node.Config
-
-	if handler then handler(self, selectedBlock) end
-
-end)
-
-
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
 end)

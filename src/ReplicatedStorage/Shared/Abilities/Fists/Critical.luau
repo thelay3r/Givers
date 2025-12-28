@@ -19,6 +19,7 @@ local ability = {
 		KeyCode = Enum.KeyCode.R;
 
 		Duration = 1;
+		MinDuration = .5;
 		CoolDown = .5;
 		LastUsed = 0;
 
@@ -35,27 +36,49 @@ local ability = {
 					{
 						Name = 'Action.SetUsed';
 					};
-					Name = 'NetWork.PlayVFX';
+					Name = 'Network.PlayBindableEvent';
+					InjectParams = {['Player'] = 'Owner.Instance'};
 					Config = {
-						VFXType = 'Fists.Critical';
-						VfxCFG = {
+						EventName = 'PlayVFX';
+						EventData = {
+							VFXType = 'Fists.Critical';
                        		State = 'Start';
-							
                     	};
 					}
-						
+				};
+				{
+					Name = 'Action.SetStatusEffect';
+					Config = {
+						Effect = 'ActiveSkill';
+						Status = true; 
+					};
+				};
+				{
+					Name = 'Action.SetAbilityActive';
+					Config = { Status = true; };
 				};
 		};
 	}
-},
-{
-	Name = 'Event.OnStop';
-	Tag = 'OnStop';
-
+	},
 	{
-		Name = 'Condition.IsActive?',
-	}
-}    
+		Name = 'Event.OnStop';
+		Tag = 'OnStop';
+	},
+	{
+		Name = 'Event.OnDurationEnd'; 
+		Tag = 'OnDurationEnd';
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'ActiveSkill';
+				Status = false; 
+			};
+		};
+		{
+			Name = 'Action.SetAbilityActive';
+			Config = { Status = false; };
+		};
+	}  
 }
 
 return {

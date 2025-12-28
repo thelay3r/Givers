@@ -28,9 +28,8 @@ end)
 EntityRegistry:Register('Fist', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.Replica.Data.Session
-	print(Session.StatusEffects.CurrentCombo)
     self:Execute({
-		Name = 'NetWork.PlayVFX';
+		Name = 'Network.PlayVFX';
 		Config = {
 			Client = true;
 			VFXType = 'Fists.M1';
@@ -46,9 +45,8 @@ end)
 EntityRegistry:Register('Spear', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.Replica.Data.Session
-	print(Session.StatusEffects.CurrentCombo)
     self:Execute({
-		Name = 'NetWork.PlayVFX';
+		Name = 'Network.PlayVFX';
 		Config = {
 			Client = true;
 			VFXType = 'Spear.M1';

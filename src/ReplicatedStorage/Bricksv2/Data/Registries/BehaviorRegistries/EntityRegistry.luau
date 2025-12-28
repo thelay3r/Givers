@@ -9,6 +9,7 @@ local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
@@ -80,11 +81,16 @@ EntityRegistry:Register('SetStatusEffect', function(self,node)
   	local sessionData = (Entity.Replica.Data.Session)
 	local config = node.Config
 	sessionData.StatusEffects[config.Effect] = config.Status
+	print('Change',node)
+	if not RunService:IsServer() then return end
+	Entity:SetStatusEffect(config.Effect, config.Status)
 end)
 
 EntityRegistry:Register('SwapWeapon', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.Replica.Data.Session
+
+	print('Try to swap')
 
 	local current = Session.CurrentEquipped
 	local weapon = Session.Equipment.Weapon
@@ -97,16 +103,23 @@ EntityRegistry:Register('SwapWeapon', function(self, node)
 		targetToEquip = 'none'
 	end
 	
+	print('Test Tag')
+
 	self:Execute({
-		Name = 'NetWork.PlayVFX';
+		Name = 'Network.PlayRemoteEvent';
 		Config = {
-			VFXType = 'Fists.Idle';
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
 			EventData = {
+				Player = Entity.Instance;
+				VFXType = 'Fists.Idle';
 				State = targetToEquip ~= 'none' and 'Equip' or 'Unequip';
 			};
 		}
 	})
 
+	Entity:SetEquipment('CurrentEquipped', targetToEquip)
 	Session.CurrentEquipped = targetToEquip
 end)
 

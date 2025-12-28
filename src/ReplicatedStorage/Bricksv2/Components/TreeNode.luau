@@ -4,9 +4,7 @@ local TreeNode = {}
 TreeNode.__index = TreeNode
 
 function TreeNode.new(config: any)
-	if config.name == 'SetStatusEffect' then
-		print(config,'Tag Config heres')
-	end
+
 
 	local self = setmetatable({
 		Id = nodeCount,

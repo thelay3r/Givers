@@ -19,18 +19,18 @@ local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 
 
-local function fireVfx(args,Entity,...)
-	local splitted = string.split(args.VFXType :: string, '.')
-	if #splitted < 2 then return end
-	print(args)
-	local _type = splitted[1]
+local function FireVFX(EventData,...)
+	local splitted = string.split(EventData.VFXType :: string, '.')
+	if (#splitted < 2) then return end
+	
+	local scope = splitted[1]
 	local name = splitted[2]
-	local state = args.EventData['State'] or 'Start'
-	args.EventData['Player'] = (args.Player) or Entity
-	local module = CachedModules[_type] and CachedModules[_type][name][state]
-	print(module,CachedModules)
+	local state = EventData['State'] or 'Start'
+
+	EventData['Player'] = (EventData.Player) or (Players.LocalPlayer)
+	local module = CachedModules[scope] and CachedModules[scope][name][state]
 	if not module then return end
-	module(args.EventData,...)
+	module(EventData,...)
 end
 
 function ServerVFX:InitVFX()
@@ -43,7 +43,7 @@ function ServerVFX:InitVFX()
 	end
 	
 	BindableGlobal:Connect('PlayVFX',function(arg,...)
-		fireVfx(arg,self.Instance)
+		FireVFX(arg,self.Instance)
 	end)
 end
 

@@ -22,13 +22,21 @@ behaviorRegistry:Register('Root', function(self, node)
 end)
 
 behaviorRegistry:Register('SetAbilityActive', function(self, node)
-	print(node,'Tag Node Test')
-	node:GetRoot().Config.IsActive = node.Config.Status
+	local Main = self.Tags['Main']
+	Main.IsActive = node.Config.Status
+	if not node.Config.Status then return end
+	Main.CastTime = tick()
 end)
 
+behaviorRegistry:Register('SetAbilityPressed', function(self, node)
+	local Main = self.Tags['Main']
+	Main.Pressed = node.Config.Status
+end)
 
 behaviorRegistry:Register('SetUsed', function(self, node)
-	node:GetRoot().Config.LastUsed = tick()
+	local Main = self.Tags['Main']
+	print(Main,'Tag ZZZZZ')
+	Main.LastUsed = tick()
 end)
 
 behaviorRegistry:Register('SetRootCoolDown', function(self, node)
@@ -36,33 +44,7 @@ behaviorRegistry:Register('SetRootCoolDown', function(self, node)
 	Main.CoolDown = node.Config.CoolDown
 end)
 
-behaviorRegistry:Register('AbilityDuration', function(self,node)  
-	local startTime = tick()
-	local MainConfig = node.Additional.Main
-	local duration = (MainConfig.Duration) or (1) 
 
-	TaskManager:CreateThread(node, 'AbilityDuration',RunService.Heartbeat:Connect(function(dt: number)
-		print('WorkOut')
-		if (tick() - startTime) >= duration then
-			self:Execute(
-				{
-					Name = 'Action.TriggerEvent';
-					Config = {
-						TagName = 'OnDurationEnd';
-						['node'] = node;
-					};
-				})
-				self:Execute(
-				{
-					Name = 'Action.TriggerEvent';
-					Config = {
-						TagName = 'OnStop';
-						['node'] = node;
-					};
-				})
-		end
-	end))
-end)
 
 behaviorRegistry:Register('AbilityStatus', function(self,node) 
 	local newCfg = node.Config
@@ -70,14 +52,27 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 		newCfg['Ignore'] = {}
 	end
 
+	print('Ability ReCREATE')
+
 	newCfg['Ignore']['CoolDown'] = true
 	newCfg['Ignore']['ActiveSkill'] = true
+	newCfg['Ignore']['IsActive'] = true
 
 	local startTime = tick()
-	local MainConfig = node.Additional.Main
+	local MainConfig = self.Tags['Main']
 	local duration = (MainConfig.Duration) or (1) 
+	local minDuration = (MainConfig.MinDuration) or (0)
 	
-	TaskManager:CreateThread(self, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
+	TaskManager:CreateThread(node, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
+		local currentTime = tick()
+		local elapsed = currentTime - startTime
+
+		local isTimeExpired = elapsed >= duration
+
+		local isMinDurationPassed = elapsed >= minDuration
+		local isInputReleased = not MainConfig.Pressed
+		local shouldManualStop = (isInputReleased) and isMinDurationPassed
+
 		local Validate = self:Execute(
 			{
 				Name = 'Condition.BlackList?';
@@ -85,15 +80,21 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 				Config = newCfg;
 
 			})
-		if (not Validate) or ((tick() - startTime) >= duration) then
-			self:Execute(
-				{
-					Name = 'Action.TriggerEvent';
-					Config = 
-					{
-							TagName = 'OnStop';
-					};
-				})
+		print((isInputReleased) , isMinDurationPassed)
+		print(not Validate,isTimeExpired,shouldManualStop)
+
+		local isInvalid = not Validate
+		if isInvalid or isTimeExpired or shouldManualStop then
+			self:Execute({
+				Name = 'Action.TriggerEvent';
+				Config = { TagName = 'OnStop',['node'] = node };
+			})
+
+			self:Execute({
+				Name = 'Action.TriggerEvent';
+				Config = { TagName = 'OnDurationEnd' , ['node'] = node };
+			})
+			
 		end
 	end))
 end)
@@ -104,3 +105,42 @@ behaviorRegistry:Register('ResetCoolDown', function(self, node)
 end)
 
 return behaviorRegistry
+
+--[[
+
+		local currentTime = tick()
+		local elapsed = currentTime - startTime
+
+
+		local isTimeExpired = elapsed >= duration
+
+
+		local isMinDurationPassed = elapsed >= minDuration
+		local isInputReleased = not MainConfig.Pressed 
+		local shouldManualStop = isMinDurationPassed and isInputReleased
+
+		local Validate = self:Execute(
+			{
+				Name = 'Condition.BlackList?';
+				RequestedTags = {['Owner'] = 'Owner'};
+				Config = newCfg;
+
+			})
+
+		local isInvalid = not Validate
+
+		if isInvalid or isTimeExpired or shouldManualStop then
+
+			self:Execute({
+				Name = 'Action.TriggerEvent';
+				Config = { TagName = 'OnStop' };
+			})
+
+			self:Execute({
+				Name = 'Action.TriggerEvent';
+				Config = { TagName = 'OnDurationEnd' };
+			})
+			
+		end
+
+]]

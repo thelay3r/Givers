@@ -4,9 +4,9 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild("Components")
 local Data = Bricks:WaitForChild("Data")
 local _Registries = Data:WaitForChild("Registries")
-local Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
-local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
-local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local _Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
+local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(_Components.Registry)
 
 
@@ -25,6 +25,7 @@ local ability = {
 		CoolDown = 1,
 		IsActive = false,
 		Duration = 1e10,
+		MinDuration = 0,
 	},
 	{
 		Name = "Event.OnStart",
@@ -108,58 +109,56 @@ local ability = {
 			},
 		},
 	},
-	{
-		Name = "Event.OnStop",
-		Tag = "OnStop",
 		{
-			Name = "Condition.IsActive?",
-			RequestedTags = { ["Ability"] = "Main" },
+			Name = "Event.OnStop",
+			Tag = "OnStop",
 			{
-				Name = "Action.SetAbilityActive",
-				Config = {
-					["Status"] = false,
-				},
-			},
-			{
-				Name = "Action.SetStatusEffect",
-				Config = {
-					["Effect"] = "IsSliding",
-					["Status"] = false,
-				},
-			},
-
-			{
-				Name = "Action.SlideStop",
-			},
-			{
-				Name = "Action.SetUsed",
-			},
-			{
-				Name = "Network.PlayBindableEvent",
-				InjectParams = { ["Player"] = "Owner.Instance" },
-				Config = {
-					EventName = "PlayVFX",
-					EventData = {
-						VFXType = "Animations.Slide",
-						State = "Stop",
-						Pack = "Default",
+				Name = "Condition.IsActive?",
+				{
+					Name = "Condition.DurationElapsed",
+					{
+						Name = "Action.SetAbilityActive",
+						Config = {
+							["Status"] = false,
+						},
+					},
+				{
+					Name = "Action.SetStatusEffect",
+					Config = {
+						["Effect"] = "IsSliding",
+						["Status"] = false,
 					},
 				},
-			},
-{
-				Name = "Network.PlayBindableEvent",
-				InjectParams = { ["Player"] = "Owner.Instance" },
-				Config = {
-					EventName = "PlayVFX",
-					EventData = {
-						VFXType = "Slide.Client",
-						State = "Stop",
-						Pack = "Default",
+				{
+					Name = "Action.SlideStop",
+				},
+				{
+					Name = "Action.SetUsed",
+				},
+				{
+					Name = "Network.PlayBindableEvent",
+					InjectParams = { ["Player"] = "Owner.Instance" },
+					Config = {
+						EventName = "PlayVFX",
+						EventData = {
+							VFXType = "Animations.Slide",
+							State = "Stop",
+							Pack = "Default",
+						},
 					},
 				},
+				{
+					Name = "Network.PlayBindableEvent",
+					InjectParams = { ["Player"] = "Owner.Instance" },
+					Config = {
+						EventName = "PlayVFX",
+						EventData = {
+							VFXType = "Slide.Client",
+							State = "Stop",
+							Pack = "Default",
+						},
+					},
 				},
-			{
-				Name = "Condition.ResumeRun?",
 			},
 		},
 	},

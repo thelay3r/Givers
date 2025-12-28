@@ -5,6 +5,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local TableHelper = require(ReplicatedStorage.Shared.Utilities.Modules.TableHelper)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 
@@ -40,6 +41,7 @@ end)
 
 conditionRegistry:Register('OnCoolDown?', function(self,node)
 	local nodeConfig = self.Tags['Main']
+	print(nodeConfig, 'ZZZCOOLDOWN')
 	local lastUsed = (nodeConfig.LastUsed) or (0)
 	if tick() - lastUsed <= nodeConfig.CoolDown then return false end	
 	return true
@@ -84,6 +86,8 @@ conditionRegistry:Register('RayCheck',function(self,node)
 	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
 	local Config = node.Config
 
+	print('RAY CHECK','TAG UEBAN 8888')
+
 	local cast = self:Execute({
 		Name = 'Action.Raycast';
 		Config = {
@@ -105,39 +109,13 @@ conditionRegistry:Register('RayCheck',function(self,node)
 	return cast
 end)
 
---[[conditionRegistry:Register('RootRayCheck',function(self,node)
-	local Owner = self.Tags['Owner']
-	local _Instance = Owner.Instance
-	local Character = _Instance.Character :: Model
-	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
-	local cfg = node.Config
 
-	local castData = {
-		Position = RootPart.Position;
-		Direction = RootPart.CFrame.LookVector * (cfg.Range or 1);
-		Character = Character
-	}
-	local cast = AssetsHelper.FastCast(castData)
-	if not cast then  return false end
-	if not cast.Instance:HasTag('Vault') then return false end
-	
-	local RootPartPosition = RootPart.Position
-	local InstancePosition = cast.Instance.Position
-	local InstanceSize = cast.Instance.Size
-
-	local Diff = (InstancePosition.Y + InstanceSize.Y/2) - RootPartPosition.Y
-	if math.abs(Diff) > 1.5 then return false end
-
-	node.Config['RayResult'] = {
-		Instance = cast.Instance;
-		Normal = cast.Normal;
-		Position = cast.Position;
-		Distance = cast.Distance;
-	}
-	return cast
-end)]]
-
-
+conditionRegistry:Register('DurationElapsed', function(self,node)  
+	local elapsed = tick() - (self.Tags['Main'].CastTime or tick())
+	local minDuration = self.Tags['Main'].MinDuration or 0
+	print(elapsed >= minDuration, 'Tag zzz')
+	return elapsed >= minDuration
+end)
 
 conditionRegistry:Register('BlackList?', function(self,node)
 	
@@ -145,21 +123,21 @@ conditionRegistry:Register('BlackList?', function(self,node)
 	local nodeConfig = node.Config
 	local IgnoreList = (nodeConfig.Ignore) or ({})
 
-	local RootCFG = node:GetRoot().Config
-	
-	if RootCFG.IsActive then return false end
+	local RootCFG = self.Tags['Main']
+
 	
 	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
 
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
-			print(sessionData.StatusEffects[v],v)
+			print(v)
 			return false
 		end
 	end
 	
 
-
+	if IgnoreList['IsActive'] then return true end
+	if RootCFG.IsActive then return false end
 	
 	return true
 end)
@@ -170,24 +148,28 @@ conditionRegistry:Register('CheckBlackList', function(self,node)
 		{
 			Name = 'Condition.BlackList?';
 			RequestedTags = {['Owner'] = 'Owner'};
-			Config = node.Config;
+			Config = TableHelper:DeepTableClone(node.Config);
 		})
+	print(node.Config)
+	if not Status then return end
+	
 
-	self:Execute(
-		{
-			Name = 'Action.AbilityStatus';
-			RequestedTags = {['Main'] = 'Main'};
-			Config = node.Config;
-		})
 
-	local CoolDown = self:Execute(
-		{
+	local CoolDown = self:Execute({
 			Name = 'Condition.OnCoolDown?';
 			RequestedTags = {
 				['Owner'] = 'Owner';
 			},
 		})
+	
+	if not CoolDown then return false end
 
+	self:Execute({
+		Name = 'Action.AbilityStatus';
+		RequestedTags = {['Main'] = 'Main'};
+		Config = TableHelper:DeepTableClone(node.Config);
+	})
+	print(CoolDown,Status,'Tag Ueban 777')
 	return if (CoolDown and Status) then true else false
 end)
 

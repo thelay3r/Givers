@@ -55,13 +55,12 @@ registry:Register('FeintDash', function(self,node)
 	
 	local bodyVelocity = node.Additional['BodyVelocity']
 	local _instance = bodyVelocity.BodyVelocityInstance :: BodyVelocity
-	print(bodyVelocity)
 	if not _instance then return end
 	_instance:Destroy()
 
 	self:Execute(
 		{
-			Name = 'NetWork.PlayVFX';
+			Name = 'Network.PlayVFX';
 			SendParams = {
                     ['Player'] = {From = 'Owner', Path = {'Instance'}}
                 };
@@ -76,7 +75,7 @@ registry:Register('FeintDash', function(self,node)
 			};
 		})
 		self:Execute({
-			Name = 'NetWork.PlayVFX';
+			Name = 'Network.PlayVFX';
 			SendParams = {
                  ['Player'] = {From = 'Owner', Path = {'Instance'}}
             };

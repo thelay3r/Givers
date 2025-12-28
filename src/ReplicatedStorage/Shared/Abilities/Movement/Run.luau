@@ -11,7 +11,6 @@ local Registry = require(_Components.Registry)
 local registry = Registry.new()
 
 registry:Register("Root", function()
-	print("tag10")
 end)
 
 registry.Inject = {
@@ -27,6 +26,7 @@ local ability = {
 		CoolDown = 0.1,
 		IsActive = false,
 		Duration = 1e10,
+		MinDuration = 1,
 	},
 	{
 		Name = "Event.OnStart",
@@ -38,7 +38,6 @@ local ability = {
 				Tag = "AcceleratMoveSpeed",
 				RequestedTags = { ["Owner"] = "Owner", ["Config"] = "Main" },
 				Config = {
-
 					Acceleration = 2,
 					BaseSpeed = 12,
 					AccelerationTime = 0.4,
@@ -46,7 +45,6 @@ local ability = {
 				},
 			},
 			{
-
 				Name = "Action.SetAbilityActive",
 				Config = {
 					["Status"] = true,
@@ -105,25 +103,13 @@ local ability = {
 				},
 			},
 		},
+
 	},
 	{
 		Name = "Event.OnStop",
 		Tag = "OnStop",
 		{
 			Name = "Condition.IsActive?",
-			{
-				Name = "Action.SetAbilityActive",
-				Config = {
-					["Status"] = false,
-				},
-			},
-			{
-				Name = "Action.SetStatusEffect",
-				Config = {
-					["Effect"] = "IsRunning",
-					["Status"] = false,
-				},
-			},
 			{
 				Name = "Action.DeAcceleratMoveSpeed",
 				RequestedTags = { ["Owner"] = "Owner", ["Config"] = "AcceleratMoveSpeed" },
@@ -166,7 +152,22 @@ local ability = {
 					},
 				},
 			},
+			{
+				Name = "Action.SetAbilityActive",
+				Config = {
+					["Status"] = false,
+				},
+			},
+			{
+				Name = "Action.SetStatusEffect",
+				Config = {
+					["Effect"] = "IsRunning",
+					["Status"] = false,
+				},
+			},
 		},
+
+		
 	},
 }
 

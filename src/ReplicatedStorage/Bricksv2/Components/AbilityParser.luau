@@ -61,7 +61,6 @@ end
 
 function AbilityParser:Create(structure: any, parent: IAbilityParser)
 	--local block = AbilityParseObject.new()
-	print(parent, 'tag1')
 	local oldMetaTable = getmetatable(parent)
 	setmetatable(parent, {
 		__index = function(t, i)

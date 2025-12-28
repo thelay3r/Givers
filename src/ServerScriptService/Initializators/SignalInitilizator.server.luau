@@ -60,9 +60,3 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 end)
-
-BindableGlobal:Connect('PlayVFX',function(args)
-	if not args.FirePosition then args.FirePosition = Vector3.zero end
-
-	Replicator:GetRemote('VFX'):FireInRadius(args.FirePosition,512, args)
-end)

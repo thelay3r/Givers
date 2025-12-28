@@ -31,22 +31,35 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	self.Tags[node.Config.TagName] = node.Config
 
 	if handler then handler(self, selectedBlock) end
-	--print(node.Config.TagName, self.Tags)
-	-- print(self)
 end)
 
 behaviorRegistry:Register('OnStart', function(self,node)
+	self:Execute({
+		Name = 'Action.SetAbilityPressed';
+		Config = {
+			Status = true;
+		};
+	})
+
 end)
 
 behaviorRegistry:Register('OnDurationEnd', function(self,node)
 	TaskManager:CancelAllTasks(node.TriggerArgs['node'])
 	TaskManager:CancelAllThreads(node.TriggerArgs['node'])
+
+	TaskManager:CancelAllThreads(self)
+	TaskManager:CancelAllTasks(self)
 	print('Ended?')
 end)
 
-behaviorRegistry:Register('OnStop', function(self,node)
-	TaskManager:CancelAllThreads(self)
-	TaskManager:CancelAllTasks(self)
+behaviorRegistry:Register('OnStop', function(self,node)	
+	self:Execute({
+		Name = 'Action.SetAbilityPressed';
+		Config = {
+			Status = false;
+		};
+	})
+
 end)
 
 

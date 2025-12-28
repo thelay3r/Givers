@@ -62,7 +62,6 @@ local function FireVFX(EventData,...)
 	local scope = splitted[1]
 	local name = splitted[2]
 	local state = EventData['State'] or 'Start'
-	print(scope,name,'TagZ')
 
 	EventData['Player'] = (EventData.Player) or (Players.LocalPlayer)
 	local module = CachedModules[scope] and CachedModules[scope][name][state]

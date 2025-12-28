@@ -32,7 +32,7 @@ local ability = {
 			Name = 'Condition.CheckBlackList';
 			{
 
-				Name = 'Entity.SwapWeapon';
+				Name = 'Action.SwapWeapon';
 				
 			}
 
