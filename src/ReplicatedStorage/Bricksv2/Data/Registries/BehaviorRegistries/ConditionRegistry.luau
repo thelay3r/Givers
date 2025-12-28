@@ -54,6 +54,13 @@ conditionRegistry:Register('ResumeRun?',function(self,node)
 		return false 
 	end
 	
+	local RunAbility = owner:GetAbility('Run')
+	local config = RunAbility.Instance.Tags['AcceleratMoveSpeed']
+	config.AccelerationTime = .1
+	RunAbility['OnStart'](RunAbility)
+	config.AccelerationTime = .4
+
+
 	return true
 end)
 

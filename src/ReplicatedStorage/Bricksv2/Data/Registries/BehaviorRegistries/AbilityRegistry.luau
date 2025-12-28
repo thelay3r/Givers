@@ -22,6 +22,7 @@ behaviorRegistry:Register('Root', function(self, node)
 end)
 
 behaviorRegistry:Register('SetAbilityActive', function(self, node)
+	print(node,'Tag Node Test')
 	node:GetRoot().Config.IsActive = node.Config.Status
 end)
 

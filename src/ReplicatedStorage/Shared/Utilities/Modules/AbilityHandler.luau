@@ -16,6 +16,7 @@ local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
+local RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local _RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local BehaviorRegistries = Data:WaitForChild('Registries'):WaitForChild('BehaviorRegistries')
 
@@ -80,12 +81,11 @@ function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(Abi
 	-- create parser-backed ability instance using shared parser factory
 	local ability = AbilityParseObject.new()
 	
-	
+	RegistryManager:InjectRegistry(config.Registry)
 	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
 	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
 	
 	abilityParser:Create(config.Ability, ability)
-
     local createdAbility = setmetatable({
         Instance = ability
     }, {

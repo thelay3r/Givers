@@ -20,6 +20,17 @@ function RegistryManager:LoadRegistries(registries: Folder & { [number]: any })
     end
 end
 
+function RegistryManager:InjectRegistry(registry)
+    if not registry['Inject'] then return end
+    local Registry = {}
+
+    for i2, v2 in (registry['Inject']) do
+        if Registries[v2] then table.insert(Registry, Registries[v2]) end
+    end
+    print(Registry,'TagTut')
+    registry:Extends(Registry)
+end
+
 function RegistryManager:InjectRegistries()
     for i, v in pairs(Registries) do
         if v['Registry'] then

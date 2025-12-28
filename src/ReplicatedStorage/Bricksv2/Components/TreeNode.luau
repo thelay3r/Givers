@@ -4,6 +4,10 @@ local TreeNode = {}
 TreeNode.__index = TreeNode
 
 function TreeNode.new(config: any)
+	if config.name == 'SetStatusEffect' then
+		print(config,'Tag Config heres')
+	end
+
 	local self = setmetatable({
 		Id = nodeCount,
 		Tag = (config and config.tag) or nil,
@@ -11,7 +15,7 @@ function TreeNode.new(config: any)
 		Name = (config and config.name) or nil,
 		Config = config.config or {},
 		RequestedTags = (config and config.requestedTags or {}),
-		SendParams = (config and config.sendParams or {}),
+		InjectParams = (config and config.injectParams or {}),
 		Additional = {},
 		EventParams = {},
 		Children = (config and config.children) or {},
@@ -55,6 +59,7 @@ function TreeNode:Destroy()
 	self.Config = nil 
 	self.RequestedTags = nil
 	self.InjectedCallback = nil 
+	self.InjectParams = nil
 	self.Additional = nil
 	self.Children = nil 
 	self.Parent = nil 

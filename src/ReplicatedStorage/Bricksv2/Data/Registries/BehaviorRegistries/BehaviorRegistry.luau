@@ -32,7 +32,13 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	local handler = self.ScopeRegistry:Get('EventAction')
 
 	local selectedBlock = self.Events[node.Config.TagName]
-	
+	if not selectedBlock then
+		self:Execute({
+			Name = 'Event.'..node.Config.TagName;
+			Tag = node.Config.TagName;
+		})
+		selectedBlock = self.Events[node.Config.TagName]
+	end
 	selectedBlock.TriggerArgs = node.Config
 
 
@@ -59,6 +65,7 @@ behaviorRegistry:Register('Raycast', function(self,node)
 	local cast = AssetsHelper.FastCast(castData)
 
 	node.Config['Cast'] = cast
+	if not cast then return false end
 	return cast
 end)
 

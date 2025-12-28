@@ -90,8 +90,8 @@ BodyMoversRegistry:Register('UnitSmoothVelocity', function(self,node)
 
 	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
 	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
-	
-	local Humanoid = BodyVelocityTag.Parent.Parent:FindFirstChild('Humanoid')
+	print(BodyVelocityTag)
+	local Humanoid = Body.Parent.Parent:FindFirstChild('Humanoid')
 	if not Humanoid then return end
 	local Unit
 

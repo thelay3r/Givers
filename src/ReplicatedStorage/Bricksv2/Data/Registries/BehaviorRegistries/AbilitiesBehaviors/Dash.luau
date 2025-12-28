@@ -22,12 +22,13 @@ local Angles2 = {
 }
 
 registry:Register('DashBodyVelocity', function(self,node)
-	local Parent = node.Config.Parent
+	local Parent = self.Tags['Owner'].Instance.Character:FindFirstChild('HumanoidRootPart') :: BasePart
+	local DashCFG = self.Tags['DashDirection']
 	if not Parent then return end
 
 
 	local BodyVelocityCFG = node.Config.BodyVelocity
-	local DashCFG = node.Config.DashConfig
+	--local DashCFG = node.Config.DashConfig
 	local BodyVelocity = AssetsHelper.CreateBodyVelocity(
 		{
 			Instance = 

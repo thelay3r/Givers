@@ -10,6 +10,9 @@ local Registry = require(_Components.Registry)
 
 local registry = Registry.new()
 
+registry.Inject = {
+    "Vault",
+}
 
 local ability = {
         Name = 'Action.Root';
@@ -29,7 +32,8 @@ local ability = {
                 Name = 'Condition.CheckBlackList';
                 Config = {
                 ['Ignore'] = { ['IsVaulting'] = true};
-                    };
+                };
+
                 {
                     Name = 'Condition.RootRayCheck';
                     Tag = 'VaultRay';
@@ -52,27 +56,25 @@ local ability = {
                         RequestedTags = {['RayResult'] = 'VaultRay'}
                     };
                     {
-                        Name = 'NetWork.PlayVFX';
-                        Config = 
-                        {
-                            VFXType = 'Animations.Vault';
-                            Client = true;
-                            EventData = {
-                                State = 'Start';
-                                Pack = 'Default';
-
-                            };
-                        };
-                    
-                };
-                {
-                        Name = 'Action.SetStatusEffect';
-                        Config = 
-                        {
-                            ['Effect'] = 'IsVaulting';
-                            ['Status'] = true;
-                        }
+                            Name = 'Action.SetStatusEffect';
+                            Config = 
+                            {
+                                ['Effect'] = 'IsVaulting';
+                                ['Status'] = true;
+                            }
                     };
+                    {
+                        Name = "Network.PlayBindableEvent",
+                        InjectParams = { ["Player"] = "Owner.Instance" },
+                        Config = {
+                            EventName = "PlayVFX",
+                            EventData = {
+                                VFXType = "Animations.Vault",
+                                State = "Start",
+                                Pack = "Default",
+                            },
+                        },
+                    },
 
                 };
 

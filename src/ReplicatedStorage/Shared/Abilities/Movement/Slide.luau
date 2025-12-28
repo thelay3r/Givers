@@ -9,9 +9,12 @@ local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHe
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(_Components.Registry)
 
-local BindableGlobal = Replicator:GetRemote("BindableGlobal")
 
 local registry = Registry.new()
+
+registry.Inject = {
+	'Slide'
+}
 
 local ability = {
 	Name = "Action.Root",
@@ -54,7 +57,7 @@ local ability = {
 					},
 				},
 				{
-					Name = "Abilities.SlideStart",
+					Name = "Action.SlideStart",
 					Tag = "SlideStart",
 					RequestedTags = { ["RayResult"] = "SlideCheck" },
 
@@ -75,26 +78,28 @@ local ability = {
 					},
 				},
 				{
-					Name = "Abilities.SlideJump",
+					Name = "Action.SlideJump",
 					RequestedTags = { ["Slide"] = "SlideStart" },
 				},
 				{
-					Name = "NetWork.PlayVFX",
+					Name = "Network.PlayBindableEvent",
+					InjectParams = { ["Player"] = "Owner.Instance" },
 					Config = {
-						VFXType = "Animations.Slide",
-						Client = true,
+						EventName = "PlayVFX",
 						EventData = {
+							VFXType = "Animations.Slide",
 							State = "Start",
 							Pack = "Default",
 						},
 					},
 				},
 				{
-					Name = "NetWork.PlayVFX",
+					Name = "Network.PlayBindableEvent",
+					InjectParams = { ["Player"] = "Owner.Instance" },
 					Config = {
-						VFXType = "Slide.Client",
-						Client = true,
+						EventName = "PlayVFX",
 						EventData = {
+							VFXType = "Slide.Client",
 							State = "Start",
 							Pack = "Default",
 						},
@@ -124,33 +129,35 @@ local ability = {
 			},
 
 			{
-				Name = "Abilities.SlideStop",
+				Name = "Action.SlideStop",
 			},
 			{
 				Name = "Action.SetUsed",
 			},
 			{
-				Name = "NetWork.PlayVFX",
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
-					VFXType = "Animations.Slide",
-					Client = true,
+					EventName = "PlayVFX",
 					EventData = {
+						VFXType = "Animations.Slide",
 						State = "Stop",
 						Pack = "Default",
 					},
 				},
 			},
-			{
-				Name = "NetWork.PlayVFX",
+{
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
-					VFXType = "Slide.Client",
-					Client = true,
+					EventName = "PlayVFX",
 					EventData = {
+						VFXType = "Slide.Client",
 						State = "Stop",
 						Pack = "Default",
 					},
 				},
-			},
+				},
 			{
 				Name = "Condition.ResumeRun?",
 			},

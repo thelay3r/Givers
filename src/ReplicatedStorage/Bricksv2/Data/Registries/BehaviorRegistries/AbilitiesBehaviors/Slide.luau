@@ -46,11 +46,12 @@ registry:Register("SlideJump", function(self, node)
 		})
 
 		self:Execute({
-			Name = "NetWork.PlayVFX",
+			Name = "Network.PlayBindableEvent",
+			InjectParams = { ["Player"] = "Owner.Instance" },
 			Config = {
-				VFXType = "Animations.Slide",
-				Client = true,
+				EventName = "PlayVFX",
 				EventData = {
+					VFXType = "Animations.Slide",
 					State = "Jump",
 					Pack = "Default",
 				},

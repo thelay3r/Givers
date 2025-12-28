@@ -38,7 +38,11 @@ EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
 	local speedPerFrame = diff / (updTime)
 	local percentPerFrame = (speedPerFrame / config.BaseSpeed) * 100
 
-	node.Config['Accelerat'] = task.spawn(function() 
+	if config.AccelerationTime == 0 then
+		config.AccelerationTime = 0.01
+	end
+
+	TaskManager:CreateTask(self, 'Accelerat', 0, function(a0)
 		for i=1, updTime do
 			Speed:Amplify(
 				{
@@ -49,7 +53,6 @@ EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
 				})
 			task.wait(1/60)
 		end
-		node.Config['Accelerat'] = nil
 	end)
 end)
 

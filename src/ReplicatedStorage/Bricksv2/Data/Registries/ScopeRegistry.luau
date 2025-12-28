@@ -27,6 +27,7 @@ scopeRegistry:Register('Action', function(self, node)
 		node.Additional[key] = self.Tags[tag] or {}
 	end
 
+	print(node.InjectParams)
 	for configKey, paramPath in pairs(node.InjectParams or {}) do
 		local path = string.split(paramPath, '.')
 		local selectedTag = path[1]
@@ -51,7 +52,7 @@ scopeRegistry:Register('Action', function(self, node)
 		child:Execute()
 	end	
 	
-	return (result or true)
+	return (result or result == nil and true)
 end)
 
 scopeRegistry:Register('Network', function(self, node) 
@@ -59,6 +60,7 @@ scopeRegistry:Register('Network', function(self, node)
 		node.Config.EventData[key] = self.Tags[tag] or {}
 	end
 
+	print(node)
 	for configKey, paramPath in pairs(node.InjectParams or {}) do
 		local path = string.split(paramPath, '.')
 		local selectedTag = path[1]
@@ -76,7 +78,7 @@ scopeRegistry:Register('Network', function(self, node)
 	local result
 	if (behavior) then result = behavior(self, node) end
 	
-	return (result or true)
+	return (result or result == nil and true)
 end)
 
 

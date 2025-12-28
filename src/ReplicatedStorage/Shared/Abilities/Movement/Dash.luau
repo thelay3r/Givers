@@ -38,13 +38,7 @@ local ability = {
                     ['Status'] = true;
                 };
             };
-                            {
-                    Name = 'Action.AbilityDuration';
-                    RequestedTags = {['Main'] = 'Main'};
-                    Config = {};
-                };
-
-                {
+            {
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
@@ -53,31 +47,26 @@ local ability = {
                 Name = 'Action.SetUsed';
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['DashConfig'] = {From = 'DashDirection'};
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
-                Config = 
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance", ['DashDirection'] = "DashDirection" },
+                Config =   
                 {
-                    VFXType = 'Animations.Dash';
-                    Client = true;
+                    EventName = 'PlayVFX';
                     EventData = {
+                        VFXType = 'Animations.Dash';
                         State = 'Start';
                         Pack = 'Default';
                     };
                 };
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Dash.Normal';
-                    Client = true;
+                    EventName = 'PlayVFX';
                     EventData = {
+                        VFXType = 'Dash.Normal';
                         State = 'Start';
                         Pack = 'Movement';
 
@@ -85,15 +74,13 @@ local ability = {
                 }
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
+                    EventName = 'PlayVFX';
                     EventData = {
+                        VFXType = 'Effects.Trail';
                         State = 'Start';
                         Pack = 'Movement';
                         
@@ -104,15 +91,13 @@ local ability = {
                 }
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
+                    EventName = 'PlayVFX';
                     EventData = {
+                         VFXType = 'Effects.Trail';
                         State = 'Start';
                         Pack = 'Movement';
                         
@@ -122,13 +107,8 @@ local ability = {
                     };
                 }
             };
-            
             {
                 Name = 'Action.DashBodyVelocity';
-                SendParams = {
-                    ['DashConfig'] = {From = 'DashDirection'};
-                    ['Parent'] = {From = 'Owner', Path = {'Instance','Character','HumanoidRootPart'}}
-                };
                 Tag = 'BodyVelocityDash';
                 Config = 
                 {
@@ -155,7 +135,7 @@ local ability = {
                 }
             };
             {
-                Name = 'NetWork.Feint';
+                Name = 'Network.Feint';
             };
         };
         {
@@ -177,7 +157,7 @@ local ability = {
             Name = 'Event.OnDurationEnd';
             Tag = 'OnDurationEnd';
             {
-                Name = 'NetWork.UnBindFeint';
+                Name = 'Network.UnBindFeint';
             };
         }
     }

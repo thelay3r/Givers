@@ -40,7 +40,8 @@ function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(AbilityP
 		config = structure.Config,
 		tag = structure.Tag,
 		requestedTags = structure.RequestedTags,
-		sendParams = structure.SendParams, 
+		sendParams = structure.SendParams,
+		injectParams = structure.InjectParams,
 	})
 
 	local scope = parent.ScopeRegistry:Get(splitted[1])
