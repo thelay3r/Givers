@@ -21,7 +21,6 @@ local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 local behaviorRegistry = Registry.new()
 
 behaviorRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 behaviorRegistry:Register('SlideStop', function(self, node)

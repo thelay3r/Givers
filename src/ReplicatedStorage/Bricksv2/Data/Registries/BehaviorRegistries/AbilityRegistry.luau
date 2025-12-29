@@ -18,7 +18,6 @@ local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 local behaviorRegistry = Registry.new()
 
 behaviorRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 behaviorRegistry:Register('SetAbilityActive', function(self, node)
@@ -51,7 +50,6 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 		newCfg['Ignore'] = {}
 	end
 
-	print('Ability ReCREATE')
 
 	newCfg['Ignore']['CoolDown'] = true
 	newCfg['Ignore']['ActiveSkill'] = true
@@ -62,6 +60,7 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 	local duration = (MainConfig.Duration) or (1) 
 	local minDuration = (MainConfig.MinDuration) or (0)
 	
+
 	TaskManager:CreateThread(node, 'RunServiceStatus',RunService.Heartbeat:Connect(function(dt: number)
 		local currentTime = tick()
 		local elapsed = currentTime - startTime
@@ -72,14 +71,14 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 		local isInputReleased = not MainConfig.Pressed
 		local shouldManualStop = (isInputReleased) and isMinDurationPassed
 
-		local Validate = self:Execute(
-			{
-				Name = 'Condition.BlackList?';
-				RequestedTags = {['Owner'] = 'Owner'};
-				Config = newCfg;
+		-- local Validate = self:Execute(
+		-- 	{
+		-- 		Name = 'Condition.BlackList?';
+		-- 		RequestedTags = {['Owner'] = 'Owner'};
+		-- 		Config = newCfg;
 
-			})
-		local isInvalid = not Validate
+		-- 	})
+		local isInvalid = not true
 		if isInvalid or isTimeExpired or shouldManualStop then
 			self:Execute({
 				Name = 'Action.TriggerEvent';

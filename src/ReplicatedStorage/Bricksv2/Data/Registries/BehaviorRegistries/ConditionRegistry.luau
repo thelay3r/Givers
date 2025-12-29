@@ -85,7 +85,6 @@ conditionRegistry:Register('RayCheck',function(self,node)
 	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
 	local Config = node.Config
 
-	print('RAY CHECK','TAG UEBAN 8888')
 
 	local cast = self:Execute({
 		Name = 'Action.Raycast';
@@ -124,11 +123,12 @@ conditionRegistry:Register('BlackList?', function(self,node)
 	local RootCFG = self.Tags['Main']
 
 	
-	local sessionData = (Entity.SessionData) or (Entity.SessionData)
+	local sessionData = (Entity.SessionData)
 
+	print(self.Tags['Owner'],'UEBOL',self.Tags['Owner'].Instance.Character.Name)
+	
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
-			print(v)
 			return false
 		end
 	end
@@ -142,6 +142,7 @@ end)
 
 
 conditionRegistry:Register('CheckBlackList', function(self,node)
+
 	local Status = self:Execute(
 		{
 			Name = 'Condition.BlackList?';
@@ -150,8 +151,6 @@ conditionRegistry:Register('CheckBlackList', function(self,node)
 		})
 	if not Status then return end
 	
-
-
 	local CoolDown = self:Execute({
 			Name = 'Condition.OnCoolDown?';
 			RequestedTags = {

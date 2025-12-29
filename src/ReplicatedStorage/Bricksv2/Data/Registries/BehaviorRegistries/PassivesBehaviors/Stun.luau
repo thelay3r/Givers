@@ -19,16 +19,18 @@ local StunRegistry = Registry.new()
 
 StunRegistry:Register('GreatStun?', function(self,node)
     local EventData = self.Tags['OnHit']['EventData']
-    local Entity = EventData['Me'] :: EntityInterfaces.IEntityComponent 
+    local Entity = EventData['Victim'] :: EntityInterfaces.IEntityComponent 
     local StatusEffects = Entity.SessionData.StatusEffects
 
     return not StatusEffects.GreatStunned
 end)
 
 StunRegistry:Register('Stun', function(self,node)
-    local EventData = self.Tags['OnHit']
-    
+    local EventData = self.Tags['OnHit']['EventData']
+    local Victim = EventData['Victim']
 
+    
+    Victim:SetStatusEffect('Stun',true)
 end)
 
 

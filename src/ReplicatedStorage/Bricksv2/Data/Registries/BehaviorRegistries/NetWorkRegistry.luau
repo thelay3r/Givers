@@ -103,7 +103,6 @@ end)
 NetworkRegistry:Register('PlayRemoteEvent', function(self, node)  
 	local config = node.Config
 	local eventType = config.EventType
-	print(eventType)
 	RemoteMap[eventType](self,node)
 end)
 

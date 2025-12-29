@@ -13,7 +13,6 @@ local behaviorRegistry = Registry.new()
 
 
 local function hello(msg)
-	print(msg)
 end
 
 return behaviorRegistry

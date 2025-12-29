@@ -22,7 +22,6 @@ local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 local BodyMoversRegistry = Registry.new()
 
 BodyMoversRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 BodyMoversRegistry:Register('BodyGyro', function(self,node)

@@ -6,6 +6,7 @@ local Services = ServerScriptService:WaitForChild('Services')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local scopePool = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Memory.scopePool)
 local ReplicaService = require(Services:WaitForChild('ReplicaService'))
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 local ValuesInterface = require(Interfaces:WaitForChild('ValuesInterface'))
@@ -39,7 +40,7 @@ function ValuesComponent.SetAttribute(self: IEntity, name: string, value: any)
 	local Scope = SessionData.Attributes
 	
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 	
 	Scope[name] = value
 end
@@ -49,8 +50,9 @@ function ValuesComponent.SetStatusEffect(self: IEntity, name: string, value: any
 	local SessionData = self.SessionData
 	local Scope = SessionData.StatusEffects
 
+
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -61,7 +63,7 @@ function ValuesComponent.SetCharacterData(self: IEntity, name: string, value: an
 	local Scope = SessionData.CharacterData
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -72,7 +74,7 @@ function ValuesComponent.SetEquipment(self: IEntity, name: string, value: any)
 	local Scope = SessionData.Equipment
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -83,7 +85,7 @@ function ValuesComponent.SetSetting(self: IEntity, name: string, value: any)
 	local Scope = SessionData.Settings
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end

@@ -20,7 +20,6 @@ local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 local EntityRegistry = Registry.new()
 
 EntityRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 EntityRegistry:Register('AutoCombo', function(self,node)  

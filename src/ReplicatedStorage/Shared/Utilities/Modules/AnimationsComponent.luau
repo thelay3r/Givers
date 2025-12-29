@@ -65,7 +65,6 @@ end
 function Methods.Play(self: IAnimation, Data: IData)
 	
 	local trackData = self:GetData(Data)
-	print(trackData,Data,self)
 	local currentTrack = trackData.track :: AnimationTrack
 	if not currentTrack then return end
 	local archivedTrack = trackData.Cache[Data._Name] :: AnimationTrack

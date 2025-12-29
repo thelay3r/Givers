@@ -67,17 +67,7 @@ function AbilityHandler.GetByKeyCode(name, entityId, key)
     return ability
 end
 
-function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHandler)
-    assert(AbilitesFolder:FindFirstChild(packName), (`%s doesnt exist!`):format(packName))
-    assert(AbilitesFolder[packName]:FindFirstChild(abilityName), (`%s in %s pack doesnt exist!`):format(abilityName, packName))
 
-    local ability = AbilityHandler.new(
-        require(AbilitesFolder[packName][abilityName]:Clone())
-    )
-
-	print(ability)
-    return ability
-end
 
 function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(AbilityParser)
 	-- create parser-backed ability instance using shared parser factory
@@ -87,7 +77,10 @@ function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(Abi
 	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
 	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
 	
+
+    
 	abilityParser:Create(config.Ability, ability)
+
     local createdAbility = setmetatable({
         Instance = ability
     }, {
@@ -105,25 +98,30 @@ end
 
 function AbilityHandler:OnStart()
 
-    print(Abilities,'Tag ABILITY ZDEC')
+    task.spawn(function()
+        self.Instance:Execute({
+            Name = 'Action.TriggerEvent';
+            Config = 
+                {
+                    TagName = 'OnStart';
+                }
+        })
+    end)
 
-	self.Instance:Execute({
-		Name = 'Action.TriggerEvent';
-		Config = 
-			{
-				TagName = 'OnStart';
-			}
-	})
 end
 
 function AbilityHandler:OnStop()
-	self.Instance:Execute({
-		Name = 'Action.TriggerEvent';
-		Config = 
-			{
-				TagName = 'OnStop';
-			}
-	})
+
+
+    task.spawn(function()
+        self.Instance:Execute({
+            Name = 'Action.TriggerEvent';
+            Config = 
+                {
+                    TagName = 'OnStop';
+                }
+        })
+    end)
 end
 
 function AbilityHandler.GetAbility(name,entityId)

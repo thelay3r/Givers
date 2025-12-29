@@ -24,7 +24,7 @@ function DamageComponent.TakeDamage(self: any & IEntityComponent,Enemy: IEntityC
     self:TriggerPassives('OnHit',
     {
         ['Enemy'] = Enemy;
-        ['Me'] = self;
+        ['Victim'] = self;
     })
 
 end

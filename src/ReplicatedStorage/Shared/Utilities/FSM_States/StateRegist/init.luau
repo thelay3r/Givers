@@ -14,7 +14,6 @@ local Cache = {}
 
 function StateRegist.Regist(name: string)
 	if Cache[name] then return Cache[name] end
-	print(name)
 	local state = TableHelper:DeepTableClone(require(script:FindFirstChild(name)))
 	
 	return state

@@ -5,7 +5,7 @@ local Modules = Utilities:WaitForChild('Modules')
 local LocalPlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.LocalPlayerInterfaces)
 local AbilityHandler = require(Modules:WaitForChild('AbilityHandler'))
 
-
+local AbilitesFolder = Shared:WaitForChild('Abilities')
 
 type IEntity = LocalPlayerInterfaces.IClientPlayerComponent
 
@@ -22,7 +22,14 @@ end
 function Component.AppendAbility(self: IEntity,pack: string,name: string)
     local UserId = self.Instance.UserId
 
-    local ability = AbilityHandler.createByName(pack, name)
+    assert(AbilitesFolder:FindFirstChild(pack), (`%s pack doesn't exist`):format(pack))
+    assert(AbilitesFolder[pack]:FindFirstChild(name), (`%s ability doesn't exist in %s pack`):format(name, pack))
+
+    
+    local abilityModule = AbilitesFolder[pack][name]:Clone()
+    local ability = AbilityHandler.new(require(abilityModule))
+    abilityModule:Destroy()
+    
     ability:BindToEntity(name,UserId)
     local Tree = ability.Instance.Tree
     local Config = Tree.Config
