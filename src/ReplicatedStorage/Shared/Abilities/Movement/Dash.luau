@@ -1,5 +1,20 @@
-return 
-{
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Bricks = ReplicatedStorage.Bricksv2
+
+local _Components = Bricks:WaitForChild('Components')
+local Data = Bricks:WaitForChild('Data')
+local _Registries = Data:WaitForChild('Registries')
+local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local Registry = require(_Components.Registry)
+
+local registry = Registry.new()
+
+registry.Inject = {
+    'Dash',
+}
+
+
+local ability = {
     Name = 'Action.Root';
     Tag = 'Main';
     Config = 
@@ -8,7 +23,8 @@ return
         KeyCode = Enum.KeyCode.Q;
         CoolDown = 1.75;
         IsActive = false;
-        Duration = .35;
+        Duration = 1;
+        MinDuration = 1;
     };
 
     {
@@ -17,52 +33,48 @@ return
         {
             Name = 'Condition.CheckBlackList';
             {
-                Name = 'Ability.SetAbilityActive';
+                Name = 'Action.SetAbilityActive';
                 Config = 
                 {
-                    ['Status'] = true;
+                    Status = true;
                 };
-
-                {
-                    Name = 'Ability.AbilityDuration';
-                    RequestedTags = {['Main'] = 'Main'};
-                    Config = {};
-                };
-
-                {
+            };
+            {
+                Name = 'Action.SetUsed';
+            };
+            {
+				Name = 'Action.SetStatusEffect';
+				Config = {
+					Effect = 'ActiveSkill';
+					Status = true;
+				};
+			};
+            {
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
             };
             {
-                Name = 'Ability.SetCoolDown';
-            };
-            {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['DashConfig'] = {From = 'DashDirection'};
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
-                Config = 
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance", ['DashDirection'] = "DashDirection" },
+                Config =   
                 {
-                    VFXType = 'Animations.Dash';
-                    Client = true;
-                    VfxCFG = {
+                    EventName = 'PlayVFX';
+                    EventData = {
+                        VFXType = 'Animations.Dash';
                         State = 'Start';
                         Pack = 'Default';
                     };
                 };
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Dash.Normal';
-                    Client = true;
-                    VfxCFG = {
+                    EventName = 'PlayVFX';
+                    EventData = {
+                        VFXType = 'Dash.Normal';
                         State = 'Start';
                         Pack = 'Movement';
 
@@ -70,15 +82,13 @@ return
                 }
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
-                    VfxCFG = {
+                    EventName = 'PlayVFX';
+                    EventData = {
+                        VFXType = 'Effects.Trail';
                         State = 'Start';
                         Pack = 'Movement';
                         
@@ -89,15 +99,13 @@ return
                 }
             };
             {
-                Name = 'NetWork.PlayVFX';
-                SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
+                Name = 'Network.PlayBindableEvent';
+                InjectParams = { ["Player"] = "Owner.Instance" },
                 Config = 
                 {
-                    VFXType = 'Effects.Trail';
-                    Client = true;
-                    VfxCFG = {
+                    EventName = 'PlayVFX';
+                    EventData = {
+                         VFXType = 'Effects.Trail';
                         State = 'Start';
                         Pack = 'Movement';
                         
@@ -107,13 +115,8 @@ return
                     };
                 }
             };
-            
             {
                 Name = 'Action.DashBodyVelocity';
-                SendParams = {
-                    ['DashConfig'] = {From = 'DashDirection'};
-                    ['Parent'] = {From = 'Owner', Path = {'Instance','Character','HumanoidRootPart'}}
-                };
                 Tag = 'BodyVelocityDash';
                 Config = 
                 {
@@ -140,8 +143,7 @@ return
                 }
             };
             {
-                Name = 'NetWork.Feint';
-            }
+                Name = 'Network.Feint';
             };
         };
         {
@@ -151,11 +153,20 @@ return
                 Name = 'Condition.IsActive?';
                 RequestedTags = {['Ability'] = 'Main'};
                 {
-                    Name = 'Ability.SetAbilityActive';
-                    Config = 
+                    Name = 'Condition.DurationElapsed';
                     {
-                        ['Status'] = false;
-                    }
+                        Name = 'Action.SetStatusEffect';
+                        Config = {
+                            Effect = 'ActiveSkill';
+                            Status = false;
+                        };
+                    };
+                    {
+                        Name = 'Action.SetAbilityActive';
+                        Config = {
+                            Status = false;
+                        };
+                    };
                 };
             },
         },
@@ -163,8 +174,14 @@ return
             Name = 'Event.OnDurationEnd';
             Tag = 'OnDurationEnd';
             {
-                Name = 'NetWork.UnBindFeint';
+                Name = 'Network.UnBindFeint';
             };
         }
     }
+}
+
+return 
+{
+    Ability = ability;
+    Registry = registry;
 }

@@ -10,6 +10,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
+local BlackList = require(ReplicatedStorage.Bricksv2.Data.Abilities.BlackList)
 local _AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
@@ -85,15 +86,32 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player:AppendAbility('Movement','Slide')
 end)
 
+local function IsActionBlocked(statusEffects)
+    for _, effectName in pairs(BlackList) do
+        if statusEffects[effectName] == true then
+			print(statusEffects[effectName],effectName,'ACTION BLOCKED')
+            return true
+        end
+    end
+    return false
+end
+
 BindableGlobal:Connect('LocalAbility', function(args)
 	_Player = LocalPlayerComponent:GetPlayer()
 	if not _Player.ClientData.Abilities[args.Name] then return end
+
+	local ClientReplica = _Player.Replica
+	local sessionData = ClientReplica.Data.Session
+
 	local abilityName = _Player.ClientData.Abilities[args.Name].Name
 	local ability = _Player:GetAbility(abilityName)
 	print(abilityName)
 	print(args.State)
+
 	ability[args.State](ability)
 end)
+
+
 
 
 BindableGlobal:Connect('ServerAbility', function(args)
@@ -102,11 +120,12 @@ BindableGlobal:Connect('ServerAbility', function(args)
 	local sessionData = ClientReplica.Data.Session
 	local Abilities = sessionData.Abilities
 	local ability = Abilities[args.Name]
-	
+
 	AbilityPacket:Fire(
 		{
 			Name = ability.Name;
 			State = args.State;
+			Blocked = IsActionBlocked(sessionData.StatusEffects);
 		})
 
 end)

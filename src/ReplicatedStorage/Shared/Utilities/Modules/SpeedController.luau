@@ -68,7 +68,6 @@ function Methods.Amplify(self: ISpeedComponent,Data: IDataAmplify)
 	if _type == 'DeBuff' then
 		local AllBuffes = {}
 		for name,v in pairs(this_Data.Cache) do
-			print(name)
 			self:Revert({Name = name})
 		end
 		x = math.round((this_Data.CurrentSpeed / 100 * Data.Percent)*10)/10

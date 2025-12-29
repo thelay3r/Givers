@@ -99,8 +99,8 @@ local function DeSelectButton(button, UIbutton: GuiButton, Tool: ToolInterfaces.
 		button.Object.Threads['Duration']:Disconnect()
 	end
 
-	if os.clock() - Ability.LastUsed < Ability.MinDuration then
-		task.delay(Ability.LastUsed + Ability.MinDuration - os.clock(), function()
+	if os.clock() - Action.LastUsed < Action.MinDuration then
+		task.delay(Action.LastUsed + Action.MinDuration - os.clock(), function()
 			button.Selected = false
 			button.Object:OnCallback('OnDeselect')
 			TagManipulator(Tool, 'Moving')
@@ -125,12 +125,12 @@ local function SelectButton(button, UIbutton: GuiButton, Tool: ToolInterfaces.IT
 	if not Player.ClientData[Tool.Config.Storage][Tool.Config.Scope][Tool.Config.Name] then return end
 	local Ability = Player.ClientData[Tool.Config.Storage][Tool.Config.Scope][Tool.Config.Name]
 	
-	if (os.clock() - Ability.LastUsed) <= Ability.Cooldown then return end
+	if (os.clock() - Action.LastUsed) <= Action.Cooldown then return end
 	
 	Busy = true
 	
 	button.Object.Threads['Duration'] = RunService.Heartbeat:Connect(function()
-		if (os.clock() - Ability.LastUsed) >= Ability.Duration then 
+		if (os.clock() - Action.LastUsed) >= Action.Duration then 
 			DeSelectButton(button, UIbutton, Tool)
 			if button.Object.Threads['Duration'] then
 				button.Object.Threads['Duration']:Disconnect()

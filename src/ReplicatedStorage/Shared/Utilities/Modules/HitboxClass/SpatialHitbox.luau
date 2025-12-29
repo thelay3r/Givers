@@ -144,8 +144,6 @@ end
 function SpatialHitbox.Magnitude(sourcePos, targetParts, maxDistance, debug)
 	if typeof(sourcePos) == "Instance" and sourcePos:IsA("BasePart") then
 		sourcePos = sourcePos.Position
-	elseif typeof(sourcePos) == "CFrame" then
-		sourcePos = sourcePos.Position
 	end
 
 	if debug then

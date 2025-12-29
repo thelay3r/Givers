@@ -26,7 +26,7 @@ EntityComponent.__index = function(t, i)
 end
 
 function EntityComponent.GetEntity(Id)
-	return Entities[Id]
+	return Entities[tostring(Id)]
 end
 
 function EntityComponent.AddToList(Id,Entity)

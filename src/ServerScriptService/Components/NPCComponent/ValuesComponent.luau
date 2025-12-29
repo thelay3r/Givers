@@ -6,6 +6,7 @@ local Services = ServerScriptService:WaitForChild('Services')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
+local scopePool = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Memory.scopePool)
 local ReplicaService = require(Services:WaitForChild('ReplicaService'))
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 local ValuesInterface = require(Interfaces:WaitForChild('ValuesInterface'))
@@ -14,9 +15,9 @@ type IEntity = EntityInterfaces.IEntityComponent
 type IValues = ValuesInterface.IValues
 
 
-local ValuesComponent: IValues = {}
+local ValuesComponent: any | IValues = {}
 
-function ValuesComponent.SpecialSet(self: IPlayer, string, name: string, value: any)
+function ValuesComponent.SpecialSet(self: IEntity, name: string, value: any)
 
 	local SessionData = self.SessionData
 	
@@ -25,13 +26,21 @@ function ValuesComponent.SpecialSet(self: IPlayer, string, name: string, value: 
 	SessionData[name] = value
 end
 
+function ValuesComponent.SetAbility(self: IEntity, name: string, value: any)
+	local SessionData = self.SessionData
+	SessionData.Abilities[name] = value
+end
+function ValuesComponent.SetPassive(self: IEntity, name: string, value: any)
+	local SessionData = self.SessionData
+	SessionData.Passives[name] = value
+end
 function ValuesComponent.SetAttribute(self: IEntity, name: string, value: any)
 	
 	local SessionData = self.SessionData
 	local Scope = SessionData.Attributes
 	
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 	
 	Scope[name] = value
 end
@@ -41,8 +50,9 @@ function ValuesComponent.SetStatusEffect(self: IEntity, name: string, value: any
 	local SessionData = self.SessionData
 	local Scope = SessionData.StatusEffects
 
+
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -53,7 +63,7 @@ function ValuesComponent.SetCharacterData(self: IEntity, name: string, value: an
 	local Scope = SessionData.CharacterData
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -64,7 +74,7 @@ function ValuesComponent.SetEquipment(self: IEntity, name: string, value: any)
 	local Scope = SessionData.Equipment
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end
@@ -75,7 +85,7 @@ function ValuesComponent.SetSetting(self: IEntity, name: string, value: any)
 	local Scope = SessionData.Settings
 
 	local target = Scope[name]
-	if not target then return end
+	if target == nil then return end
 
 	Scope[name] = value
 end

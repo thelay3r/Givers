@@ -1,5 +1,6 @@
 
 local RunService = game:GetService("RunService")
+local Players = game:GetService('Players')
 
 local Replicator = {}
 
@@ -29,17 +30,26 @@ function RemoteController:FunctionFire(...)
 	end
 end
 
+function RemoteController:FireAll(...)
+	if (RunService:IsClient()) then return end
+
+	for _, player in ipairs(Players:GetPlayers()) do
+		self.Instance:FireClient(player, ...)
+	end
+end
 
 
 function RemoteController:FireInRadius(FirePosition, radius, ...)
 	local playersInRadius = {}
-	for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+
+	for _, player in ipairs(Players:GetPlayers()) do
 		local character = player.Character or player.CharacterAdded:Wait()
 		if not character or not player then return end
 		if (player.Character.PrimaryPart.Position - FirePosition).Magnitude < radius then
 			table.insert(playersInRadius, player)
 		end
 	end
+
 	for _, player in ipairs(playersInRadius) do
 		self.Instance:FireClient(player, ...)
 	end

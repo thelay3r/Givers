@@ -66,6 +66,10 @@ function NPCComponent.New(Model): NPCInterfaces.INPCComponent
 	local Character : Model? = self.Instance.Character
 	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
 	EntityComponent.AddToList(_Id,self)
+	task.wait(1/10)
+	Replicator:GetRemote('BindableGlobal'):BindableFire('SetUp', self.SessionData.UserId)
+
+	
 
 	return self
 	

@@ -7,7 +7,7 @@ local SessionTemplate = require(Templates.SessionData)
 
 local SessionComponent = {}
 
-function SessionComponent.LoadSession(self: IPlayerComponent)
+function SessionComponent.LoadSession(self)
 	return SessionTemplate()
 end
 

@@ -12,6 +12,7 @@ local Utilities = Shared:WaitForChild('Utilities')
 local NetWork = Utilities:WaitForChild('NetWork')
 
 --local profilestore = require(ServerScriptService.ServerPackages.profilestore)
+local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local ProfileStore = require(Services:WaitForChild('ProfileStore'))
 local ReplicaService = require(Services:WaitForChild('ReplicaService'))
 
@@ -21,7 +22,7 @@ local SessionTemplate = require(Templates:WaitForChild('SessionData'))
 
 
 
-type IProfile = typeof(ProfileTemplate())
+type IProfile = typeof(ProfileTemplate)
 type iSession = typeof(SessionTemplate())
 
 local LiveIndex = require(script.LiveIndex)
@@ -58,20 +59,26 @@ function DataProfile.LoadProfile(self: PlayerInterfaces.IServerPlayerComponent)
 	
 end
 
-function DataProfile.LoadReplica(self: PlayerInterfaces.IServerPlayerComponent)
+function DataProfile.LoadReplica(self: PlayerInterfaces.IServerPlayerComponent & EntityInterfaces.IEntityComponent & {LoadProfile: (PlayerInterfaces.IServerPlayerComponent) -> any})
 	
 	local replica = ReplicaService.New({
 		Token = TOKEN;
-		Data = {Profile = self.Profile.Data, Session = self.SessionData} :: {Profile: IProfile, Session: iSession};
+		Data = {Profile = self:LoadProfile(), Session = SessionTemplate()} :: {Profile: IProfile, Session: iSession};
 		Tags = 
 			{
 				UserId = self.Instance.UserId;
 			};
 	})
-	replica:Subscribe(self.Instance)
 	
 	self.Replica = replica
+	self.SessionData = self.Replica.Data.Session
+	self.Replica.Data.Session.UserId = tostring( self.Instance.UserId )
+
+	--if true then return replica end
+	task.wait(1)
+	replica:Subscribe(self.Instance)
 	
+
 	
 	return replica
 end

@@ -46,7 +46,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self:InitClientVFX()
 	self:InitCamera()
 	
-	
+	self.SessionData = self.Replica.Data.Session
 	PlayerComponent = self
 	
 	BindableGlobal:BindableFire('PlayerInitialized')

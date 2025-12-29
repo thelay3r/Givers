@@ -16,7 +16,6 @@ local parser = AbilityParser.new()
 local behaviorRegistry2 = Registry.new():Clone(behaviorRegistry)
 
 behaviorRegistry2:Register('Root', function(...: any)  
-	print('New Root Behavior')
 end)
 
 parser.BehaviorRegistry = behaviorRegistry2

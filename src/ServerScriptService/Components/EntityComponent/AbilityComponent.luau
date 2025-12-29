@@ -1,16 +1,16 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
 local PlayersService = game:GetService('Players')
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local AbilityHandler = require(ServerScriptService.Components.AbilityHandler)
+local AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
+
+local AbilitesFolder = ReplicatedStorage.Shared:WaitForChild('Abilities')
 
 type IEntity = EntityInterfaces.IEntityComponent & PlayerInterfaces.IServerPlayerComponent
 
 local Component = {}
 
 local Abilities = {}
-
 
 function Component.GetAbility(self: any & IEntity,name: string)
    -- return AbilityHandler.GetAbility(name,self.SessionData.UserId)
@@ -23,15 +23,20 @@ end
 function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
     local sessionData = self.SessionData
 
-    local ability = AbilityHandler.createByName(pack, name)
+    -- require ability module from Shared/Abilities and create ability instance via AbilityHandler
+    assert(AbilitesFolder:FindFirstChild(pack), (`%s pack doesn't exist`):format(pack))
+    assert(AbilitesFolder[pack]:FindFirstChild(name), (`%s ability doesn't exist in %s pack`):format(name, pack))
+
+    local abilityModule = AbilitesFolder[pack][name]:Clone()
+    local ability = AbilityHandler.new(require(abilityModule))
+    abilityModule:Destroy()
+
     ability:BindToEntity(name,sessionData.UserId)
     local Tree = ability.Instance.Tree
     local Config = Tree.Config
     
     ability.Instance.Tags['Owner'] = self
-
-    if not PlayersService:GetPlayerByUserId(sessionData.UserId) then return end
-
+    
     self:SetAbility(Config.KeyCode.Name,
     {
         Name = name;

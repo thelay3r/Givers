@@ -7,7 +7,7 @@ local SessionData = require(Templates:WaitForChild('SessionData'))
 local ProfileStoreTemplate = require(Templates:WaitForChild('ProfileStoreTemplate'))
 
 type ISessionData = typeof(SessionData())
-type IProfileTemplate = typeof(ProfileStoreTemplate())
+type IProfileTemplate = typeof(ProfileStoreTemplate)
 
 export type IReplicaServer = 
 	{
@@ -24,7 +24,10 @@ export type IReplicaServer =
 		Identify: (self: IReplicaServer) -> string;
 		IsActive: (self: IReplicaServer) -> boolean;
 		Destroy: (self: IReplicaServer) -> ();
-		
+		Data: {
+			Session : ISessionData;
+			Profile : IProfileTemplate;
+		};
 	}
 
 export type IServerPlayerMethods = {
@@ -34,8 +37,6 @@ export type IServerPlayerMethods = {
 
 export type IServerPlayerComponent = IServerPlayerMethods & {
 	Instance: Player,
-	SessionData: ISessionData,
-	Profile: {Data: IProfileTemplate},
 	Replica: IReplicaServer,
 }
 

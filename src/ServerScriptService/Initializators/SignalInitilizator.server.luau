@@ -9,18 +9,21 @@ local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 -- Server
 
 local Packets = require(NetWork:WaitForChild('Packets'))
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 local EntitiesComponent = require(ServerComponents:WaitForChild('EntitiesStorage'))
+local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 
 
 local Ability = Packets.Ability
 local ReplicateKeys = Packets.ReplicateKeys
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
+
 
 ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
@@ -38,13 +41,19 @@ end)
 
 
 Ability.OnServerEvent:Connect(function(Player, args)
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(Player.UserId)
+	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 
-	print(args)
 	local ability = Entity:GetAbility(args.Name)
 	if not ability then return end
-	print(ability)
+	local node = ability.Instance.Tree
+	local config = node.Config
+	local PlayerPressed = if args.State == 'OnStart' then true else false
+	config.PlayerPressed = PlayerPressed
+
+	if args.Blocked then
+		return
+	end
 	ability[args.State](ability)
 
 end)
@@ -52,12 +61,11 @@ end)
 
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
-	local Entity: EntityInterfaces.IEntityComponent = EntitiesComponent:Get(UserId)
-	
-end)
+	local Entity = EntityComponent.GetEntity(UserId) :: EntityInterfaces.IEntityComponent
+	Entity:AppendAbility('Default','Equip')
+	Entity:AppendAbility('Fists','M1')
+	Entity:AppendAbility('Fists','Critical')
+	Entity:AppendPassive('Default', 'Stun')
 
-BindableGlobal:Connect('PlayVFX',function(args)
-	if not args.FirePosition then args.FirePosition = Vector3.zero end
-
-	Replicator:GetRemote('VFX'):FireInRadius(args.FirePosition,512, args)
+	print(Entity)
 end)
