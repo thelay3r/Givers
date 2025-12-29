@@ -18,6 +18,7 @@ export type IEntityMethods = {
 
 export type IEntityComponent = IEntityMethods & IValues & {
 	SessionData: ISessionData,
+	Instance: Player;
 }
 
 return {}

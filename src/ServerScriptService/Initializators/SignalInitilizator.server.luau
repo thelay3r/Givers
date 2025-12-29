@@ -44,7 +44,6 @@ Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 
-	print(args)
 	local ability = Entity:GetAbility(args.Name)
 	if not ability then return end
 	local node = ability.Instance.Tree

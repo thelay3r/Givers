@@ -23,7 +23,7 @@ type INPcHandler = NPcHandlerInterfaces.NPcHandlerComponent
 
 local NPcHandler = {}
 
-local Methods = {}
+local Methods: { [string]: (INPcHandler, ...any) -> ...any } = {}
 
 local function RandomVector3(min,max)
 	return Vector3.new(math.random(min,max),0,math.random(min,max))
@@ -32,7 +32,7 @@ end
 function Methods._SpawnBranch(self: INPcHandler)
 	if not self.Active then return end
 	
-	TaskManager:CreateTask(self,'SpawnBranch',nil,function()
+	TaskManager:CreateTask(self,'SpawnBranch',0,function()
 		while self.Active do
 			task.wait(1)
 			local AliveIndexsCount = TableHelper:CheckIndexCount(self.AliveNPCs)
@@ -88,7 +88,7 @@ function NPcHandler.new(Part: BasePart)
 	local Count = (Part:GetAttribute('Count')) or 1
 	
 	
-	local self: INPcHandler = setmetatable(
+	local self = setmetatable(
 		{
 			AliveNPCs = {};
 			Active = false;
@@ -103,7 +103,7 @@ function NPcHandler.new(Part: BasePart)
 		__index = function(t,key)
 			return Methods[key] or NPcHandler[key]
 		end,
-	}) 
+	}) :: any & INPcHandler
 	
 	self.Active = true
 	self:_SpawnBranch()

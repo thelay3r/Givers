@@ -34,19 +34,16 @@ EntityRegistry:Register('AutoCombo', function(self,node)
     TaskManager:CreateTask(Owner, 'AutoCombo', 0, function(a0)
         while Main.PlayerPressed do
             task.wait(Main.CoolDown - .1)
-            print(Main)
             if not Main.PlayerPressed then
                 TaskManager:CancelTask(Owner, 'AutoCombo')
                 break
             end
-            print('try')
 
             self:Execute({
             Name = 'Action.TriggerEvent',
             Config = {
                 TagName = 'OnStart',
-            }
-        })
+            }})
         end
     end)
 
@@ -107,6 +104,10 @@ EntityRegistry:Register('Combo', function(self, node)
             })
         end)
     end
+
+    TaskManager:CreateTask(Entity, 'ResetCombo', 1.5, function()  
+        Session.StatusEffects.CurrentCombo = 0
+    end)
 
 end)
 

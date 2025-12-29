@@ -14,9 +14,9 @@ type IEntity = EntityInterfaces.IEntityComponent
 type IValues = ValuesInterface.IValues
 
 
-local ValuesComponent: IValues = {}
+local ValuesComponent: any | IValues = {}
 
-function ValuesComponent.SpecialSet(self: IPlayer, string, name: string, value: any)
+function ValuesComponent.SpecialSet(self: IEntity, name: string, value: any)
 
 	local SessionData = self.SessionData
 	

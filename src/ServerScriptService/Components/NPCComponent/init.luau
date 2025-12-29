@@ -66,7 +66,7 @@ function NPCComponent.New(Model): NPCInterfaces.INPCComponent
 	local Character : Model? = self.Instance.Character
 	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
 	EntityComponent.AddToList(_Id,self)
-
+	
 	return self
 	
 end

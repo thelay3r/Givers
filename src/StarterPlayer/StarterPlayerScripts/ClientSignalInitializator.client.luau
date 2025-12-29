@@ -107,7 +107,6 @@ BindableGlobal:Connect('LocalAbility', function(args)
 	local ability = _Player:GetAbility(abilityName)
 	print(abilityName)
 	print(args.State)
-	if IsActionBlocked(sessionData.StatusEffects) then return end
 
 	ability[args.State](ability)
 end)
