@@ -24,7 +24,7 @@ end
 
 function ClientDataComponent.ReplicaInit(self: ILocalPlayer.IClientPlayerComponent)
 	ReplicaClient.OnNew(Token,function(replica)
-		self.Replica = replica 
+		self.Replica = replica
 		Loaded = true
 		
 		warn('Replica started!')

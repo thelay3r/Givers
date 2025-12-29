@@ -20,7 +20,9 @@ end
 function ValuesComponent.SetAbility(self: IPlayer, name: string, value: any)
 	self.Replica:Set({'Session', 'Abilities', name}, value)
 end
-
+function ValuesComponent.SetPassive(self: IPlayer, name: string, value: any)
+	self.Replica:Set({'Session', 'Passives', name}, value)
+end
 function ValuesComponent.SetAttribute(self: IPlayer, name: string, value: any)
 	self.Replica:Set({'Session', 'Attributes', name}, value)
 end

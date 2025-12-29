@@ -25,6 +25,14 @@ function ValuesComponent.SpecialSet(self: IEntity, name: string, value: any)
 	SessionData[name] = value
 end
 
+function ValuesComponent.SetAbility(self: IEntity, name: string, value: any)
+	local SessionData = self.SessionData
+	SessionData.Abilities[name] = value
+end
+function ValuesComponent.SetPassive(self: IEntity, name: string, value: any)
+	local SessionData = self.SessionData
+	SessionData.Passives[name] = value
+end
 function ValuesComponent.SetAttribute(self: IEntity, name: string, value: any)
 	
 	local SessionData = self.SessionData

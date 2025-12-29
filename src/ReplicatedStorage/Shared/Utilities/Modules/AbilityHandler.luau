@@ -14,7 +14,7 @@ local Registries = Data:WaitForChild('Registries')
 
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
-local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
+local ParserObject = require(Components:WaitForChild('ParserObject'))
 local scopeRegistry = require(Registries:WaitForChild('ScopeRegistry'))
 local RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local _RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
@@ -41,6 +41,8 @@ local Abilities = {}
 local function addToCache(name, entityId, ability)
     if (not Abilities[entityId]) then Abilities[entityId] = {} end
     Abilities[entityId][name] = ability
+
+    
 end
 
 local function GetFromCache(name, entityId)
@@ -70,7 +72,7 @@ function AbilityHandler.createByName(packName, abilityName) : typeof(AbilityHand
     assert(AbilitesFolder[packName]:FindFirstChild(abilityName), (`%s in %s pack doesnt exist!`):format(abilityName, packName))
 
     local ability = AbilityHandler.new(
-        require(AbilitesFolder[packName][abilityName])
+        require(AbilitesFolder[packName][abilityName]:Clone())
     )
 
 	print(ability)
@@ -79,7 +81,7 @@ end
 
 function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(AbilityParser)
 	-- create parser-backed ability instance using shared parser factory
-	local ability = AbilityParseObject.new()
+	local ability = ParserObject.new()
 	
 	RegistryManager:InjectRegistry(config.Registry)
 	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
@@ -102,6 +104,9 @@ function AbilityHandler:Build()
 end
 
 function AbilityHandler:OnStart()
+
+    print(Abilities,'Tag ABILITY ZDEC')
+
 	self.Instance:Execute({
 		Name = 'Action.TriggerEvent';
 		Config = 

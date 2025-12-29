@@ -15,12 +15,5 @@ local behaviorRegistry = Registry.new()
 local function hello(msg)
 	print(msg)
 end
-behaviorRegistry:Register('Test', function(self, node)
-	hello('Test')
-end)
-behaviorRegistry:Register('Hello', function(self, node)
-	print(node)
-	hello('print')
-end)
 
 return behaviorRegistry

@@ -41,7 +41,6 @@ end)
 
 conditionRegistry:Register('OnCoolDown?', function(self,node)
 	local nodeConfig = self.Tags['Main']
-	print(nodeConfig, 'ZZZCOOLDOWN')
 	local lastUsed = (nodeConfig.LastUsed) or (0)
 	if tick() - lastUsed <= nodeConfig.CoolDown then return false end	
 	return true
@@ -75,7 +74,7 @@ end)
 conditionRegistry:Register('IsEquipped?', function(self,node)  
 
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
-	local session = Entity.Replica.Data.Session
+	local session = Entity.SessionData
 	return if session.CurrentEquipped ~= 'none' then true else false
 end)
 
@@ -113,7 +112,6 @@ end)
 conditionRegistry:Register('DurationElapsed', function(self,node)  
 	local elapsed = tick() - (self.Tags['Main'].CastTime or tick())
 	local minDuration = self.Tags['Main'].MinDuration or 0
-	print(elapsed >= minDuration, 'Tag zzz')
 	return elapsed >= minDuration
 end)
 
@@ -126,7 +124,7 @@ conditionRegistry:Register('BlackList?', function(self,node)
 	local RootCFG = self.Tags['Main']
 
 	
-	local sessionData = (Entity.SessionData) or (Entity.Replica.Data.Session)
+	local sessionData = (Entity.SessionData) or (Entity.SessionData)
 
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
@@ -150,7 +148,6 @@ conditionRegistry:Register('CheckBlackList', function(self,node)
 			RequestedTags = {['Owner'] = 'Owner'};
 			Config = TableHelper:DeepTableClone(node.Config);
 		})
-	print(node.Config)
 	if not Status then return end
 	
 
@@ -169,7 +166,6 @@ conditionRegistry:Register('CheckBlackList', function(self,node)
 		RequestedTags = {['Main'] = 'Main'};
 		Config = TableHelper:DeepTableClone(node.Config);
 	})
-	print(CoolDown,Status,'Tag Ueban 777')
 	return if (CoolDown and Status) then true else false
 end)
 

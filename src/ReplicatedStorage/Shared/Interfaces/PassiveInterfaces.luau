@@ -4,16 +4,15 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Templates = Shared.Templates
 
 export type IPassiveMethods = {
-	New: (self: IPassiveMethods) -> ();
-	SetupData: (level: number) -> ();
+	Trigger: (self: IPassiveMethods) -> ();
 }
 
 export type IPassive = {
-	OnStart: (self: IPassive) -> ();
+	Trigger: (self: IPassive) -> ();
 }
 
 export type IPassiveComponents = IPassiveMethods & {
-	
+	Instance: IPassiveComponents;
 }
 
 return {}

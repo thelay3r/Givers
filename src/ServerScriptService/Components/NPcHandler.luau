@@ -69,6 +69,18 @@ function Methods._Create(self: INPcHandler)
 	local Humanoid = CharacterData.Humanoid
 
 	
+	task.delay(2,function()
+		print(npc,'TAG SOME NPC')
+		-- local ability = npc:GetAbility('Equip')
+		-- ability['OnStart'](ability)
+
+		-- while task.wait(1) do
+		-- 	local m1 = npc:GetAbility('M1')
+		-- 	m1['OnStart'](m1)
+		-- end
+
+	end)
+
 	
 	Humanoid.Died:Once(function()
 		self.AliveNPCs[npc.SessionData.UserId] = nil

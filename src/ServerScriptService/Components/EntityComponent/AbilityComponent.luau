@@ -34,10 +34,10 @@ function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
     local Tree = ability.Instance.Tree
     local Config = Tree.Config
     
+    print('Tag Here set Owner',self.Instance,ability)
     ability.Instance.Tags['Owner'] = self
-
-    if not PlayersService:GetPlayerByUserId(sessionData.UserId) then return end
-
+    print(ability)
+    
     self:SetAbility(Config.KeyCode.Name,
     {
         Name = name;

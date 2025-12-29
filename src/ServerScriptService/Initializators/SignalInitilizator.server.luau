@@ -61,9 +61,11 @@ end)
 
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
-	local Entity = EntitiesComponent:Get(UserId) :: EntityInterfaces.IEntityComponent
-	print(EntitiesComponent:Get(tostring(UserId)),UserId)
+	local Entity = EntityComponent.GetEntity(UserId) :: EntityInterfaces.IEntityComponent
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
+	Entity:AppendPassive('Default', 'Stun')
+
+	print(Entity)
 end)

@@ -31,6 +31,7 @@ behaviorRegistry:Register('Wait', function(self, node)
 end)
 
 
+
 behaviorRegistry:Register('Raycast', function(self,node)
 	local config = node.Config
 
@@ -55,7 +56,6 @@ behaviorRegistry:Register('TriggerPassive', function(self, node)
 			{
 				Name = 'Action.TriggerEvent',
 				Config = {
-					Projectile = node.Additional.Projectile,
 					TagName = node.Config.PassiveEvent
 				}
 			})

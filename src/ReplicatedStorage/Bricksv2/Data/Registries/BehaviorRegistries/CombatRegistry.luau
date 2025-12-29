@@ -51,7 +51,7 @@ end)
 
 EntityRegistry:Register('Combo', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
-	local Session = Entity.Replica.Data.Session
+	local Session = Entity.SessionData
     local config = node.Config
     local combo = config.Combo
     local timings = config.Timings

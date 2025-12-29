@@ -8,6 +8,7 @@ local _Registries = Data:WaitForChild('Registries')
 
 local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local Config = require(ReplicatedStorage.SmartBone.Dependencies.Config)
 local Registry = require(Components:WaitForChild('Registry'))
 local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
@@ -24,6 +25,7 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 			Tag = node.Config.TagName;
 		})
 		selectedBlock = self.Events[node.Config.TagName]
+		--! 
 	end
 	selectedBlock.TriggerArgs = node.Config
 

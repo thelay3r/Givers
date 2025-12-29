@@ -6,10 +6,6 @@ local Modules = Utilites:WaitForChild('Modules')
 local TableHelper = require(Modules:WaitForChild('TableHelper'))
 local Interfaces = Shared:WaitForChild('Interfaces')
 
-local PassiveInterfaces = require(Interfaces:WaitForChild('PassiveInterfaces'))
-
-type IPassiveComponents = PassiveInterfaces.IPassive
-
 local SessionData = {
 	
 	UserId = 'UserId';
@@ -65,7 +61,7 @@ local SessionData = {
 	
 	Packs = {};
 	Abilities = {};
-	Passives = {}:: {IPassiveComponents};
+	Passives = {};
 	
 	PressedKeys = {};
 	

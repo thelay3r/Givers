@@ -35,7 +35,6 @@ end)
 
 behaviorRegistry:Register('SetUsed', function(self, node)
 	local Main = self.Tags['Main']
-	print(Main,'Tag ZZZZZ')
 	Main.LastUsed = tick()
 end)
 
@@ -80,9 +79,6 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 				Config = newCfg;
 
 			})
-		print((isInputReleased) , isMinDurationPassed)
-		print(not Validate,isTimeExpired,shouldManualStop)
-
 		local isInvalid = not Validate
 		if isInvalid or isTimeExpired or shouldManualStop then
 			self:Execute({

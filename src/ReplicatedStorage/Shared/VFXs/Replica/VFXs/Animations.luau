@@ -63,7 +63,6 @@ local function RunStop(args)
 end
 
 local function DashStart(args)
-    print(args,'Tag Dash!!!')
     local Player: Player = args.Player
     if not Player then return end
     local Character = Player.Character 
