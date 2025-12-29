@@ -86,16 +86,6 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player:AppendAbility('Movement','Slide')
 end)
 
-BindableGlobal:Connect('LocalAbility', function(args)
-	_Player = LocalPlayerComponent:GetPlayer()
-	if not _Player.ClientData.Abilities[args.Name] then return end
-	local abilityName = _Player.ClientData.Abilities[args.Name].Name
-	local ability = _Player:GetAbility(abilityName)
-	print(abilityName)
-	print(args.State)
-	ability[args.State](ability)
-end)
-
 local function IsActionBlocked(statusEffects)
     for _, effectName in pairs(BlackList) do
         if statusEffects[effectName] == true then
@@ -106,6 +96,24 @@ local function IsActionBlocked(statusEffects)
     return false
 end
 
+BindableGlobal:Connect('LocalAbility', function(args)
+	_Player = LocalPlayerComponent:GetPlayer()
+	if not _Player.ClientData.Abilities[args.Name] then return end
+
+	local ClientReplica = _Player.Replica
+	local sessionData = ClientReplica.Data.Session
+
+	local abilityName = _Player.ClientData.Abilities[args.Name].Name
+	local ability = _Player:GetAbility(abilityName)
+	print(abilityName)
+	print(args.State)
+	if IsActionBlocked(sessionData.StatusEffects) then return end
+
+	ability[args.State](ability)
+end)
+
+
+
 
 BindableGlobal:Connect('ServerAbility', function(args)
 	local _Player = LocalPlayerComponent:GetPlayer()
@@ -114,14 +122,11 @@ BindableGlobal:Connect('ServerAbility', function(args)
 	local Abilities = sessionData.Abilities
 	local ability = Abilities[args.Name]
 
-	if IsActionBlocked(sessionData.StatusEffects) then
-		return
-	end
-
 	AbilityPacket:Fire(
 		{
 			Name = ability.Name;
 			State = args.State;
+			Blocked = IsActionBlocked(sessionData.StatusEffects);
 		})
 
 end)

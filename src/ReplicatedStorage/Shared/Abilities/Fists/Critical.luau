@@ -19,7 +19,7 @@ local ability = {
 		KeyCode = Enum.KeyCode.R;
 
 		Duration = 1;
-		MinDuration = .5;
+		MinDuration = .9;
 		CoolDown = .5;
 		LastUsed = 0;
 
@@ -57,6 +57,9 @@ local ability = {
 					Name = 'Action.SetAbilityActive';
 					Config = { Status = true; };
 				};
+				{
+					Name = 'Action.AutoCombo';
+				}
 		};
 	}
 	},

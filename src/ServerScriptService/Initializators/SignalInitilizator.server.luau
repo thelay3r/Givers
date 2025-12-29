@@ -9,6 +9,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 -- Server
 
@@ -46,7 +47,14 @@ Ability.OnServerEvent:Connect(function(Player, args)
 	print(args)
 	local ability = Entity:GetAbility(args.Name)
 	if not ability then return end
-	print(ability)
+	local node = ability.Instance.Tree
+	local config = node.Config
+	local PlayerPressed = if args.State == 'OnStart' then true else false
+	config.PlayerPressed = PlayerPressed
+
+	if args.Blocked then
+		return
+	end
 	ability[args.State](ability)
 
 end)

@@ -136,6 +136,9 @@ local ability = {
 					Name = "Action.SetUsed",
 				},
 				{
+					Name = 'Action.UnBindSlideJump',
+				},
+				{
 					Name = "Network.PlayBindableEvent",
 					InjectParams = { ["Player"] = "Owner.Instance" },
 					Config = {

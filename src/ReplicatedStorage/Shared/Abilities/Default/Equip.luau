@@ -20,7 +20,8 @@ local ability = {
 		KeyCode = Enum.KeyCode.E;
 
 		Duration = 1;
-		CoolDown = 5;
+		MinDuration = 1,
+		CoolDown = 1;
 		LastUsed = 0;
 
 		IsActive = false;

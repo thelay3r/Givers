@@ -206,6 +206,16 @@ registry:Register("SlideStart", function(self, node)
 end)
 
 registry:Register("UnBindSlideJump", function(self, node)
+	local owner = self.Tags["Owner"]
+
+	local Character = owner.Instance.Character :: Model
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid") :: Humanoid
+	local RootPart = Character:FindFirstChild("HumanoidRootPart") :: BasePart
+
+	TaskManager:CreateTask(RootPart, "DelayJumpPower", .2, function(a0)  
+		Humanoid.JumpPower = 50
+	end)
+
 	BindableGlobal:Disconnect("SlideJump")
 end)
 

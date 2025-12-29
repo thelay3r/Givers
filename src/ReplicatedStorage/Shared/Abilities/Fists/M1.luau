@@ -21,9 +21,9 @@ local ability = {
 			Name = 'Fists_M1';
 			KeyCode = Enum.UserInputType.MouseButton1;
 
-			Duration = .5;
-			MinDuration = .5,
-			CoolDown = .5;
+			Duration = .35;
+			MinDuration = .35,
+			CoolDown = .35;
 			LastUsed = 0;
 
 			IsActive = false;
@@ -40,6 +40,12 @@ local ability = {
 						Config = {
 							Combo = {
 								'Fist';
+							},
+							Timings = {
+								['Fist'] = {
+									Combo = 2;
+									Main = .35;
+								}
 							}
 						},
 						{
@@ -58,6 +64,9 @@ local ability = {
 								Status = true;
 							};
 						};
+						{
+							Name = 'Action.AutoCombo';
+						}
 					};
 			};
 		},

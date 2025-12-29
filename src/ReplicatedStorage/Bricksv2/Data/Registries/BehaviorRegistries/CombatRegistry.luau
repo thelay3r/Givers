@@ -23,13 +23,41 @@ EntityRegistry:Register('Root', function(self, node)
     print('New Root Behavior')
 end)
 
+EntityRegistry:Register('AutoCombo', function(self,node)  
+    local Main = self.Tags['Main']
+    local Owner = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 
+    if TaskManager.GetTask(Owner, 'AutoCombo') then
+        return
+    end
+     
+    TaskManager:CreateTask(Owner, 'AutoCombo', 0, function(a0)
+        while Main.PlayerPressed do
+            task.wait(Main.CoolDown - .1)
+            print(Main)
+            if not Main.PlayerPressed then
+                TaskManager:CancelTask(Owner, 'AutoCombo')
+                break
+            end
+            print('try')
+
+            self:Execute({
+            Name = 'Action.TriggerEvent',
+            Config = {
+                TagName = 'OnStart',
+            }
+        })
+        end
+    end)
+
+end)
 
 EntityRegistry:Register('Combo', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.Replica.Data.Session
     local config = node.Config
     local combo = config.Combo
+    local timings = config.Timings
     if not combo then return end
 
     Session.StatusEffects.CurrentCombo += 1
@@ -66,7 +94,7 @@ EntityRegistry:Register('Combo', function(self, node)
         self:Execute({
             Name = 'Action.SetRootCoolDown';
             Config = {
-                CoolDown = 2;
+                CoolDown = (timings[TargetAction].Combo) or 2;
             }
         })
 
@@ -74,7 +102,7 @@ EntityRegistry:Register('Combo', function(self, node)
             self:Execute({
                 Name = 'Action.SetRootCoolDown';
                 Config = {
-                    CoolDown = .5;
+                    CoolDown = (timings[TargetAction].Main) or .35; 
                 }
             })
         end)
