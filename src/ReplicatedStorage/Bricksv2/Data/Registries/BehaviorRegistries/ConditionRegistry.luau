@@ -85,6 +85,7 @@ conditionRegistry:Register('RayCheck',function(self,node)
 	local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
 	local Config = node.Config
 
+	
 
 	local cast = self:Execute({
 		Name = 'Action.Raycast';
@@ -125,7 +126,6 @@ conditionRegistry:Register('BlackList?', function(self,node)
 	
 	local sessionData = (Entity.SessionData)
 
-	print(self.Tags['Owner'],'UEBOL',self.Tags['Owner'].Instance.Character.Name)
 	
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 

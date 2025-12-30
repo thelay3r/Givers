@@ -71,14 +71,14 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 		local isInputReleased = not MainConfig.Pressed
 		local shouldManualStop = (isInputReleased) and isMinDurationPassed
 
-		-- local Validate = self:Execute(
-		-- 	{
-		-- 		Name = 'Condition.BlackList?';
-		-- 		RequestedTags = {['Owner'] = 'Owner'};
-		-- 		Config = newCfg;
+		local Validate = self:Execute(
+			{
+				Name = 'Condition.BlackList?';
+				RequestedTags = {['Owner'] = 'Owner'};
+				Config = newCfg;
 
-		-- 	})
-		local isInvalid = not true
+			})
+		local isInvalid = not Validate
 		if isInvalid or isTimeExpired or shouldManualStop then
 			self:Execute({
 				Name = 'Action.TriggerEvent';

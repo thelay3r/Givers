@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerScriptService = game:GetService('ServerScriptService')
 --local ServerStorage = game:GetService('ServerStorage')
@@ -9,6 +10,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 -- Server
@@ -40,6 +42,7 @@ end)
 
 
 
+
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
@@ -62,10 +65,14 @@ end)
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
 	local Entity = EntityComponent.GetEntity(UserId) :: EntityInterfaces.IEntityComponent
+	Entity.SpeedController = SpeedController.new(Entity)
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendPassive('Default', 'Stun')
+	
 
-	print(Entity)
+	local Player = Players:GetPlayerFromCharacter(Entity.Instance.Character)
+	if not Player then return end
+	Replicator:GetRemote('Global'):Fire(Player,'GetInfo',Entity.SpeedController.Data)
 end)

@@ -1,10 +1,6 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Templates = Shared:WaitForChild('Templates')
-
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
-local SessionTemplate = require(Templates.SessionData)
 
 local DamageComponent = {}
 
@@ -19,12 +15,12 @@ function DamageComponent.TakeDamage(self: any & IEntityComponent,Enemy: IEntityC
     local sessionData = self.SessionData
     local Attributes = sessionData.Attributes
 
-    Attributes.Health = math.clamp(self.SessionData.Attributes.Health - Damage, 1, self.SessionData.Attributes.MaxHealth)
+    self:SetAttribute('Health',  math.clamp(self.SessionData.Attributes.Health - Damage, 1, self.SessionData.Attributes.MaxHealth))
     Humanoid.Health = Attributes.Health
-    self:TriggerPassives('OnHit',
-    {
+    self:TriggerPassives('OnHit',{
         ['Enemy'] = Enemy;
         ['Victim'] = self;
+        ['StunTime'] = math.random(1,5);
     })
 
 end

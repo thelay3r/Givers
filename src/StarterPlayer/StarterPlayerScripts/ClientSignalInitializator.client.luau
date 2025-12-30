@@ -11,7 +11,9 @@ local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
 local BlackList = require(ReplicatedStorage.Bricksv2.Data.Abilities.BlackList)
+local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local _AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
@@ -84,6 +86,8 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player:AppendAbility('Movement','Dash')
 	Player:AppendAbility('Movement','Vault')
 	Player:AppendAbility('Movement','Slide')
+	Player.SpeedController = SpeedController.new(Player)
+	
 end)
 
 local function IsActionBlocked(statusEffects)
@@ -97,7 +101,7 @@ local function IsActionBlocked(statusEffects)
 end
 
 BindableGlobal:Connect('LocalAbility', function(args)
-	_Player = LocalPlayerComponent:GetPlayer()
+	local _Player = LocalPlayerComponent:GetPlayer()
 	if not _Player.ClientData.Abilities[args.Name] then return end
 
 	local ClientReplica = _Player.Replica
@@ -105,9 +109,6 @@ BindableGlobal:Connect('LocalAbility', function(args)
 
 	local abilityName = _Player.ClientData.Abilities[args.Name].Name
 	local ability = _Player:GetAbility(abilityName)
-	print(abilityName)
-	print(args.State)
-
 	ability[args.State](ability)
 end)
 

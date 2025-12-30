@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilites = Shared:WaitForChild('Utilities')
 local Modules = Utilites:WaitForChild('Modules')
+local SpeedModuleInterface = require(ReplicatedStorage.Shared.Interfaces.SpeedModuleInterface)
 local TableHelper = require(Modules:WaitForChild('TableHelper'))
 local Interfaces = Shared:WaitForChild('Interfaces')
 
@@ -14,6 +15,14 @@ local SessionData = {
 	
 	CurrentEquipped = 'none';
 	CurrentInArm = 'none';
+
+	SpeedData = {
+		DefaultSpeed = 12,
+		CurrentSpeed = 12,
+		LastSpeed = 12,
+		Cache = {} :: {[string]: SpeedModuleInterface.SpeedModifier},
+		PendingValidation = {},
+	};
 
 	Attributes = 
 		{

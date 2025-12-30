@@ -23,9 +23,10 @@ local function SetValue(self: IEntity, scope: any, name: string, value: any, sub
     if target == nil then return end
     
     if subKey then
+        print(scope,name,value)
         if value == nil then
-			table.clear(target[subKey])
-		end
+            table.clear(target[subKey])
+        end
         target[subKey] = value
     else
         scope[name] = value

@@ -1,15 +1,15 @@
-local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local RunService = game:GetService("RunService")
-local ServerScriptService = game:GetService("ServerScriptService")
-local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 if RunService:IsClient() then return {} end
+
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
+
 
 local Components = Bricks:WaitForChild('Components')
 local _Data = Bricks:WaitForChild('Data')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
-local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local HitboxClass = require(ReplicatedStorage.Shared.Utilities.Modules.HitboxClass)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 
@@ -27,10 +27,29 @@ end)
 
 StunRegistry:Register('Stun', function(self,node)
     local EventData = self.Tags['OnHit']['EventData']
-    local Victim = EventData['Victim']
+    local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
+    local StunTime = EventData['StunTime']
 
     
+    local now = tick()
+    local newStun = now + StunTime 
+
+    if newStun <= (node.Config.LastStunTime or 0) then return end
+    node.Config.LastStunTime = newStun
+
+    local TaskTime = math.max(node.Config.LastStunTime - now, 0) 
     Victim:SetStatusEffect('Stun',true)
+
+    Victim.SpeedController:Amplify({
+        Name = 'Stun';
+        Percent = -80;
+    })
+
+    TaskManager:CreateTask(Victim, 'Stun', TaskTime, function(a0) 
+        Victim:SetStatusEffect('Stun',false)
+        Victim.SpeedController:Revert({Name = 'Stun'})
+    end)
+    
 end)
 
 

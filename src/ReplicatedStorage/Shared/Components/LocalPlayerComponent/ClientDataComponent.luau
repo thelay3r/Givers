@@ -33,6 +33,7 @@ function ClientDataComponent.ReplicaInit(self: ILocalPlayer.IClientPlayerCompone
 	while (not Loaded) do task.wait(1/10) end
 
 	self.Replica:OnChange(function(Method,Path,new,old)
+		print(Path,new,old, 'Tag Change Replica')
 	end)
 	
 	

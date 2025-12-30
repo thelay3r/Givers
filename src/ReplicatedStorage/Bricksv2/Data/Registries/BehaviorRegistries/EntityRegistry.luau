@@ -8,6 +8,7 @@ local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
+local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
@@ -25,32 +26,35 @@ EntityRegistry:Register('Root', function(self, node)
 end)
 
 EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
-	local Entity = node.Additional['Owner']
+	local Entity = node.Additional['Owner'] :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
 	local config = node.Config
 	local Character = Entity.Instance.Character
 
-	local Speed = SpeedController.new(Character)
+	local Speed = Entity.SpeedController
+
 	local targetSpeed = config.BaseSpeed * (config.Acceleration or 1)
 	local updTime = config.AccelerationTime * 60
 		
 	local diff = targetSpeed - config.BaseSpeed
 	local speedPerFrame = diff / (updTime)
-	local percentPerFrame = (speedPerFrame / config.BaseSpeed) * 100
 
 	if config.AccelerationTime == 0 then
 		config.AccelerationTime = 0.01
 	end
-
+	
 	TaskManager:CreateTask(self, 'Accelerat', 0, function(a0)
 		for i=1, updTime do
+			local currentSpeed = 12 + (speedPerFrame * i)
+			local percentChange = ((currentSpeed - 12) / 12) * 100
 			Speed:Amplify(
 				{
 					Name = (config.Name) or ('AcceleratMoveSpeed')..Character.Name;
 					Type = 'Buff';
-					Percent = percentPerFrame;
-					InitSpeed = config.BaseSpeed;
+					Percent = percentChange;
+					UseBaseSpeed = true;
 				})
+			
 			task.wait(1/60)
 		end
 	end)
@@ -67,7 +71,7 @@ EntityRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 		config['Accelerat'] = nil
 	end
 
-	local Speed = SpeedController.new(Character)
+	local Speed = SpeedController.new(Entity)
 	Speed:Revert(
 		{
 			Name = config.Name or ('AcceleratMoveSpeed')..Character.Name;
