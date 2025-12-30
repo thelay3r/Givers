@@ -1,10 +1,14 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared:WaitForChild('Templates')
 
 
+local TaskManager = require(script.Parent.TaskManager)
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
+local LocalPlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.LocalPlayerInterfaces)
+local Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
 local SpeedInterface = require(Interfaces:WaitForChild('SpeedModuleInterface'))
 local SpeedTemplate = require(Templates:WaitForChild('SpeedTemplate'))
 
@@ -17,6 +21,7 @@ type SpeedInfoReturn = SpeedInterface.SpeedInfoReturn
 type AmplifyConfig = SpeedInterface.AmplifyConfig
 type RevertConfig = SpeedInterface.RevertConfig
 
+local PendingRevert = {}
 
 -- ============================================
 -- КОНФИГУРАЦИЯ
@@ -106,10 +111,13 @@ function Methods._SetSpeed(self: ISpeedComponent, Speed: number)
 		return false
 	end
 
-
-	-- Сохраняем предыдущее значение и применяем новое
+	if RunService:IsClient() and (not self.Entity.SessionData.SpeedData.CanChange) then
+		return
+	end
+	
 	self.Entity:SetSpeedData('LastSpeed',this_Data.CurrentSpeed)
 	self.Entity:SetSpeedData('CurrentSpeed',validatedSpeed)
+	
 	Humanoid.WalkSpeed = validatedSpeed
 
 
@@ -158,17 +166,14 @@ function Methods.Amplify(self: ISpeedComponent, Data: AmplifyConfig)
 	local Priority = Data.Priority or 0
 
 
-	-- Если модификатор уже применён, реверти старый
 	if this_Data.Cache[Name] then
-		self:Revert({ Name = Name })
+		self:Revert({ Name = Name,Replicated = Data.Replicated })
 	end
 
 
-	-- Определяем базовую скорость (по умолчанию текущая)
 	local baseSpeed = UseBaseSpeed and this_Data.DefaultSpeed or this_Data.CurrentSpeed
 
 
-	-- Проверка: если персонаж парализован и используем базовую скорость, применяем
 	if baseSpeed == 0 and not UseBaseSpeed then
 		Warn("Cannot amplify: base speed is zero for %s", Name)
 		return false
@@ -206,11 +211,10 @@ function Methods.Amplify(self: ISpeedComponent, Data: AmplifyConfig)
 	return true
 end
 
-
 --- Отменяет модификатор и возвращает предыдущую скорость
 function Methods.Revert(self: ISpeedComponent, Data: RevertConfig)
 	local this_Data = self.Data
-	local Humanoid = self.Humanoid
+	local _Humanoid = self.Humanoid
 
 
 	if not Data or not Data.Name then
@@ -232,6 +236,9 @@ function Methods.Revert(self: ISpeedComponent, Data: RevertConfig)
 	self:_SetSpeed(modifier.PreviousSpeed)
 	self.Entity:SetSpeedData('Cache',nil,Name)
 
+	if (RunService:IsClient()) and (Data.Replicated) then
+		Replicator:GetRemote('Global'):Fire('SpeedRevert',Name)
+	end
 
 	Log("Reverted modifier: %s", Name)
 	return true
@@ -251,7 +258,7 @@ function Methods._ClearAllModifiers(self: ISpeedComponent)
 
 
 	for _, name in ipairs(keysToRevert) do
-		self:Revert({ Name = name })
+		self:Revert({ Name = name ,Replicated = true})
 	end
 
 

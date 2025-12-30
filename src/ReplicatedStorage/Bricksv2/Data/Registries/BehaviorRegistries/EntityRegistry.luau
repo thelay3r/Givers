@@ -43,16 +43,18 @@ EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
 		config.AccelerationTime = 0.01
 	end
 	
-	TaskManager:CreateTask(self, 'Accelerat', 0, function(a0)
+	TaskManager:CreateTask(Entity, 'Accelerat', 0, function(a0)
 		for i=1, updTime do
-			local currentSpeed = 12 + (speedPerFrame * i)
-			local percentChange = ((currentSpeed - 12) / 12) * 100
+			local currentSpeed = config.BaseSpeed + (speedPerFrame * i)
+			local percentChange = ((currentSpeed - config.BaseSpeed) / config.BaseSpeed) * 100
+			print(currentSpeed,percentChange,'Tag Aboltus')
 			Speed:Amplify(
 				{
 					Name = (config.Name) or ('AcceleratMoveSpeed')..Character.Name;
 					Type = 'Buff';
 					Percent = percentChange;
 					UseBaseSpeed = true;
+					Replicated = if i == updTime then true else false
 				})
 			
 			task.wait(1/60)
@@ -66,10 +68,7 @@ EntityRegistry:Register('DeAcceleratMoveSpeed', function(self,node)
 	local config = node.Additional['Config']
 	local Character = Entity.Instance.Character
 
-	if config['Accelerat'] then
-		task.cancel(config['Accelerat'] )
-		config['Accelerat'] = nil
-	end
+	TaskManager:CancelTask(Entity, 'Accelerat')
 
 	local Speed = SpeedController.new(Entity)
 	Speed:Revert(

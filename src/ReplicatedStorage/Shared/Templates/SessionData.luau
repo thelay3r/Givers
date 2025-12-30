@@ -5,7 +5,7 @@ local Utilites = Shared:WaitForChild('Utilities')
 local Modules = Utilites:WaitForChild('Modules')
 local SpeedModuleInterface = require(ReplicatedStorage.Shared.Interfaces.SpeedModuleInterface)
 local TableHelper = require(Modules:WaitForChild('TableHelper'))
-local Interfaces = Shared:WaitForChild('Interfaces')
+local _Interfaces = Shared:WaitForChild('Interfaces')
 
 local SessionData = {
 	
@@ -22,6 +22,7 @@ local SessionData = {
 		LastSpeed = 12,
 		Cache = {} :: {[string]: SpeedModuleInterface.SpeedModifier},
 		PendingValidation = {},
+		CanChange = true :: boolean
 	};
 
 	Attributes = 
@@ -29,7 +30,7 @@ local SessionData = {
 			Health = 100;
 			MaxHealth = 100;
 			
-			WalkSpeed = 16;
+			WalkSpeed = 12;
 			JumpPower = 50;
 		};
 	
@@ -78,7 +79,6 @@ local SessionData = {
 		{
 			['Loaded'] = false;
 		};
-	
 	Threads = {};
 	Tasks = {};
 	

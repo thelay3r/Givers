@@ -20,7 +20,7 @@ local ValuesComponent = {}
 
 local function SetValue(self: IPlayer, category: string, name: string, value: any, subKey: string?)
     if subKey then
-		if (value == nil) and (self.Replica.Data.Session[category]) and (self.Replica.Data.Session[category][name])  then
+		if (value == nil) and self.Replica.Data.Session[category][name][subKey] ~= nil then
 			table.clear(self.Replica.Data.Session[category][name][subKey])
 		end
         self.Replica:Set({'Session', category, name, subKey}, value)

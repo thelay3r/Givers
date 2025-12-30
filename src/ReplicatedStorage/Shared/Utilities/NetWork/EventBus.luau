@@ -22,7 +22,7 @@ EventBus.__index = EventBus
 function EventBus.new(name: string): IEventBus
 	if Cache[name] then return Cache[name] end
 	local self = setmetatable({}, EventBus)
-	self._events = {} :: {[string]: Signal.Signal}
+	self._events = {} :: {}
 	Cache[name] = self
 	return self
 end

@@ -37,16 +37,20 @@ StunRegistry:Register('Stun', function(self,node)
     if newStun <= (node.Config.LastStunTime or 0) then return end
     node.Config.LastStunTime = newStun
 
-    local TaskTime = math.max(node.Config.LastStunTime - now, 0) 
+    local TaskTime = math.max(node.Config.LastStunTime - now, 0)
+    Victim:SetSpeedData('CanChange',false)
     Victim:SetStatusEffect('Stun',true)
 
     Victim.SpeedController:Amplify({
         Name = 'Stun';
         Percent = -80;
+        UseBaseSpeed = false;
+        Priority = 20;
     })
 
     TaskManager:CreateTask(Victim, 'Stun', TaskTime, function(a0) 
         Victim:SetStatusEffect('Stun',false)
+        Victim:SetSpeedData('CanChange',true)
         Victim.SpeedController:Revert({Name = 'Stun'})
     end)
     

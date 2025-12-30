@@ -32,10 +32,12 @@ export type AmplifyConfig = {
 	UseBaseSpeed: boolean,
 	Priority: number,
 	ClearBuffsOnDebuff: boolean,
+	Replicated: boolean,
 }
 
 export type RevertConfig = {
 	Name: string,
+	Replicated: boolean,
 }
 
 export type ISpeedComponent = {

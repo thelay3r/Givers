@@ -40,8 +40,22 @@ ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	
 end)
 
+Replicator:GetRemote('Global'):Connect('SpeedAmplify', function(player: Player,data)
+	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
+	Entity.SpeedController.Data.Cache[data.Name] = data
+end)
 
+Replicator:GetRemote('GlobalFunction'):Connect('ValideSpeed', function()
+	return true
+end)
 
+Replicator:GetRemote('Global'):Connect('SpeedRevert', function(player: Player,Name)
+	local Entity = EntityComponent.GetEntity(player.UserId)
+	if not Entity.SpeedController.Data.Cache[Name] then return end
+	-- table.clear(Entity.SpeedController.Data.Cache[Name]) 
+	-- Entity.SpeedController.Data.Cache[Name] = nil
+	Entity:SetSpeedData('Cache',nil,Name)
+end)
 
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
@@ -65,14 +79,15 @@ end)
 BindableGlobal:Connect('SetUp', function(UserId: string)
 	
 	local Entity = EntityComponent.GetEntity(UserId) :: EntityInterfaces.IEntityComponent
+	local Character = Entity.Instance.Character :: Model
+	local Humanoid = Character:WaitForChild('Humanoid') :: Humanoid
+	Humanoid.WalkSpeed = 12
+	Humanoid.UseJumpPower = true
+	
 	Entity.SpeedController = SpeedController.new(Entity)
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendPassive('Default', 'Stun')
-	
 
-	local Player = Players:GetPlayerFromCharacter(Entity.Instance.Character)
-	if not Player then return end
-	Replicator:GetRemote('Global'):Fire(Player,'GetInfo',Entity.SpeedController.Data)
 end)
