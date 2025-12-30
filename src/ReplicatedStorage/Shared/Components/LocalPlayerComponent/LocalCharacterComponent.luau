@@ -28,7 +28,6 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 
 	local humanoid = character:WaitForChild('Humanoid') :: Humanoid
 	local humanoidRootPart = character:WaitForChild('HumanoidRootPart') :: BasePart
-	humanoid.WalkSpeed = 12
 	humanoid.UseJumpPower = true
 
 	characterData.Humanoid = humanoid

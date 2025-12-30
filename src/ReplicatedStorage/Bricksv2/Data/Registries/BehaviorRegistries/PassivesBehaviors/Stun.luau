@@ -42,8 +42,15 @@ StunRegistry:Register('Stun', function(self,node)
     Victim:SetStatusEffect('Stun',true)
 
     Victim.SpeedController:Amplify({
+        Name = 'Stun2';
+        Percent = -50;
+        UseBaseSpeed = false;
+        Priority = 5;
+    })
+
+    Victim.SpeedController:Amplify({
         Name = 'Stun';
-        Percent = -80;
+        Percent = -50;
         UseBaseSpeed = false;
         Priority = 20;
     })
@@ -51,6 +58,8 @@ StunRegistry:Register('Stun', function(self,node)
     TaskManager:CreateTask(Victim, 'Stun', TaskTime, function(a0) 
         Victim:SetStatusEffect('Stun',false)
         Victim:SetSpeedData('CanChange',true)
+        Victim.SpeedController:Revert({Name = 'Stun2'})
+        task.wait(2)
         Victim.SpeedController:Revert({Name = 'Stun'})
     end)
     

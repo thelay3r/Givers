@@ -89,5 +89,4 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendPassive('Default', 'Stun')
-
 end)
