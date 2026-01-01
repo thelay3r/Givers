@@ -65,6 +65,13 @@ local ability = {
 							};
 						};
 						{
+							Name = 'Action.SetStatusEffect';
+							Config = {
+								Effect = 'CanRun';
+								Status = false;
+							};
+						};
+						{
 							Name = 'Action.AutoCombo';
 						}
 					};
@@ -87,6 +94,13 @@ local ability = {
 		{
 			Name = 'Action.SetAbilityActive';
 			Config = { Status = false; };
+		};
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'CanRun';
+				Status = true;
+			};
 		};
 	}
 }

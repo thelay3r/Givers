@@ -6,7 +6,7 @@ local DamageComponent = {}
 
 type IEntityComponent = EntityInterfaces.IEntityComponent
 
-function DamageComponent.TakeDamage(self: any & IEntityComponent,Enemy: IEntityComponent,Damage: number)
+function DamageComponent.TakeDamage(self: any & IEntityComponent,Damage: number)
     local _Instance = self.Instance
     local Character = _Instance.Character
     if not Character then return end
@@ -17,12 +17,6 @@ function DamageComponent.TakeDamage(self: any & IEntityComponent,Enemy: IEntityC
 
     self:SetAttribute('Health',  math.clamp(self.SessionData.Attributes.Health - Damage, 1, self.SessionData.Attributes.MaxHealth))
     Humanoid.Health = Attributes.Health
-    self:TriggerPassives('OnHit',{
-        ['Enemy'] = Enemy;
-        ['Victim'] = self;
-        ['StunTime'] = math.random(1,5);
-    })
-
 end
 
 return DamageComponent

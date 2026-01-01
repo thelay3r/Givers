@@ -29,6 +29,9 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	end}) :: any & LocalPlayerInterfaces.IClientPlayerComponent
 	
 	self.Instance = player
+	local PlayerModule =  require(player.PlayerScripts:WaitForChild('PlayerModule'):WaitForChild('ControlModule'))
+	PlayerModule:Disable()
+
 	self.ClientData = self:LoadClientData()
 	self.ClientData.Controls = DefaultInputs
 	self.Buses = 
@@ -49,7 +52,9 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self.SessionData = self.Replica.Data.Session
 	PlayerComponent = self
 	
+
 	BindableGlobal:BindableFire('PlayerInitialized')
+	PlayerModule:Enable(true)
 	print(self)
 	return self
 end

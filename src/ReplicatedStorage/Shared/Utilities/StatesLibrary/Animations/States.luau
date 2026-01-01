@@ -103,7 +103,7 @@ States.Walk = {
 		if Animate:IsPlaying(CFGs.Walk) then return end
 		Animate:Play(CFGs.Walk)
 		
-		TaskManager:CreateTask(Player,'WalkDirection',nil,function()
+		TaskManager:CreateTask(Player,'WalkDirection',0,function()
 			local deadZone = .05
 			while true do
 				task.wait(1/30)

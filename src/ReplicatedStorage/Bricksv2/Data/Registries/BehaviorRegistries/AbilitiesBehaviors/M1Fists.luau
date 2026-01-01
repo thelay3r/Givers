@@ -60,7 +60,17 @@ EntityRegistry:Register('Fist', function(self, node)
 	HitBox.OnHit:Connect(function(hitCharacter, hitPart)
 		local Victim = EntityComponent.GetEntity(hitCharacter:GetAttribute('Id'))
 		if not Victim then return end
-		Victim:TakeDamage(Entity,10)
+		
+		self:Execute({
+			Name = 'Action.DealDamage';
+			Config = {
+				['Victim'] = Victim;
+				['Enemy'] = Entity;
+				Damage = 5;
+				StunTime = 1;
+			}
+		})
+
 	end)
 end)
 

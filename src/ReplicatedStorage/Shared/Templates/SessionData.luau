@@ -27,6 +27,9 @@ local SessionData = {
 
 	Attributes = 
 		{
+			Posture = 0;
+			MaxPosture = 100;
+
 			Health = 100;
 			MaxHealth = 100;
 			
@@ -66,6 +69,8 @@ local SessionData = {
 			Dashing = false;
 			Vaulting = false;
 			IsRunning = false;
+
+			CanRun = true;
 
 		};
 	

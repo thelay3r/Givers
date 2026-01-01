@@ -5,14 +5,12 @@ local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 
 local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
-local Registries = Data:WaitForChild('Registries')
+local _Registries = Data:WaitForChild('Registries')
 
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
-local AbilityParser = require(Components:WaitForChild('AbilityParser'))
+local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
-local AbilityFolder = Data:WaitForChild('Abilities')
-local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 
 
 local behaviorRegistry = Registry.new()
@@ -52,7 +50,7 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 
 
 	newCfg['Ignore']['CoolDown'] = true
-	newCfg['Ignore']['ActiveSkill'] = true
+	newCfg['Ignore']['SelfActive'] = true
 	newCfg['Ignore']['IsActive'] = true
 
 	local startTime = tick()
@@ -73,11 +71,11 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 
 		local Validate = self:Execute(
 			{
-				Name = 'Condition.BlackList?';
+				Name = 'Condition.RunTimeCheck?';
 				RequestedTags = {['Owner'] = 'Owner'};
 				Config = newCfg;
-
 			})
+		
 		local isInvalid = not Validate
 		if isInvalid or isTimeExpired or shouldManualStop then
 			self:Execute({

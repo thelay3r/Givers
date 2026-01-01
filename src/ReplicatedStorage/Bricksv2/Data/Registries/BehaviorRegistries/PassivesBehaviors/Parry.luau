@@ -30,10 +30,7 @@ StunRegistry:Register('Stun', function(self,node)
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
     local StunTime = EventData['StunTime']
 
-    if Victim.SessionData.StatusEffects['Block'] then return end
-  
     
-
     local now = tick()
     local newStun = now + StunTime 
 

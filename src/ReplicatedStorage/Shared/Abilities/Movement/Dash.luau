@@ -23,8 +23,8 @@ local ability = {
         KeyCode = Enum.KeyCode.Q;
         CoolDown = 1.75;
         IsActive = false;
-        Duration = 1;
-        MinDuration = 1;
+        Duration = .45;
+        MinDuration = .45;
     };
 
     {
@@ -167,6 +167,9 @@ local ability = {
                             Status = false;
                         };
                     };
+                    {
+                       Name = 'Condition.ResumeRun?'
+                    }
                 };
             },
         },
