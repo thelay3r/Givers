@@ -1,7 +1,14 @@
 local TweenService = game:GetService('TweenService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local Fusion = require(ReplicatedStorage:WaitForChild('Fusion'))
+local Shared = ReplicatedStorage:WaitForChild('Shared')
+local Utilities = Shared:WaitForChild('Utilities')
+local UtilModules = Utilities:WaitForChild('Modules')
+
+local Static = Shared:WaitForChild('Static')
+
+local Fusion = require(UtilModules:WaitForChild('Fusion'))
+local EffectStatuc = require(Static:WaitForChild('EffectStatic'))
 
 local Prototypes = script.Parent
 local Components = Prototypes.Parent
@@ -19,7 +26,7 @@ function Button.new(guiButton: GuiButton)
 	local defaultOnEnterColor = Color3.fromRGB(255, 255, 255)
 
 	local defaultSelectorTransparency = 0
-	local defaultSize = .7
+	local defaultSize = 0.76
 	local defaultMulti = .2
 	
 	local stroke = guiButton:FindFirstChildWhichIsA('UIStroke', true)
@@ -73,7 +80,7 @@ function Button.new(guiButton: GuiButton)
 	end)
 
 	self:BindToCallback('OnInventoryChange',function()
-		if guiButton:FindFirstChild("item") then print("returne") return end
+		if guiButton:FindFirstChild('item') then return end
 		
 		isResized = not isResized
 		local value = isResized and 0 or defaultSize
@@ -87,6 +94,7 @@ function Button.new(guiButton: GuiButton)
 			strokeValue:set(1)
 			scaleValue:set(defaultSize * (1+defaultMulti))
 			isSelected = true
+			EffectStatuc['PlayInterfaceSound']('Interface', 'Click')
 			return 
 		end
 		self:OnCallback('OnDeselect')
@@ -95,16 +103,20 @@ function Button.new(guiButton: GuiButton)
 	self:BindToCallback('OnDeselect', function()
 		strokeValue:set(1)
 		if (not isSelected) then return end
-
+ 
 		isSelected = false
 		scaleValue:set(defaultSize)
+		EffectStatuc['PlayInterfaceSound']('Interface', 'Click')
 	end)
 
 	self:BindToEnter(function()
+		EffectStatuc['PlayInterfaceSound']('Interface', 'Hover')
+		if (isSelected) then return end
 		scaleValue:set(defaultSize * (1+defaultMulti))
 	end)
 
 	self:BindToLeave(function()
+		if (isSelected) then return end
 		scaleValue:set(defaultSize)
 	end)
 
