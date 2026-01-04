@@ -7,16 +7,23 @@ local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
+local effect = require(ReplicatedStorage.Packages[".pesde"]["littensy_charm@0.10.0"].charm.src.effect)
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
 local Animator = require(ReplicatedStorage.Shared.Utilities.Modules.Animator)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
+local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
+local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
+
+local FistsFolder = Assets:WaitForChild('Fists')
 
 local Fists = {}
 
 
+local HitCounter = CountHandler.Create('HitCountFists', 1, 4)
+local EffecteCache = CacheContainer.new()
 
 Fists['Idle'] = {
     ['Equip'] = function(args)
@@ -202,6 +209,39 @@ Fists['Critical'] = {
             task.wait(1/60)
 		end
 
+    end
+}
+
+Fists['Hit'] = {
+    ['Hit'] = function(args)
+        local Player = args.Player :: Player
+        local Character = Player.Character :: Model
+        local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+
+        local Vfx = FistsFolder:FindFirstChild('VFX')
+        local Hit = EffecteCache:CreateInstance('HitFists', Vfx:FindFirstChild('Hit')) :: BasePart
+        local WeldProtorype = Assets.Default.Effects.Welds.WeldConstraint
+        local weld = EffecteCache:CreateInstance('Welds', WeldProtorype) :: WeldConstraint
+        local Sound = EffecteCache:CreateInstance('FistHit'..args.Combo, FistsFolder:FindFirstChild('Sounds'):FindFirstChild('HitsSound')[args.Combo]) :: Sound
+
+        Hit.CFrame = RootPart.CFrame
+        weld.Part0 = RootPart
+        weld.Part1 = Hit
+        weld.Parent = Hit
+        Hit.Parent = workspace.Map.VFXs
+
+        warn(Sound.Name)
+        AssetsHelper.Emit(Hit)
+        Sound.Parent = RootPart
+        Sound:Play()
+        Sound.Ended:Once(function()  
+            EffecteCache:AddInstanceToCache('FistHit'..args.Combo, Sound)
+        end)
+
+        task.delay(1, function()
+            EffecteCache:AddInstanceToCache('HitFists', Hit)
+            EffecteCache:AddInstanceToCache('Welds', weld)
+        end)
     end
 }
 

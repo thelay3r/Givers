@@ -71,6 +71,7 @@ Ability.OnServerEvent:Connect(function(Player, args)
 	if args.Blocked then
 		return
 	end
+
 	ability[args.State](ability)
 
 end)
@@ -91,4 +92,6 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendAbility('Fists','Block')
 	Entity:AppendPassive('Default', 'Stun')
 	Entity:AppendPassive('Default', 'Block')
+	Entity:AppendPassive('Default', 'Parry')
+	Entity:AppendPassive('Default', 'Hit')
 end)

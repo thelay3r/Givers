@@ -28,11 +28,11 @@ end)
 EntityRegistry:Register('DealDamage', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local config = node.Config
+	local HitData = config.HitData
 	local Victim = config.Victim
 
 	Victim:TriggerPassives('OnHit',config)
-	print(config)
-	Victim:TakeDamage(config.Damage)
+	Victim:TakeDamage(HitData.Damage)
 
 end)
 

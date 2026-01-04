@@ -70,6 +70,8 @@ local SessionData = {
 			Vaulting = false;
 			IsRunning = false;
 
+
+			ByPass = false;
 			CanRun = true;
 
 		};

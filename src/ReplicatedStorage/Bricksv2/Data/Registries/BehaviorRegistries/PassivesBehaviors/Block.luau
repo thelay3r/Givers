@@ -27,10 +27,12 @@ end)
 
 StunRegistry:Register('Block', function(self,node)
     local EventData = self.Tags['OnHit']['EventData']
+    local HitData = EventData['HitData']
+
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
     if not Victim.SessionData.StatusEffects['Block'] then return end
     
-    EventData.Damage = 0
+    HitData.Damage = 0
     
 end)
 

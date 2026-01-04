@@ -91,6 +91,7 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 end)
 
 local function IsActionBlocked(statusEffects)
+	if statusEffects.ByPass then return false end
     for _, effectName in pairs(BlackList) do
         if statusEffects[effectName] == true then
 			print(statusEffects[effectName],effectName,'ACTION BLOCKED')

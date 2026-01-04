@@ -9,8 +9,10 @@ local _Data = Bricks:WaitForChild('Data')
 
 local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local HitboxClass = require(ReplicatedStorage.Shared.Utilities.Modules.HitboxClass)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local Fists = require(ReplicatedStorage.Shared.VFXs.Replica.VFXs.Fists)
 local Registry = require(Components:WaitForChild('Registry'))
 
 
@@ -46,7 +48,7 @@ EntityRegistry:Register('Fist', function(self, node)
 		velocityPrediction = true;
 		root = Entity.Instance.Character:FindFirstChild('HumanoidRootPart');
 		size = Vector3.new(4,4,4);
-		debug = true;
+		debug = false;
 		duration = .3;
 		proportional = {
 			offsetMultiplier = 1;
@@ -66,12 +68,16 @@ EntityRegistry:Register('Fist', function(self, node)
 			Config = {
 				['Victim'] = Victim;
 				['Enemy'] = Entity;
-				Damage = 5;
-				StunTime = 1;
+				['HitData'] = {
+					Damage = 5;
+					StunTime = 1;
+					Weapon = Enums.WeaponSubType.Fists.Name
+				}
 			}
 		})
-
+		
 	end)
+	
 end)
 
 return EntityRegistry

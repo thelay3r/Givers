@@ -9,61 +9,74 @@ local Components = Bricks:WaitForChild('Components')
 local _Data = Bricks:WaitForChild('Data')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 
 
 
-local StunRegistry = Registry.new()
+local ParryRegistry = Registry.new()
 
-StunRegistry:Register('GreatStun?', function(self,node)
+ParryRegistry:Register('ParryHit', function(self,node)  
     local EventData = self.Tags['OnHit']['EventData']
-    local Entity = EventData['Victim'] :: EntityInterfaces.IEntityComponent 
-    local StatusEffects = Entity.SessionData.StatusEffects
-
-    return not StatusEffects.GreatStunned
-end)
-
-StunRegistry:Register('Stun', function(self,node)
-    local EventData = self.Tags['OnHit']['EventData']
+    local Enemy = EventData['Enemy'] :: EntityInterfaces.IEntityComponent
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
-    local StunTime = EventData['StunTime']
+    local StatusEffects = Victim.SessionData.StatusEffects
 
-    
-    local now = tick()
-    local newStun = now + StunTime 
+    if not StatusEffects.Parry then return end
 
-    if newStun <= (node.Config.LastStunTime or 0) then return end
-    node.Config.LastStunTime = newStun
+    		self:Execute({
+			Name = 'Action.DealDamage';
+			Config = {
+				['Victim'] = Enemy;
+				['Enemy'] = Victim;
+				Damage = 0;
+				StunTime = 1;
+			}
+		})
 
-    local TaskTime = math.max(node.Config.LastStunTime - now, 0)
-    Victim:SetSpeedData('CanChange',false)
-    Victim:SetStatusEffect('Stun',true)
+    self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = Victim.Instance;
+				VFXType = 'Parry.Parry';
+				State = 'Hit'
+			};
+		}
+	})
 
-    Victim.SpeedController:Amplify({
-        Name = 'Stun2';
-        Percent = -50;
-        UseBaseSpeed = false;
-        Priority = 5;
-    })
-
-    Victim.SpeedController:Amplify({
-        Name = 'Stun';
-        Percent = -50;
-        UseBaseSpeed = false;
-        Priority = 20;
-    })
-
-    TaskManager:CreateTask(Victim, 'Stun', TaskTime, function(a0) 
-        Victim:SetStatusEffect('Stun',false)
-        Victim:SetSpeedData('CanChange',true)
-        Victim.SpeedController:Revert({Name = 'Stun2'})
-        task.wait(2)
-        Victim.SpeedController:Revert({Name = 'Stun'})
-    end)
-    
 end)
 
 
-return StunRegistry
+ParryRegistry:Register('Parry', function(self,node)
+    local EventData = self.Tags['OnCast']['EventData']
+    local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
+
+	self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = Victim.Instance;
+				VFXType = 'Parry.Parry';
+				State = 'Cast'
+			};
+		}
+	})
+
+    Victim:SetStatusEffect('Parry',true)
+    TaskManager:CreateTask(Victim, 'Parry', 55, function(a0)  
+        Victim:SetStatusEffect('Parry',false)
+    end)
+
+end)
+
+
+return ParryRegistry

@@ -39,11 +39,28 @@ local ability = {
 			            Status = true;
                     }
                 },
+				{
+					Name = 'Action.SetUsed'
+				},
                 {
                     Name = 'Action.SetStatusEffect';
                     Config = {
                         Effect = 'CanRun';
                         Status = false;
+                    };
+                };
+				{
+                    Name = 'Action.SetStatusEffect';
+                    Config = {
+                        Effect = 'ActiveSkill';
+                        Status = true;
+                    };
+                };
+				{
+                    Name = 'Action.SetStatusEffect';
+                    Config = {
+                        Effect = 'ByPass';
+                        Status = true;
                     };
                 };
                 {
@@ -52,6 +69,7 @@ local ability = {
 		        };
                 {
                     Name = 'Action.PassiveTrigger';
+					InjectParams = {['Victim'] = 'Owner'};
                     Config = {
                         ['Trigger'] = 'OnCast';
                     }
@@ -82,6 +100,13 @@ local ability = {
 			Config = {
 				Effect = 'ActiveSkill';
 				Status = false; 
+			};
+		};
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'ByPass';
+				Status = false;
 			};
 		};
         {   
