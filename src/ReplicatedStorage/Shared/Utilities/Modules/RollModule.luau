@@ -81,7 +81,6 @@ function RollModule:DebugChances(customChances, luckBehavior)
 				item.BaseChance *= multiplier
 			elseif mode == "Decrease" then
 				item.BaseChance /= multiplier
-			elseif mode == "Keep" then
 			end
 		end
 	end

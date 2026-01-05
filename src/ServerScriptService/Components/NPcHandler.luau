@@ -1,4 +1,3 @@
-local ServerScriptService = game:GetService('ServerScriptService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerScriptService = game:GetService('ServerScriptService')
 
@@ -16,8 +15,7 @@ local NPcHandlerInterfaces = require(Interfaces:WaitForChild('NPcHandlerInterfac
 local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 local TableHelper = require(UtilModules:WaitForChild('TableHelper'))
 local NPcComponent = require(Components:WaitForChild('NPCComponent'))
-
-
+local NpcBeahaivor = Components:WaitForChild('NpcBehaivor')
 
 type INPcHandler = NPcHandlerInterfaces.NPcHandlerComponent
 
@@ -69,23 +67,16 @@ function Methods._Create(self: INPcHandler)
 	local Humanoid = CharacterData.Humanoid
 
 	
-	task.delay(2,function()
-		print(npc,'TAG SOME NPC')
-		local ability = npc:GetAbility('Equip')
-		ability['OnStart'](ability)
 
-		while task.wait(2) do
-			local m1 = npc:GetAbility('M1')
-			m1['OnStart'](m1)
-		end
-
-	end)
-
-	
 	Humanoid.Died:Once(function()
 		self.AliveNPCs[npc.SessionData.UserId] = nil
 	end)
 	
+	if not NpcBeahaivor:FindFirstChild(self.CFG) then return npc end
+	local module = require(NpcBeahaivor:FindFirstChild(self.CFG))
+	if not module then return npc end
+	module(npc)
+
 	return npc
 end
 
@@ -108,6 +99,7 @@ function NPcHandler.new(Part: BasePart)
 			Count = Count;
 			NpcName = NPC;
 			Type = Type;
+			CFG = CFG;
 			
 			_Instance = Part;
 		},

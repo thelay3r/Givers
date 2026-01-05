@@ -7,22 +7,18 @@ local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
-local effect = require(ReplicatedStorage.Packages[".pesde"]["littensy_charm@0.10.0"].charm.src.effect)
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
-local Animator = require(ReplicatedStorage.Shared.Utilities.Modules.Animator)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
-local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
-local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local FistsFolder = Assets:WaitForChild('Fists')
+local DefaultFolder = Assets:WaitForChild('Default')
 
 local Fists = {}
 
 
-local HitCounter = CountHandler.Create('HitCountFists', 1, 4)
 local EffecteCache = CacheContainer.new()
 
 Fists['Idle'] = {
@@ -218,11 +214,19 @@ Fists['Hit'] = {
         local Character = Player.Character :: Model
         local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
 
+        
+
         local Vfx = FistsFolder:FindFirstChild('VFX')
+        local HighlightPrototype = DefaultFolder:FindFirstChild('Effects'):FindFirstChild('Hit') :: Highlight
         local Hit = EffecteCache:CreateInstance('HitFists', Vfx:FindFirstChild('Hit')) :: BasePart
         local WeldProtorype = Assets.Default.Effects.Welds.WeldConstraint
         local weld = EffecteCache:CreateInstance('Welds', WeldProtorype) :: WeldConstraint
         local Sound = EffecteCache:CreateInstance('FistHit'..args.Combo, FistsFolder:FindFirstChild('Sounds'):FindFirstChild('HitsSound')[args.Combo]) :: Sound
+        local Highlight = EffecteCache:CreateInstance('Hit Highlight', HighlightPrototype, 
+        {
+            'OutlineTransparency';
+            'FillTransparency';
+        })
 
         Hit.CFrame = RootPart.CFrame
         weld.Part0 = RootPart
@@ -230,7 +234,16 @@ Fists['Hit'] = {
         weld.Parent = Hit
         Hit.Parent = workspace.Map.VFXs
 
-        warn(Sound.Name)
+        Highlight.Parent = Character
+        local HighlightTween = TweenService:Create(Highlight, TweenInfo.new(.2), {
+            OutlineTransparency = 1;
+            FillTransparency = 1;
+        })
+        HighlightTween:Play()
+        HighlightTween.Completed:Once(function()  
+            EffecteCache:AddInstanceToCache('Hit Highlight', Highlight)
+        end)
+
         AssetsHelper.Emit(Hit)
         Sound.Parent = RootPart
         Sound:Play()
@@ -244,5 +257,7 @@ Fists['Hit'] = {
         end)
     end
 }
+
+
 
 return Fists

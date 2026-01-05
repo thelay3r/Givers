@@ -25,10 +25,7 @@ local passive = {
 		Name = 'Event.OnHit';
 		Tag = 'OnHit';
 		{
-			Name = 'Condition.GreatStun?';
-			{
-				Name = 'Action.Block';
-			}
+			Name = 'Action.Block';
 		}
 	}
 }

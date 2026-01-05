@@ -31,8 +31,10 @@ ParryRegistry:Register('ParryHit', function(self,node)
 			Config = {
 				['Victim'] = Enemy;
 				['Enemy'] = Victim;
-				Damage = 0;
-				StunTime = 1;
+				['HitData'] = {
+					Damage = 0;
+					StunTime = 155;
+				}
 			}
 		})
 

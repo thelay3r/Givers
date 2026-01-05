@@ -15,6 +15,7 @@ export type NPcHandlerComponent = NpcHandlerMethods &
 		Active: boolean;
 		NpcName: string;
 		Type: string;
+		CFG: string;
 		_Instance: BasePart;
 	}
 

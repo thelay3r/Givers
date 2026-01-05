@@ -10,7 +10,6 @@ local _Data = Bricks:WaitForChild('Data')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
-local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 
@@ -28,7 +27,6 @@ HitRegistry:Register('Hit', function(self,node)
     
     local weapon = HitData.Weapon
     local combo = if Enemy.SessionData.StatusEffects.CurrentCombo <= 0 then 4 else Enemy.SessionData.StatusEffects.CurrentCombo
-    warn('COMBO', combo)
     self:Execute({
 		Name = 'Network.PlayRemoteEvent';
 		Config = {

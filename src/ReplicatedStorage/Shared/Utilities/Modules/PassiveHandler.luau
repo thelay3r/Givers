@@ -102,7 +102,6 @@ function PassiveHandler:Build()
 end
 
 function PassiveHandler:Trigger(eventName: string,args: {any?} )
-    print(args,'Tag ARGS')
     self.Instance:Execute({
         Name = 'Action.TriggerEvent';
         Config = 
