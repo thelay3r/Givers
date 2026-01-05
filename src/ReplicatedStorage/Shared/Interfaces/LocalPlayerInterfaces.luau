@@ -4,6 +4,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared.Templates
 
+local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local SpeedModuleInterface = require(script.Parent.SpeedModuleInterface)
 local ClientData = require(Templates:WaitForChild('ClientData'))
 local EventBusInterfaces = require(Interfaces:WaitForChild('EventBusInterfaces'))
@@ -33,6 +34,7 @@ export type IClientPlayerMethods = {
 
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {
 	Instance: Player,
+	SessionData: EntityInterfaces.IEntityComponent,
 	ClientData: IClientData,
 	SpeedController: SpeedModuleInterface.ISpeedComponent;
 	Replica: IReplicaData,

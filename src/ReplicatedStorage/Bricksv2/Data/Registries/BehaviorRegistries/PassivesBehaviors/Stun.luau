@@ -42,11 +42,12 @@ StunRegistry:Register('Stun', function(self,node)
     if newStun <= (node.Config.LastStunTime or 0) then return end
     node.Config.LastStunTime = newStun
 
-    local TaskTime = math.max(node.Config.LastStunTime - now, 0)
+    local DiffStunTime = node.Config.LastStunTime - now
+    local TaskTime = math.max(DiffStunTime :: number, 0)
     Victim:SetSpeedData('CanChange',false)
     Victim:SetStatusEffect('Stun',true)
 
-
+    
     Victim.SpeedController:Amplify({
         Name = 'Stun';
         Percent = -80;

@@ -21,12 +21,15 @@ local StunRegistry = Registry.new()
 StunRegistry:Register('Block', function(self,node)
     local EventData = self.Tags['OnHit']['EventData']
     local HitData = EventData['HitData']
-
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
-    if not Victim.SessionData.StatusEffects['Block'] then return end
+    local StatusEffects = Victim.SessionData.StatusEffects
+
+    if not StatusEffects['Block'] then return end
     
     HitData.Damage = 0
     
+    if StatusEffects.Parry then return end
+    Victim:SetAttribute('Posture',math.random(1,99))
 end)
 
 

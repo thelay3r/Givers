@@ -12,7 +12,7 @@ local EntitiesComponent = require(Components:WaitForChild('EntitiesStorage'))
 
 local NPcHandler = require(Components.NPcHandler)
 
-local Map = workspace.
+local Map = workspace.Map
 local Spawners = Map.Spawner
 local Spawner = Spawners.Spawner
 

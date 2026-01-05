@@ -33,7 +33,7 @@ ParryRegistry:Register('ParryHit', function(self,node)
 				['Enemy'] = Victim;
 				['HitData'] = {
 					Damage = 0;
-					StunTime = 155;
+					StunTime = 1;
 				}
 			}
 		})
@@ -74,7 +74,7 @@ ParryRegistry:Register('Parry', function(self,node)
 	})
 
     Victim:SetStatusEffect('Parry',true)
-    TaskManager:CreateTask(Victim, 'Parry', 55, function(a0)  
+    TaskManager:CreateTask(Victim, 'Parry', 1, function(a0)  
         Victim:SetStatusEffect('Parry',false)
     end)
 

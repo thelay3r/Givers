@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 
 local PhysicsService = game:GetService("PhysicsService")
 local RunSerivce = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
 local ragParts = script.RagdollParts:GetChildren()
 
@@ -16,6 +17,7 @@ local CollisionParts = {
 	"Head",
 
 }
+
 
 
 function RagDoll:Setup(Character : Model)
