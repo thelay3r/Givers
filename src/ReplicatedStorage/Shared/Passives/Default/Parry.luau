@@ -10,7 +10,7 @@ local _Registries = Data:WaitForChild('Registries')
 local registry = Registry.new()
 
 registry.Inject = {
-    'Stun'
+    'Parry'
 }
 
 local passive = {
@@ -18,17 +18,28 @@ local passive = {
 	Tag = 'Main',
 	Config = 
 	{
-        LastStunTime = 0;
-		Priority = 1;
+		LastStunTime = 0;
+		CoolDown = 2;
+		Priority = 3;
+	},
+	{
+		Name = 'Event.OnCast';
+		Tag = 'OnCast';
+		{
+			Name = 'Condition.OnCoolDown?';
+			{
+				Name = 'Action.Parry';
+			},
+			{
+				Name = 'Action.SetUsed';
+			}
+		}
 	},
 	{
 		Name = 'Event.OnHit';
 		Tag = 'OnHit';
 		{
-			Name = 'Condition.GreatStun?';
-			{
-				Name = 'Action.Stun';
-			}
+			Name = 'Action.ParryHit';
 		}
 	}
 }

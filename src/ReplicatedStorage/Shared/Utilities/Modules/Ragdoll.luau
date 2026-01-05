@@ -3,6 +3,8 @@ local Players = game:GetService("Players")
 
 local PhysicsService = game:GetService("PhysicsService")
 local RunSerivce = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
 local ragParts = script.RagdollParts:GetChildren()
 
 local RunServiceTable = {}
@@ -16,13 +18,13 @@ local CollisionParts = {
 
 }
 
+
+
 function RagDoll:Setup(Character : Model)
 
 
 	local humanoid = Character:FindFirstChild("Humanoid")
 
-
-	
 	Character.Head.Size = Vector3.new(1, 1, 1)
 	humanoid.BreakJointsOnDeath = false
 	humanoid.RequiresNeck = false
@@ -67,8 +69,8 @@ end
 
 function RagDoll:Enabled(Character : Model)
 
-	local HumanoidRootPart : Part = Character.PrimaryPart
-	local Humanoid : Humanoid = Character.Humanoid
+	local HumanoidRootPart = Character.PrimaryPart :: BasePart
+	local Humanoid : Humanoid = Character:WaitForChild('Humanoid') :: Humanoid
 	
 	--HumanoidRootPart:ApplyImpulse(Vector3.new(50,-5,1))
 	
@@ -83,7 +85,7 @@ function RagDoll:Enabled(Character : Model)
 		Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
 	end
 		
-	for _, v in ipairs(Character.RagdollConstraints.Motors:GetChildren()) do
+	for _, v in ipairs(Character:WaitForChild('RagdollConstraints').Motors:GetChildren()) do
 		v.Value.Enabled = false
 	end
 		

@@ -25,6 +25,23 @@ local EntityRegistry = Registry.new()
 EntityRegistry:Register('Root', function(self, node)  
 end)
 
+EntityRegistry:Register('DealDamage', function(self,node)
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	local config = node.Config
+	local HitData = config.HitData
+	local Victim = config.Victim
+
+	Victim:TriggerPassives('OnHit',config)
+	Victim:TakeDamage(HitData.Damage)
+
+end)
+
+EntityRegistry:Register('PassiveTrigger', function(self,node)
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	local config = node.Config
+	Owner:TriggerPassives(config.Trigger,config)
+end)
+
 EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
 	local Entity = node.Additional['Owner'] :: EntityInterfaces.IEntityComponent
 	if not Entity then return end
@@ -47,7 +64,6 @@ EntityRegistry:Register('AcceleratMoveSpeed', function(self,node)
 		for i=1, updTime do
 			local currentSpeed = config.BaseSpeed + (speedPerFrame * i)
 			local percentChange = ((currentSpeed - config.BaseSpeed) / config.BaseSpeed) * 100
-			print(currentSpeed,percentChange,'Tag Aboltus')
 			Speed:Amplify(
 				{
 					Name = (config.Name) or ('AcceleratMoveSpeed')..Character.Name;

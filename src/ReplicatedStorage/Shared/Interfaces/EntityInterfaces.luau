@@ -15,6 +15,7 @@ type IValues = ValuesInterface.IValues
 export type IEntityMethods = {
 	New: (self: IEntityMethods) -> (),
 	AppendPassive: (self: IEntityMethods, scope : string, passiveName: string) -> (),
+	InvalidatePassiveCache: (self: IEntityMethods)-> ();
 }
 
 export type IEntityComponent = IEntityMethods & IValues & {

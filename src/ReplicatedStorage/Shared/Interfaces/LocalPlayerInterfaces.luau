@@ -36,6 +36,7 @@ export type IClientPlayerMethods = {
 
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {
 	Instance: Player,
+	SessionData: EntityInterfaces.IEntityComponent,
 	ClientData: IClientData,
 	SpeedController: SpeedModuleInterface.ISpeedComponent;
 	Replica: IReplicaData,

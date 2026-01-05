@@ -33,6 +33,11 @@ local ability = {
 		Tag = "OnStart",
 		{
 			Name = "Condition.CheckBlackList",
+			Config = {
+				WhiteList = {
+					'CanRun'
+				}
+			};
 			{
 				Name = "Action.AcceleratMoveSpeed",
 				Tag = "AcceleratMoveSpeed",
@@ -166,8 +171,6 @@ local ability = {
 				},
 			},
 		},
-
-		
 	},
 }
 

@@ -139,6 +139,9 @@ local ability = {
 					Name = 'Action.UnBindSlideJump',
 				},
 				{
+                    Name = 'Condition.ResumeRun?'
+                },
+				{
 					Name = "Network.PlayBindableEvent",
 					InjectParams = { ["Player"] = "Owner.Instance" },
 					Config = {

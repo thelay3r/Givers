@@ -10,6 +10,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local Ragdoll = require(ReplicatedStorage.Shared.Utilities.Modules.Ragdoll)
 local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
@@ -71,9 +72,11 @@ Ability.OnServerEvent:Connect(function(Player, args)
 	if args.Blocked then
 		return
 	end
+
 	ability[args.State](ability)
 
 end)
+
 
 
 BindableGlobal:Connect('SetUp', function(UserId: string)
@@ -88,5 +91,12 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
+	Entity:AppendAbility('Fists','Block')
 	Entity:AppendPassive('Default', 'Stun')
+	Entity:AppendPassive('Default', 'Block')
+	Entity:AppendPassive('Default', 'Parry')
+	Entity:AppendPassive('Default', 'Hit')
+	
+	Ragdoll:Setup(Character)
+	Ragdoll:Enabled(Character)
 end)

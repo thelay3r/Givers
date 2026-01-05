@@ -32,19 +32,38 @@ local ability = {
 		{
 			Name = 'Condition.CheckBlackList';
 			{
-
 				Name = 'Action.SwapWeapon';
-				
-			}
+			},
+			{
+				Name = 'Action.SetAbilityActive';
+				Config = {['Status'] = true}
+			},
+			{
+				Name = 'Action.SetStatusEffect';
+				Config = {
+					Effect = 'CanRun';
+					Status = false;
+				};
+			};
 
 		}
 	},
 	{
 		Name = 'Event.OnStop';
 		Tag = 'OnStop';
-
 		{
 			Name = 'Condition.IsActive?',
+			{
+				Name = 'Action.SetStatusEffect';
+				Config = {
+					Effect = 'CanRun';
+					Status = true;
+				};
+				{
+				Name = 'Action.SetAbilityActive';
+				Config = {['Status'] = false}
+				},
+			};
 		}
 	}    
 }

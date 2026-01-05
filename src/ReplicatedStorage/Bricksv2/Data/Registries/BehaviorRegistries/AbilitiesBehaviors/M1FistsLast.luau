@@ -12,20 +12,16 @@ local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInter
 local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local HitboxClass = require(ReplicatedStorage.Shared.Utilities.Modules.HitboxClass)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
-local Fists = require(ReplicatedStorage.Shared.VFXs.Replica.VFXs.Fists)
 local Registry = require(Components:WaitForChild('Registry'))
 
 
 
 local EntityRegistry = Registry.new()
 
-EntityRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
-end)
 
 
 
-EntityRegistry:Register('Fist', function(self, node)
+EntityRegistry:Register('FistLast', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.SessionData
     self:Execute({
@@ -71,6 +67,7 @@ EntityRegistry:Register('Fist', function(self, node)
 				['HitData'] = {
 					Damage = 5;
 					StunTime = 1;
+					RagDollTime = 1;
 					Weapon = Enums.WeaponSubType.Fists.Name
 				}
 			}

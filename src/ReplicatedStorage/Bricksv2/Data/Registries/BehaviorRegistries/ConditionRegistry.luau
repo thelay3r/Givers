@@ -12,6 +12,7 @@ local _IEntity = require(Interfaces:WaitForChild('EntityInterfaces'))
 local Data = Bricks:WaitForChild('Data')
 local AbilityFolder = Data:WaitForChild('Abilities')
 local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
+local RunTimeList = require(AbilityFolder:WaitForChild('RunTimeList'))
 
 local Components = Bricks:WaitForChild('Components')
 local _Registries = Data:WaitForChild('Registries')
@@ -115,6 +116,32 @@ conditionRegistry:Register('DurationElapsed', function(self,node)
 	return elapsed >= minDuration
 end)
 
+conditionRegistry:Register('RunTimeCheck?', function(self,node)
+	
+	local Entity : any & IEntity = node.Additional['Owner']
+	local nodeConfig = node.Config
+	local IgnoreList = (nodeConfig.Ignore) or ({})
+
+	local RootCFG = self.Tags['Main']
+
+	
+	local sessionData = (Entity.SessionData)
+	
+	for _,v in pairs((nodeConfig['WhiteList'] or {})) do
+		if (sessionData.StatusEffects[v] == false) then
+			return false
+		end
+	end
+
+	for _,v in pairs(RunTimeList) do 
+		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
+			return false
+		end
+	end
+	
+	return true
+end)
+
 conditionRegistry:Register('BlackList?', function(self,node)
 	
 	local Entity : any & IEntity = node.Additional['Owner']
@@ -125,8 +152,10 @@ conditionRegistry:Register('BlackList?', function(self,node)
 
 	
 	local sessionData = (Entity.SessionData)
+	-- if IgnoreList.SelfActive then
+	-- 	IgnoreList['ActiveSkill'] = true
+	-- end
 
-	
 	for _,v in pairs(BlackList) do 
 		if (sessionData.StatusEffects[v] == true) and (not IgnoreList[v]) then 
 			return false
