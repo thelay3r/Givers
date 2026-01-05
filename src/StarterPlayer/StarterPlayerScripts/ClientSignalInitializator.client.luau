@@ -27,7 +27,7 @@ local AbilityPacket = Packets.Ability
 
 local Animator = require(Utilmodules:WaitForChild('Animator'))
 
-local Player: LocalPlayerInterfaces.IClientPlayerComponent = LocalPlayerComponent:GetPlayer()
+local Player: LocalPlayerInterfaces.IClientPlayerComponent = nil
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 

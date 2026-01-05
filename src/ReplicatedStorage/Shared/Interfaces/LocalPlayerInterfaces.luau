@@ -10,6 +10,12 @@ local SpeedModuleInterface = require(script.Parent.SpeedModuleInterface)
 local ClientData = require(Templates:WaitForChild('ClientData'))
 local EventBusInterfaces = require(Interfaces:WaitForChild('EventBusInterfaces'))
 
+local SessionData = require(Templates:WaitForChild('SessionData'))
+local ProfileStoreTemplate = require(Templates:WaitForChild('ProfileStoreTemplate'))
+
+type ISessionData = typeof(SessionData())
+type IProfileTemplate = typeof(ProfileStoreTemplate)
+
 type IClientData = typeof(ClientData())
 
 export type IReplicaData = {
@@ -34,9 +40,11 @@ export type IClientPlayerMethods = {
 	InitDirection: (self: IClientPlayerComponent) -> (),
 }
 
+
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {
 	Instance: Player,
-	SessionData: EntityInterfaces.IEntityComponent,
+	SessionData: ISessionData,
+	ProfileData: IProfileTemplate,
 	ClientData: IClientData,
 	SpeedController: SpeedModuleInterface.ISpeedComponent;
 	Replica: IReplicaData,

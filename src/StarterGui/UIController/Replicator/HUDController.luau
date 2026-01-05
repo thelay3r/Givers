@@ -52,8 +52,8 @@ local function changePosturehBar()
     local humanoid = character.Humanoid :: Humanoid
     if (not humanoid) then return end
 
-    local posture = playerComponent.Replica.Data.SessionData.Attributes.Posture :: number
-    local maxPosture = playerComponent.Replica.Data.SessionData.Attributes.MaxPosture :: number
+    local posture = playerComponent.SessionData.Attributes.Posture :: number
+    local maxPosture = playerComponent.SessionData.Attributes.MaxPosture :: number
     local posturePercent = posture / maxPosture
 
     TweenService:Create(leftBar, TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.fromScale(1-posturePercent, 0)}):Play()
@@ -73,7 +73,8 @@ return function(UI: typeof(StarterGui.MainUI), component: PlayerComponent)
         changeHealthBar()
     end)
 
-    component.Replica:OnChange('SessionData.Attributes.Posture', function()
+    component.Replica:OnChange(function(...)
+        print(...)
         changePosturehBar()
     end)
 end
