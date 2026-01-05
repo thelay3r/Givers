@@ -1,18 +1,14 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local StarterGui = game:GetService('StarterGui')
 
-local LocalPlayer = game.Players.LocalPlayer
-local PlayersScripts = LocalPlayer.PlayerScripts
-local Engine = ReplicatedStorage.Components.PlayerComponent
+local Engine = ReplicatedStorage.Shared.Components.LocalPlayerComponent
 
 local PlayerComponent = require(Engine) 
 
-local StoreController = require(script:WaitForChild('StoreController'))
-
-
+local HUDController = require(script:WaitForChild('HUDController'))
 
 return function(UI: typeof(StarterGui.MainUI))
 	local component = PlayerComponent:GetPlayer()
 	
-	StoreController(UI, component)
+	HUDController(UI, component)
 end

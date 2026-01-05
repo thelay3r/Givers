@@ -167,8 +167,8 @@ AllEasings["Bounce"] = {
 }
 
 
-function BiezeModule.lerp(a,b,t,EasingMode: Enum.EasingStyle,EasingDirection: Enum.EasingDirection)
-	if not EasingMode then return a+(b-a) * t end
+function BiezeModule.lerp(a,b,t,EasingMode: Enum.EasingStyle?,EasingDirection: Enum.EasingDirection?)
+	if (not EasingMode) then return a+(b-a) * t end
 	return a+(b-a) * AllEasings[EasingMode.Name][EasingDirection.Name](t)
 end
 

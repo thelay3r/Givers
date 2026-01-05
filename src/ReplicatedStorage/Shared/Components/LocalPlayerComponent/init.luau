@@ -55,6 +55,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 end
 
 function LocalPlayerComponent:GetPlayer(): LocalPlayerInterfaces.IClientPlayerComponent
+	while (not PlayerComponent) do task.wait(1/10) end
 	return PlayerComponent
 end
 
