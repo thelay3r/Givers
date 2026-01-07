@@ -32,17 +32,16 @@ behaviorRegistry:Register('Wait', function(self, node)
 end)
 
 behaviorRegistry:Register('Extend', function(self,node): any 
-	RegistryManager:InjectRegistry(self.BehaviorRegistry)
-	local t1= Registry.new()
-	t1.Inject = node.Config.Inject
-	RegistryManager:InjectRegistry(t1)
-	local t1meta = getmetatable(t1)
-	local selfmeta = getmetatable(self.BehaviorRegistry)
-	
-	local t1metanew = setmetatable({},t1meta)
-	local selfmetanew = setmetatable({}, selfmeta)
-	
-	local t3 = Registry.new()
+
+	--self.Config.Inject -- tb injected
+	--currently injected (self.callbacks metatable)
+
+	local currentlyInjected = self.BehaviorRegistry._meta
+	local tbInjected = RegistryManager:GetRegistriesToInject(self.BehaviorRegistry)
+
+	for _, inject in pairs(tbInjected) do
+		table.insert(currentlyInjected, inject)
+	end
 end)
 
 behaviorRegistry:Register('Raycast', function(self,node)
