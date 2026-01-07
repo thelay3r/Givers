@@ -38,8 +38,8 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 		{
 			['Main'] = EventBus.new('Player');
 			['Character'] = EventBus.new('Character');
-			
 		}
+
 	self:ReplicaInit()
 	self:SharePlayer()
 	self:SetupCharacter()
@@ -50,16 +50,18 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self:InitCamera()
 	
 	self.SessionData = self.Replica.Data.Session
+	self.ProfileData = self.Replica.Data.Profile
+
 	PlayerComponent = self
-	
 
 	BindableGlobal:BindableFire('PlayerInitialized')
 	PlayerModule:Enable(true)
-	print(self)
+	print(self, 'tag initialized local player')
 	return self
 end
 
 function LocalPlayerComponent:GetPlayer(): LocalPlayerInterfaces.IClientPlayerComponent
+	--while (not PlayerComponent) do task.wait(1/10) end
 	return PlayerComponent
 end
 

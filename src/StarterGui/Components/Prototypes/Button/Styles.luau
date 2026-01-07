@@ -1,0 +1,60 @@
+return {
+	['Default'] = {
+		['Speed'] = 23,
+		['Damping'] = .3,
+		['OnEnterScale'] = 1.1,
+		['OnLeaveScale'] = 1,
+		['OnDownScale'] = .9,
+		['Velocity'] = 20,
+		["Scope"] = 'PlayInterfaceSound',
+		['ClickSound'] = 'Click',
+		['HoverSound'] = 'Hover',
+	},
+
+	['ImmutableButton'] = {
+		['Speed'] = 20,
+		['Damping'] = .25,
+		['OnEnterScale'] = 1,
+		['OnLeaveScale'] = 1,
+		['OnDownScale'] = 1,
+		['Velocity'] = 20,
+		["Scope"] = 'PlayInterfaceSound',
+		['ClickSound'] = 'Click',
+		['HoverSound'] = 'Hover',
+	},
+
+	['ShopButton'] = {
+		['Speed'] = 20,
+		['Damping'] = .25,
+		['OnEnterScale'] = 1.02,
+		['OnLeaveScale'] = 1,
+		['OnDownScale'] = .98,
+		['Velocity'] = 20,
+		["Scope"] = 'PlayInterfaceSound',
+		['ClickSound'] = 'Click',
+		['HoverSound'] = 'Hover',
+	},
+
+	['CarButton'] = {
+		['Speed'] = 20,
+		['Damping'] = .3,
+		['OnEnterScale'] = 1.05,
+		['OnLeaveScale'] = 1,
+		['OnDownScale'] = .95,
+		['Velocity'] = 20,
+		["Scope"] = 'PlayInterfaceSound',
+		['ClickSound'] = 'Click',
+		['HoverSound'] = 'Hover',
+	},
+	
+	['LongButton'] = {
+		['Speed'] = 20,
+		['Damping'] = 1,
+		['OnEnterScale'] = 1.01,
+		['OnLeaveScale'] = 1,
+		['Velocity'] = -1,
+		["Scope"] = 'PlayInterfaceSound',
+		['ClickSound'] = 'Click',
+		['HoverSound'] = 'Hover',
+	},
+}

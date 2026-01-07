@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local ServerScriptService = game:GetService("ServerScriptService")
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
@@ -9,11 +10,18 @@ local SpeedModuleInterface = require(script.Parent.SpeedModuleInterface)
 local ClientData = require(Templates:WaitForChild('ClientData'))
 local EventBusInterfaces = require(Interfaces:WaitForChild('EventBusInterfaces'))
 
+local SessionData = require(Templates:WaitForChild('SessionData'))
+local ProfileStoreTemplate = require(Templates:WaitForChild('ProfileStoreTemplate'))
+
+type ISessionData = typeof(SessionData())
+type IProfileTemplate = typeof(ProfileStoreTemplate)
+
 type IClientData = typeof(ClientData())
 
 export type IReplicaData = {
 	OnChange: (self: IReplicaData,listener : (action: string, path: {string | number}, param1: any, param2: any?) -> ()) -> ();
 	OnSet: (self: IReplicaData,path: {string | number}, listener: (new_value: any, old_value: any) -> ())->();
+	Data: EntityInterfaces.IEntityComponent;
 }
 
 export type IAbilityMethods = {
@@ -32,9 +40,11 @@ export type IClientPlayerMethods = {
 	InitDirection: (self: IClientPlayerComponent) -> (),
 }
 
+
 export type IClientPlayerComponent = IClientPlayerMethods & IAbilityMethods & {
 	Instance: Player,
-	SessionData: EntityInterfaces.IEntityComponent,
+	SessionData: ISessionData,
+	ProfileData: IProfileTemplate,
 	ClientData: IClientData,
 	SpeedController: SpeedModuleInterface.ISpeedComponent;
 	Replica: IReplicaData,

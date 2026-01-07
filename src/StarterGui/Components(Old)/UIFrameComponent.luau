@@ -1,7 +1,7 @@
 local FrameComponent = {}
 FrameComponent.__index = FrameComponent
 
-local Components: {[Frame]: typeof(FrameComponent) & {Instance: Frame}} = {}
+local Components: {typeof(FrameComponent)} = {}
 
 function FrameComponent:Open()
 	if (self.locked) then return end
@@ -10,7 +10,6 @@ function FrameComponent:Open()
 	self.open = true
 	self.locked = false
 end
-
 
 function FrameComponent:Close()
 	if (self.locked) then return end
@@ -25,11 +24,6 @@ function FrameComponent:Change()
 
 	if (self.open) then self:Close()
 	else self:Open() end
-end
-
-function FrameComponent:OnCallback(name: string, ...: any)
-	if (not self.Callbacks[name]) then warn(name..' callback doesnt exist'); return end
-	self.Callbacks[name](...)
 end
 
 function FrameComponent:CloseOthers()
@@ -47,10 +41,6 @@ function FrameComponent:BindToClose(callback: () -> {})
 	table.insert(self.OnClose, callback)
 end
 
-function FrameComponent:BindToCallback(name: string, callback: (...any) -> {})
-	self.Callbacks[name] = callback
-end
-
 function FrameComponent.new(frame: Frame): typeof(FrameComponent)
 	if (Components[frame]) then return Components[frame], true end
 
@@ -59,15 +49,12 @@ function FrameComponent.new(frame: Frame): typeof(FrameComponent)
 
 		OnOpen = {},
 		OnClose = {},
-		Callbacks = {},
 
 		locked = false,
 		open = false,
 	}, FrameComponent)
 
 	Components[frame] = self
-
-	-- !! add clear on Instance.Removed to avoid leaks
 
 	return self
 end

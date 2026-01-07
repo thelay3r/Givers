@@ -36,7 +36,6 @@ function ClientDataComponent.ReplicaInit(self: ILocalPlayer.IClientPlayerCompone
 		print(Path,new,old, 'Tag Change Replica')
 	end)
 	
-	
 	return self
 end
 	
