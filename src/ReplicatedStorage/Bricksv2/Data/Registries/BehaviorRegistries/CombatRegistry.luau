@@ -77,13 +77,21 @@ EntityRegistry:Register('Combo', function(self, node)
     if not TargetAction then
         local try = 1
         while not TargetAction do
+            if try >= 4 then return end
             TargetAction = newCombo[Session.StatusEffects.CurrentCombo - try]
             try+=1
         end
     end
 
-    local locked = false
-    Entity:TriggerPassive()
+    local PassiveTable = {
+        Weapon = TargetAction;
+        Owner = Entity;
+        Blocked = false;
+    }
+    Entity:TriggerPassives('OnM1Start',PassiveTable)
+
+    if PassiveTable.Blocked then return end
+    
 
     self:Execute({
         Name = 'Action.'..TargetAction;

@@ -16,40 +16,33 @@ local Registry = require(Components:WaitForChild('Registry'))
 local PassiveRegistry = Registry.new()
 
 PassiveRegistry:Register('ValideJumpAttack', function(self,node): any
+	local EventData = self.Tags['OnM1Start']['EventData']
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local Character: Model = Owner.Instance.Character
 	local Humanoid: Humanoid = Character:FindFirstChildOfClass('Humanoid')
 
-	print('Check')
+	EventData.Blocked = Humanoid:GetState() == Enum.HumanoidStateType.Freefall
 	return Humanoid:GetState() == Enum.HumanoidStateType.Freefall
 end)
 
 PassiveRegistry:Register('JumpAttack', function(self,node)
-    local EventData = self.Tags['OnHit']['EventData']
-    local Victim = EventData['Victim']
-    local Enemy = EventData['Enemy'] :: EntityInterfaces.IEntityComponent
-    local HitData = EventData['HitData']
-    if HitData.Damage <= 0 then return end
-    
-
-    local weapon = HitData.Weapon
-    local combo = if Enemy.SessionData.StatusEffects.CurrentCombo <= 0 then 4 else Enemy.SessionData.StatusEffects.CurrentCombo
+    local EventData = self.Tags['OnM1Start']['EventData']
+	local Owner = EventData['Owner'] :: EntityInterfaces.IEntityComponent
+	Owner:SetStatusEffect('CurrentCombo',0)
+	
     self:Execute({
-		Name = 'Network.PlayRemoteEvent';
+		Name = 'Action.Extend';
 		Config = {
-			EventType = Enums.EventType.Close;
-			Event = 'VFX';
-			EventName = 'PlayVFX';
-			EventData = {
-				Player = Victim.Instance;
-                Enemy = Enemy.Instance;
-                Combo = combo;
-				VFXType = weapon..'.Hit';
-				State = 'Hit'
-			};
+			Inject = {
+				'M1Fists'
+			}
 		}
 	})
-    
+	
+	self:Execute({
+        Name = 'Action.'..EventData.Weapon..'Jump';
+    })
+
 end)
 
 

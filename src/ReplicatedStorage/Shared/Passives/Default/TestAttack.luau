@@ -10,7 +10,7 @@ local _Registries = Data:WaitForChild('Registries')
 local registry = Registry.new()
 
 registry.Inject = {
-    'TestTema'
+    'JumpAttack';
 }
 
 local passive = {
@@ -20,14 +20,18 @@ local passive = {
 	{
         LastStunTime = 0;
 		Priority = 1;
+		CoolDown = 2;
 	},
 	{
-		Name = 'Event.OnTest';
-		Tag = 'OnTest';
+		Name = 'Event.OnM1Start';
+		Tag = 'OnM1Start';
 		{
-			Name = 'Condition.ValideJumpAttack?';
+			Name = 'Condition.ValideJumpAttack';
 			{
 				Name = 'Action.JumpAttack';
+			},
+			{
+				Name = 'Action.SetUsed';
 			}
 		}
 	}

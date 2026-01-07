@@ -7,6 +7,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
 local NetWork = Utilities:WaitForChild('NetWork')
+local RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
@@ -30,7 +31,19 @@ behaviorRegistry:Register('Wait', function(self, node)
 	task.wait(node.Config.Wait)
 end)
 
-
+behaviorRegistry:Register('Extend', function(self,node): any 
+	RegistryManager:InjectRegistry(self.BehaviorRegistry)
+	local t1= Registry.new()
+	t1.Inject = node.Config.Inject
+	RegistryManager:InjectRegistry(t1)
+	local t1meta = getmetatable(t1)
+	local selfmeta = getmetatable(self.BehaviorRegistry)
+	
+	local t1metanew = setmetatable({},t1meta)
+	local selfmetanew = setmetatable({}, selfmeta)
+	
+	local t3 = Registry.new()
+end)
 
 behaviorRegistry:Register('Raycast', function(self,node)
 	local config = node.Config

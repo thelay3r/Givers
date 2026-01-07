@@ -13,7 +13,9 @@ registry.Inject = {
 	'M1Fists';
 }
 
-
+registry:Register('TestInFists', function(self,node): any
+	warn('SKJFGSDHFGSDHJFGSHJKFGDSHJFGS!!!!')  
+end)
 
 local ability = {
 		Name = 'Action.Root';
@@ -41,14 +43,17 @@ local ability = {
 						Name = 'Action.Combo';
 						Config = {
 							Combo = {
-								'Fist';
+								'Fists';
 							},
 							Timings = {
-								['Fist'] = {
+								['Fists'] = {
 									Combo = 2;
 									Main = .35;
 								}
 							}
+						},
+						{
+							Name =	'Action.TestInFists'
 						},
 						{
 							Name = 'Action.SetUsed';

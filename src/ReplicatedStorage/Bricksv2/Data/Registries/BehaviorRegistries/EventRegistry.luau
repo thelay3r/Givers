@@ -18,14 +18,15 @@ behaviorRegistry:Register('TriggerEvent', function(self, node)
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
+
 	local selectedBlock = self.Events[node.Config.TagName]
 	if not selectedBlock then
+		
 		self:Execute({
 			Name = 'Event.'..node.Config.TagName;
 			Tag = node.Config.TagName;
 		})
 		selectedBlock = self.Events[node.Config.TagName]
-		--! 
 	end
 	selectedBlock.TriggerArgs = node.Config
 
@@ -43,6 +44,17 @@ behaviorRegistry:Register('OnStart', function(self,node)
 		};
 	})
 
+end)
+
+behaviorRegistry:Register('OnHit', function(self, node) 
+	
+end)
+
+behaviorRegistry:Register('OnM1Start', function(self, node) 
+	
+end)
+behaviorRegistry:Register('OnM1End', function(self, node) 
+	
 end)
 
 behaviorRegistry:Register('OnDurationEnd', function(self,node)

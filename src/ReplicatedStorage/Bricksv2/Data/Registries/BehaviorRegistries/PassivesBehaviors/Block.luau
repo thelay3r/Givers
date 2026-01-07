@@ -29,7 +29,10 @@ StunRegistry:Register('Block', function(self,node)
     HitData.Damage = 0
     
     if StatusEffects.Parry then return end
-    Victim:SetAttribute('Posture',math.random(1,99))
+    self:Execute({
+        Name = 'Action.DealPosture';
+        Config = EventData;
+    })
 end)
 
 

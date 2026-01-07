@@ -208,6 +208,31 @@ Fists['Critical'] = {
     end
 }
 
+Fists['M1']['Jump'] = function(args)
+        local Player = args.Player
+        local Character = Player.Character :: Model
+        local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+
+        local Animator = AnimationsComponent.new(Character) :: AnimationsInterfaces.IAnimationsComponent
+        local NeededPack = Assets:FindFirstChild('Fists'):FindFirstChild('Animations')
+        local Animation = NeededPack:FindFirstChild('JumpAttack')
+
+        local animation,_data = Animator:Load(Animation, {
+                Name = 'Fists_Jump';
+                _Name = 'Fists_Jump';
+                Priority = Enum.AnimationPriority.Action2.Name;
+                Settings = {
+                    Speed = 1;
+                    Weight = 1;
+                    FadeTime = .15;
+                }
+            })
+        Animator:Play(_data)
+        print('Jump!!!!!')
+    end
+
+
+
 Fists['Hit'] = {
     ['Hit'] = function(args)
         local Player = args.Player :: Player

@@ -77,7 +77,7 @@ function AbilityHandler.new(config: {Ability: any, Registry: any?}) : typeof(Abi
 	ability.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
 	ability.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
 	
-
+    
     
 	abilityParser:Create(config.Ability, ability)
 

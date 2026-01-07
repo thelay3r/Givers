@@ -4,7 +4,7 @@ local RegistryManager = {}
 
 function RegistryManager:LoadRegistries(registries: Folder & { [number]: any })
     if typeof(registries) == "ModuleScript" then
-        local Registry = require(registries)
+        local Registry = require(registries :: any)
         Registries[registries.Name] = Registry
         return
     end
