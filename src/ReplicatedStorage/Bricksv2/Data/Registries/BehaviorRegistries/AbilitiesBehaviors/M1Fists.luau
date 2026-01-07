@@ -27,6 +27,8 @@ EntityRegistry:Register('FistJump', function(self,node): any
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.SessionData
 
+	print('tag123')
+
 	self:Execute({
 		Name = 'Network.PlayBindableEvent';
 		Config = {
@@ -34,7 +36,7 @@ EntityRegistry:Register('FistJump', function(self,node): any
 			EventData = {
                 Player = Entity.Instance;
                 VFXType = 'Fists.M1';
-				State = 'Jump';
+				State = 'OnStart';
 				Combo = Session.StatusEffects.CurrentCombo;
 			}
 		}

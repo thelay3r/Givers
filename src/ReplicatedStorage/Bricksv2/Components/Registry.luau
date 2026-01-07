@@ -26,6 +26,10 @@ end
 function Registry:Extends(registries: {any})
 
 	self._meta = registries
+	if (not registries) then
+		warn(`{self} registries are nill`)
+		return
+	end
 
 	setmetatable(self.callbacks, {
 		__index = function(t, i)

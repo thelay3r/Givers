@@ -32,12 +32,8 @@ behaviorRegistry:Register('Wait', function(self, node)
 end)
 
 behaviorRegistry:Register('Extend', function(self,node): any 
-
-	--self.Config.Inject -- tb injected
-	--currently injected (self.callbacks metatable)
-
 	local currentlyInjected = self.BehaviorRegistry._meta
-	local tbInjected = RegistryManager:GetRegistriesToInject(self.BehaviorRegistry)
+	local tbInjected = RegistryManager:GetRegistriesToInject(node.Config)
 
 	for _, inject in pairs(tbInjected) do
 		table.insert(currentlyInjected, inject)

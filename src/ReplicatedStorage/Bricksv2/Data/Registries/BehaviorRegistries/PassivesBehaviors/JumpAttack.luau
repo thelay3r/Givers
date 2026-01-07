@@ -40,7 +40,7 @@ PassiveRegistry:Register('JumpAttack', function(self,node)
 	})
 	
 	self:Execute({
-        Name = 'Action.'..EventData.Weapon..'Jump';
+        Name = 'Action.FistJump'--..EventData.Weapon..'Jump';
     })
 
 end)
