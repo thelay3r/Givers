@@ -48,18 +48,4 @@ behaviorRegistry:Register('Raycast', function(self,node)
 end)
 
 
-behaviorRegistry:Register('TriggerPassive', function(self, node)
-	local info = node.Additional.Main
-	
-	for _, passive in pairs(info.Passives) do
-		passive:Execute(
-			{
-				Name = 'Action.TriggerEvent',
-				Config = {
-					TagName = node.Config.PassiveEvent
-				}
-			})
-	end
-end)
-
 return behaviorRegistry

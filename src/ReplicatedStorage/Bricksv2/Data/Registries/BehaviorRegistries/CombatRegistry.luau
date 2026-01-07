@@ -81,6 +81,10 @@ EntityRegistry:Register('Combo', function(self, node)
             try+=1
         end
     end
+
+    local locked = false
+    Entity:TriggerPassive()
+
     self:Execute({
         Name = 'Action.'..TargetAction;
     })

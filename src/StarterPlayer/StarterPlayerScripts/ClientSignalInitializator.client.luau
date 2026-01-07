@@ -27,7 +27,7 @@ local AbilityPacket = Packets.Ability
 
 local Animator = require(Utilmodules:WaitForChild('Animator'))
 
-local Player: LocalPlayerInterfaces.IClientPlayerComponent = LocalPlayerComponent:GetPlayer()
+local Player: LocalPlayerInterfaces.IClientPlayerComponent = nil
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
@@ -52,7 +52,7 @@ Replicator:GetRemote('VFX'):Connect('VFX', function(args, ...)
 	
 	if not (Pack[args.Name]) then warn('VFX is nil.') return end
 	
-	local VFXModule = require(Pack[args.Name])
+	local VFXModule = require(Pack[args.Name] :: any)
 	
 	if not (VFXModule[args.Func]) then warn('Function is nil.') return end
 	
@@ -60,7 +60,7 @@ Replicator:GetRemote('VFX'):Connect('VFX', function(args, ...)
 	
 end)
 
-BindableGlobal:Connect('VFX', function(args, ...)
+BindableGlobal:Connect('VFX', function(args: {[string] : any}, ...)
 
 	if not (VFXReplica[args.Pack]) then return warn('Cannot find required pack.') end
 
@@ -68,7 +68,7 @@ BindableGlobal:Connect('VFX', function(args, ...)
 
 	if not (Pack[args.Name]) then warn('VFX is nil.') return end
 
-	local VFXModule = require(Pack[args.Name])
+	local VFXModule = require(Pack[args.Name] :: any)
 
 	if not (VFXModule[args.Func]) then warn('Function is nil.') return end
 

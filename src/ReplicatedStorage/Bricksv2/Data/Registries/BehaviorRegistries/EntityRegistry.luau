@@ -36,6 +36,17 @@ EntityRegistry:Register('DealDamage', function(self,node)
 
 end)
 
+EntityRegistry:Register('DealPosture', function(self,node)
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	local config = node.Config
+	local HitData = config.HitData
+	local Victim = config.Victim
+
+	Victim:TriggerPassives('OnPosture',config)
+	Victim:TakePosture(HitData.Damage * .1)
+
+end)
+
 EntityRegistry:Register('PassiveTrigger', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local config = node.Config

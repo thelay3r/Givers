@@ -17,6 +17,10 @@ local Registry = require(Components:WaitForChild('Registry'))
 
 local StunRegistry = Registry.new()
 
+StunRegistry:Register('TestjOPA', function(...: any): any  
+    print('ЖОПА')
+end)
+
 StunRegistry:Register('GreatStun?', function(self,node)
     local EventData = self.Tags['OnHit']['EventData']
     local Entity = EventData['Victim'] :: EntityInterfaces.IEntityComponent 

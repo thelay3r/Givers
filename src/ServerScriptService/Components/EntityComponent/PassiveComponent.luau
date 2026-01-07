@@ -60,7 +60,10 @@ function Component.AppendPassive(self: IEntity,pack: string,name: string)
     assert(PassivesFolder:FindFirstChild(pack), (`%s pack doesn't exist`):format(pack))
     assert(PassivesFolder[pack]:FindFirstChild(name), (`%s passive doesn't exist in %s pack`):format(name, pack))
 
-    local passiveModule = require(PassivesFolder[pack][name])
+
+    local module = PassivesFolder[pack][name]:Clone()
+    local passiveModule = require(module :: any) :: {}
+    module:Destroy()
     local passive = PassiveHandler.new(passiveModule) :: any
 
     passive:BindToEntity(name,sessionData.UserId)

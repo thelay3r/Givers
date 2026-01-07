@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local _Modules = Utilities:WaitForChild('Modules')
-local PassivesFolder = Shared:WaitForChild('Passives')
+local PassivesFolder = Shared:WaitForChild('Passives') :: Folder
 
 -- use ServerStorage Passives (as in init)
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
@@ -65,22 +65,11 @@ function PassiveHandler.GetByKeyCode(name, entityId, key)
     return Passive
 end
 
-function PassiveHandler.createByName(packName, PassiveName) : typeof(PassiveHandler)
-    assert(PassivesFolder:FindFirstChild(packName), (`%s doesnt exist!`):format(packName))
-    assert(PassivesFolder[packName]:FindFirstChild(PassiveName), (`%s in %s pack doesnt exist!`):format(PassiveName, packName))
-
-    local Passive = PassiveHandler.new(
-        require(PassivesFolder[packName][PassiveName])
-    )
-
-	print(Passive)
-    return Passive
-end
-
 function PassiveHandler.new(config: {Passive: any, Registry: any?}) : typeof(PassiveParser)
 	-- create parser-backed Passive instance using shared parser factory
 	local Passive = PassiveParserObject.new()
 	
+ 
 	RegistryManager:InjectRegistry(config.Registry)
 	Passive.BehaviorRegistry = Registry.new():Extends({config.Registry, defaultBehaviorRegistry}) 
 	Passive.ScopeRegistry = Registry.new():Extends({defaultScopeRegistry}) 
@@ -93,7 +82,7 @@ function PassiveHandler.new(config: {Passive: any, Registry: any?}) : typeof(Pas
             return PassiveHandler[i]
         end
     })
-	
+	print(Passive,'tagPassive')
     return createdPassive
 end
 

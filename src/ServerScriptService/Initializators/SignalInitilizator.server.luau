@@ -33,8 +33,18 @@ ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 
 	if not Entity then return end
 	
+
+
 	if args.State == 'Begin' then
 		Entity.SessionData.PressedKeys[args.Key] = args.Key
+
+		if args.Key == 'Space' then
+		Entity.SessionData.StatusEffects.AfterSpace = true
+		TaskManager:CreateTask(Player, 'SpaceHold', 2, function(a0) 
+			 Entity.SessionData.StatusEffects.AfterSpace = false
+		end)
+	end
+
 	else
 		Entity.SessionData.PressedKeys[args.Key] = nil
 	end
@@ -96,7 +106,7 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendPassive('Default', 'Block')
 	Entity:AppendPassive('Default', 'Parry')
 	Entity:AppendPassive('Default', 'Hit')
-	
+	Entity:AppendPassive('Default', 'TestAttack')
 	Ragdoll:Setup(Character)
-	Ragdoll:Enabled(Character)
+	--Ragdoll:Enabled(Character)
 end)

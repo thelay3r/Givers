@@ -70,7 +70,7 @@ local SessionData = {
 			Vaulting = false;
 			IsRunning = false;
 
-
+			AfterSpace = false;
 			ByPass = false;
 			CanRun = true;
 
