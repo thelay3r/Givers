@@ -231,6 +231,37 @@ Fists['M1']['Jump'] = function(args)
         print('Jump!!!!!')
     end
 
+Fists['M1']['JumpLocale'] = function(args)
+    local Player = args.Player
+    local Character = Player.Character :: Model
+    local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+
+    local Animator = AnimationsComponent.new(Character) :: AnimationsInterfaces.IAnimationsComponent
+    local NeededPack = Assets:FindFirstChild('Fists'):FindFirstChild('Animations')
+    local Animation = NeededPack:FindFirstChild('JumpAttack')
+
+    local Speed = 75
+    local BodyVelocity = AssetsHelper.CreateBodyVelocity({
+        Instance = {
+            Parent = RootPart;
+            Velocity = RootPart.CFrame.LookVector * Speed;
+            MaxForce = Vector3.one * 15000 * Vector3.new(1,0,1);
+            P = 15000;
+
+        };
+        Settings = {
+            DestroyTime = .3;
+        }
+    })
+
+
+    for i=1,30 do 
+        local t = i/30
+        local lerp = BiezeModule.lerp(1,0,t,Enum.EasingStyle.Quad,Enum.EasingDirection.Out) * Speed
+        BodyVelocity.Velocity = RootPart.CFrame.LookVector * lerp
+        task.wait(1/60)
+    end
+end
 
 
 Fists['Hit'] = {

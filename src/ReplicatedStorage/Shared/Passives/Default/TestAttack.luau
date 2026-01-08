@@ -26,13 +26,16 @@ local passive = {
 		Name = 'Event.OnM1Start';
 		Tag = 'OnM1Start';
 		{
-			Name = 'Condition.ValideJumpAttack';
+			Name = 'Condition.OnCoolDown?'; 
 			{
-				Name = 'Action.JumpAttack';
-			},
-			{
-				Name = 'Action.SetUsed';
-			}
+				Name = 'Condition.ValideJumpAttack';
+				{
+					Name = 'Action.JumpAttack';
+				},
+				{
+					Name = 'Action.SetUsed';
+				}
+			};
 		}
 	}
 }

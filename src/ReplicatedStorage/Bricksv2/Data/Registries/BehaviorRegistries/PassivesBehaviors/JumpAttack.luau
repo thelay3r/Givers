@@ -30,17 +30,22 @@ PassiveRegistry:Register('JumpAttack', function(self,node)
 	local Owner = EventData['Owner'] :: EntityInterfaces.IEntityComponent
 	Owner:SetStatusEffect('CurrentCombo',0)
 	
+	print(EventData)
+
+	local injectWeapon = 'M1'..EventData.Weapon
+	local JumpAction = 'Action.'..EventData.Weapon..'Jump'
+	print(injectWeapon == 'M1Fists')
     self:Execute({
 		Name = 'Action.Extend';
 		Config = {
 			Inject = {
-				'M1Fists'
+				injectWeapon
 			}
 		}
 	})
 	
 	self:Execute({
-        Name = 'Action.FistJump'--..EventData.Weapon..'Jump';
+        Name = JumpAction --'Action.FistJump'--..EventData.Weapon..'Jump';
     })
 
 end)

@@ -10,6 +10,7 @@ local _Data = Bricks:WaitForChild('Data')
 local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
+local isSimilar = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.isSimilar)
 local HitboxClass = require(ReplicatedStorage.Shared.Utilities.Modules.HitboxClass)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Fists = require(ReplicatedStorage.Shared.VFXs.Replica.VFXs.Fists)
@@ -23,11 +24,23 @@ EntityRegistry:Register('Root', function(self, node)
     print('New Root Behavior')
 end)
 
-EntityRegistry:Register('FistJump', function(self,node): any
+EntityRegistry:Register('FistsJump', function(self,node): any
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.SessionData
 
-	print('tag123')
+	self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = Entity.Instance;
+				VFXType = 'Fists.M1';
+				State = 'JumpLocale';
+			};
+		}
+	})
 
 	self:Execute({
 		Name = 'Network.PlayBindableEvent';
@@ -36,11 +49,13 @@ EntityRegistry:Register('FistJump', function(self,node): any
 			EventData = {
                 Player = Entity.Instance;
                 VFXType = 'Fists.M1';
-				State = 'OnStart';
+				State = 'Jump';
 				Combo = Session.StatusEffects.CurrentCombo;
 			}
 		}
 	})
+
+
 
 	local HitBox = HitboxClass.new('WeldedBox', 
 	{
