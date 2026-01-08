@@ -1,18 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local _RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
-local Handlers = Modules:WaitForChild('Handlers')
+local Utilities = Shared:WaitForChild('Utilities')
+local Modules = Utilities:WaitForChild('Modules')
 local VFXs = Shared:WaitForChild('VFXs')
 local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
-local AssetsHelper = require(Utilities:WaitForChild('AssetsHelper'))
-local CameraShakeHandler = require(Handlers:WaitForChild('CameraShakeHandler'))
-local CameraShaker = require(Utilities:WaitForChild('CameraShaker'))
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
+local CameraShaker = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShaker)
+local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local camera = workspace.CurrentCamera
 

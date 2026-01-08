@@ -2,19 +2,18 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local RunService = game:GetService('RunService')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
-local Containers = Modules:WaitForChild('Containers')
+local Utilities = Shared:WaitForChild('Utilities')
+local UtilModules = Utilities:WaitForChild('Modules')
 local VFXs = Shared:WaitForChild('VFXs')
 
 local Animations = VFXs:WaitForChild('Assets'):WaitForChild('Movement'):WaitForChild('Dash'):WaitForChild('Animations')
 
-local CacheContainer = require(Containers:WaitForChild('CacheContainer'))
-local AssetsHelper = require(Utilities:WaitForChild('AssetsHelper'))
-local AnimationsComponent = require(Utilities:WaitForChild('Animator'):WaitForChild('AnimationsComponent'))
+local CacheContainer = require(UtilModules:WaitForChild('CacheContainer'))
+local AssetsHelper = require(UtilModules:WaitForChild('AssetsHelper'))
+local AnimationsComponent = require(UtilModules:WaitForChild('AnimationsComponent'))
 local SoundsEmmiter = require(VFXs:WaitForChild('Modules'):WaitForChild('SoundsEmmiter'))
 local Emit = require(VFXs:WaitForChild('Modules'):WaitForChild('Emit'))
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 
 local Dash = {}
 

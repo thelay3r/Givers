@@ -1,11 +1,13 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
+local Shared = ReplicatedStorage:WaitForChild('Shared')
+local Utilities = Shared:WaitForChild('Utilities')
+local Modules = Utilities:WaitForChild('Modules')
+
 
 local TweenService = game:GetService("TweenService")
 
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local CameraVFXs = {}
 

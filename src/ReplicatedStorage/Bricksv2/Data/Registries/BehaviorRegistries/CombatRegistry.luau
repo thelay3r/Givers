@@ -9,7 +9,7 @@ local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 

@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local NetWork = Modules:WaitForChild('NetWork')
+local Utilities = Shared:WaitForChild('Utilities')
+local NetWork = Utilities:WaitForChild('NetWork')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
 local Replicator = require(NetWork:WaitForChild('Replicator'))

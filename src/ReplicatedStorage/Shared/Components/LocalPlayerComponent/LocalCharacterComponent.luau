@@ -1,13 +1,13 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
+local Utilities = Shared:WaitForChild('Utilities')
+local UtilModules = Utilities:WaitForChild('Modules')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
-local Animator = require(Utilities:WaitForChild('Animator'))
+local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
+local Animator = require(UtilModules:WaitForChild('Animator'))
 local FSM_Controllers = Shared:WaitForChild('FSM_Controllers')
 
 local CharacterFSM = require(FSM_Controllers:WaitForChild('CharacterFSM'))

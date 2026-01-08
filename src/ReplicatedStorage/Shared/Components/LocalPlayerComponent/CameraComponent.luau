@@ -5,11 +5,11 @@ local RunService = game:GetService('RunService')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
+local Utilities = Shared:WaitForChild('Utilities')
+local Modules = Utilities:WaitForChild('Modules')
 
-local CameraShaker = require(Utilities:WaitForChild('CameraShaker'))
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local CameraShaker = require(Modules:WaitForChild('CameraShaker'))
+local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))

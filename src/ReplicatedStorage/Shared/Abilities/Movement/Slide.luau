@@ -4,9 +4,9 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild("Components")
 local Data = Bricks:WaitForChild("Data")
 local _Registries = Data:WaitForChild("Registries")
-local _Replicator = require(ReplicatedStorage.Modules.NetWork.Replicator)
-local _AssetsHelper = require(ReplicatedStorage.Modules.Utilities.AssetsHelper)
-local _TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
+local _Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
+local _AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(_Components.Registry)
 
 

@@ -2,19 +2,19 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local RunService = game:GetService('RunService')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
+local Utilities = Shared:WaitForChild('Utilities')
+local Modules = Utilities:WaitForChild('Modules')
 
 local Interfaces = Shared:WaitForChild('Interfaces')
 
-local TaskManager = require(Utilities:FindFirstChild('TaskManager'))
-local AnimationsComponent = require(Utilities:FindFirstChild('Animator'):FindFirstChild('AnimationsComponent'))
-local StateManager = require(Utilities:FindFirstChild('StateManager'))
+local TaskManager = require(Modules:FindFirstChild('TaskManager'))
+local AnimationsComponent = require(Modules:FindFirstChild('AnimationsComponent'))
+local StateManager = require(Modules:FindFirstChild('StateManager'))
 
 local VFXs = Shared:WaitForChild('VFXs')
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 
 local MoveDirection = {}

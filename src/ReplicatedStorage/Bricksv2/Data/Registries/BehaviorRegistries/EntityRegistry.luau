@@ -10,9 +10,9 @@ local Registries = Data:WaitForChild('Registries')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local Enums = require(ReplicatedStorage.Modules.Utilities.Enums)
-local SpeedController = require(ReplicatedStorage.Modules.Controllers.SpeedController)
-local TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 

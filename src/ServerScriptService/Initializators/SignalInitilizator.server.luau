@@ -5,17 +5,14 @@ local ServerScriptService = game:GetService('ServerScriptService')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local Modules = ReplicatedStorage:WaitForChild('Modules')
-local Utilities = Modules:WaitForChild('Utilities')
-local Physics = Modules:WaitForChild('Physics')
-local Controllers = Modules:WaitForChild('Controllers')
-local NetWork = Modules:WaitForChild('NetWork')
+local Utilities = Shared:WaitForChild('Utilities')
+local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
-local Ragdoll = require(Physics:WaitForChild('Ragdoll'))
-local SpeedController = require(Controllers:WaitForChild('SpeedController'))
-local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local Ragdoll = require(ReplicatedStorage.Shared.Utilities.Modules.Ragdoll)
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 -- Server
 
