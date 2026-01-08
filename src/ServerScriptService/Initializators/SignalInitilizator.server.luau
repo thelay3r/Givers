@@ -56,6 +56,11 @@ Replicator:GetRemote('Global'):Connect('SpeedAmplify', function(player: Player,d
 	Entity.SpeedController.Data.Cache[data.Name] = data
 end)
 
+Replicator:GetRemote('Global'):Connect('SetRunTick', function(player: Player,data)
+	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
+	Entity.SessionData.Attributes.RunTick = tick()
+end)
+
 Replicator:GetRemote('GlobalFunction'):Connect('ValideSpeed', function()
 	return true
 end)
@@ -106,7 +111,8 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendPassive('Default', 'Block')
 	Entity:AppendPassive('Default', 'Parry')
 	Entity:AppendPassive('Default', 'Hit')
-	Entity:AppendPassive('Default', 'TestAttack')
+	Entity:AppendPassive('Default', 'JumpAttack')
+	Entity:AppendPassive('Default', 'RunAttack')
 	Ragdoll:Setup(Character)
 	--Ragdoll:Enabled(Character)
 end)

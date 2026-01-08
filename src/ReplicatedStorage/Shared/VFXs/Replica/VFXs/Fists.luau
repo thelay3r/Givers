@@ -208,6 +208,29 @@ Fists['Critical'] = {
     end
 }
 
+Fists['M1']['Run'] = function(args)
+        local Player = args.Player
+        local Character = Player.Character :: Model
+        local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
+
+        local Animator = AnimationsComponent.new(Character) :: AnimationsInterfaces.IAnimationsComponent
+        local NeededPack = Assets:FindFirstChild('Fists'):FindFirstChild('Animations')
+        local Animation = NeededPack:FindFirstChild('RunAttack')
+
+        local animation,_data = Animator:Load(Animation, {
+                Name = 'Fists_Run';
+                _Name = 'Fists_Run';
+                Priority = Enum.AnimationPriority.Action2.Name;
+                Settings = {
+                    Speed = 1;
+                    Weight = 1;
+                    FadeTime = .15;
+                }
+            })
+        Animator:Play(_data)
+        print('Jump!!!!!')
+    end
+
 Fists['M1']['Jump'] = function(args)
         local Player = args.Player
         local Character = Player.Character :: Model
@@ -272,10 +295,10 @@ Fists['Hit'] = {
 
         
 
-        local Vfx = FistsFolder:FindFirstChild('VFX')
+        local Vfx = FistsFolder:FindFirstChild('Effects')
         local HighlightPrototype = DefaultFolder:FindFirstChild('Effects'):FindFirstChild('Hit') :: Highlight
         local Hit = EffecteCache:CreateInstance('HitFists', Vfx:FindFirstChild('Hit')) :: BasePart
-        local WeldProtorype = Assets.Default.Effects.Welds.WeldConstraint
+        local WeldProtorype = Assets.Welds.WeldConstraint
         local weld = EffecteCache:CreateInstance('Welds', WeldProtorype) :: WeldConstraint
         local Sound = EffecteCache:CreateInstance('FistHit'..args.Combo, FistsFolder:FindFirstChild('Sounds'):FindFirstChild('HitsSound')[args.Combo]) :: Sound
         local Highlight = EffecteCache:CreateInstance('Hit Highlight', HighlightPrototype, 

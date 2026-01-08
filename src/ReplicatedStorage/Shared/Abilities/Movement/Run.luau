@@ -4,6 +4,7 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild("Components")
 local Data = Bricks:WaitForChild("Data")
 local _Registries = Data:WaitForChild("Registries")
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local Registry = require(_Components.Registry)
 
 
@@ -69,13 +70,12 @@ local ability = {
 				Name = "Condition.CheckVault",
 			},
 			{
-				Name = "NetWork.PlayBindableEvent",
-				SendParams = { ["Player"] = { From = "Owner", Path = { "Instance" } } },
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
 					EventName = "PlayVFX",
-					VFXType = "Camera.ChangeFOV",
-					Client = true,
 					EventData = {
+						VFXType = "Camera.ChangeFOV",
 						Time = 0.8,
 						FOV = 85,
 						EasingStyle = Enum.EasingStyle.Sine,
@@ -96,17 +96,24 @@ local ability = {
 				},
 			},
 			{
-				Name = "NetWork.PlayBindableEvent",
-				SendParams = { ["Player"] = { From = "Owner", Path = { "Instance" } } },
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
-					VFXType = "Camera.Woobling",
-					Client = true,
+					EventName = "PlayVFX",
 					EventData = {
+						VFXType = "Camera.Woobling",
 						State = "Start",
 						Pack = "Default",
 					},
 				},
 			},
+			{
+				Name = 'Network.PlayRemoteEvent';
+				Config = {
+					EventType = Enums.EventType.All;
+					EventName = 'SetRunTick';	
+				}
+			}
 		},
 
 	},
@@ -120,12 +127,12 @@ local ability = {
 				RequestedTags = { ["Owner"] = "Owner", ["Config"] = "AcceleratMoveSpeed" },
 			},
 			{
-				Name = "NetWork.PlayBindableEvent",
-				SendParams = { ["Player"] = { From = "Owner", Path = { "Instance" } } },
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
-					VFXType = "Camera.ChangeFOV",
-					Client = true,
+					EventName = "PlayVFX",
 					EventData = {
+						VFXType = "Camera.ChangeFOV",
 						Time = 0.5,
 						FOV = 70,
 						EasingStyle = Enum.EasingStyle.Sine,
@@ -146,12 +153,12 @@ local ability = {
 				},
 			},
 			{
-				Name = "NetWork.PlayBindableEvent",
-				SendParams = { ["Player"] = { From = "Owner", Path = { "Instance" } } },
+				Name = "Network.PlayBindableEvent",
+				InjectParams = { ["Player"] = "Owner.Instance" },
 				Config = {
 					EventName = "PlayVFX",
-					VFXType = "Camera.Woobling",
 					EventData = {
+						VFXType = "Camera.Woobling",
 						State = "Stop",
 						Pack = "Default",
 					},

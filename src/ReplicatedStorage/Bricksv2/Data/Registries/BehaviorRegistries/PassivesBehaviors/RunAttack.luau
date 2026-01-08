@@ -15,16 +15,23 @@ local Registry = require(Components:WaitForChild('Registry'))
 
 local PassiveRegistry = Registry.new()
 
-PassiveRegistry:Register('ValideJumpAttack', function(self,node): any
+PassiveRegistry:Register('ValideRunAttack', function(self,node): any
 	local EventData = self.Tags['OnM1Start']['EventData']
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
-	local Character: Model = Owner.Instance.Character
-	local Humanoid: Humanoid = Character:FindFirstChildOfClass('Humanoid')
 
-	return Humanoid:GetState() == Enum.HumanoidStateType.Freefall
+	local status = false
+	local now = tick()
+	local minDelay = .5
+
+	local RunTick= (Owner.SessionData.Attributes.RunTick or 0) :: number
+	local timing = (now - RunTick) >= minDelay
+	local isRunning: boolean = Owner.SessionData.PressedKeys['W'] and timing
+	status = isRunning
+	
+	return status
 end)
 
-PassiveRegistry:Register('JumpAttack', function(self,node)
+PassiveRegistry:Register('RunAttack', function(self,node)
     local EventData = self.Tags['OnM1Start']['EventData']
 	local Owner = EventData['Owner'] :: EntityInterfaces.IEntityComponent
 	if EventData.Blocked then return end
@@ -35,7 +42,7 @@ PassiveRegistry:Register('JumpAttack', function(self,node)
 	print(EventData)
 
 	local injectWeapon = 'M1'..EventData.Weapon
-	local JumpAction = 'Action.'..EventData.Weapon..'Jump'
+	local RunAction = 'Action.'..EventData.Weapon..'Run'
 	print(injectWeapon == 'M1Fists')
     self:Execute({
 		Name = 'Action.Extend';
@@ -47,7 +54,7 @@ PassiveRegistry:Register('JumpAttack', function(self,node)
 	})
 	
 	self:Execute({
-        Name = JumpAction --'Action.FistJump'--..EventData.Weapon..'Jump';
+        Name = RunAction --'Action.FistJump'--..EventData.Weapon..'Jump';
     })
 
 end)

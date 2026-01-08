@@ -95,6 +95,77 @@ EntityRegistry:Register('FistsJump', function(self,node): any
 
 end)
 
+EntityRegistry:Register('FistsRun', function(self,node): any
+	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
+	local Session = Entity.SessionData
+
+	self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = Entity.Instance;
+				VFXType = 'Fists.M1';
+				State = 'RunLocale';
+			};
+		}
+	})
+
+	self:Execute({
+		Name = 'Network.PlayBindableEvent';
+		Config = {
+			EventName = 'PlayVFX';
+			EventData = {
+                Player = Entity.Instance;
+                VFXType = 'Fists.M1';
+				State = 'Run';
+				Combo = Session.StatusEffects.CurrentCombo;
+			}
+		}
+	})
+
+
+
+	local HitBox = HitboxClass.new('WeldedBox', 
+	{
+		IgnoreCharacters = {Entity.Instance.Character};
+		velocityPrediction = true;
+		root = Entity.Instance.Character:FindFirstChild('HumanoidRootPart');
+		size = Vector3.new(4,4,4);
+		debug = false;
+		duration = .3;
+		proportional = {
+			offsetMultiplier = 1;
+			DefaultSize = Vector3.new(4,4,4);
+		}
+	})
+	task.delay(.3,function()
+		HitBox:Start()
+	end)
+
+	HitBox.OnHit:Connect(function(hitCharacter, hitPart)
+		local Victim = EntityComponent.GetEntity(hitCharacter:GetAttribute('Id'))
+		if not Victim then return end
+		
+		self:Execute({
+			Name = 'Action.DealDamage';
+			Config = {
+				['Victim'] = Victim;
+				['Enemy'] = Entity;
+				['HitData'] = {
+					Damage = 5;
+					StunTime = 1;
+					Weapon = Enums.WeaponSubType.Fists.Name
+				}
+			}
+		})
+		
+	end)
+
+end)
+
 EntityRegistry:Register('Fists', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 	local Session = Entity.SessionData

@@ -91,7 +91,6 @@ EntityRegistry:Register('Combo', function(self, node)
     Entity:TriggerPassives('OnM1Start',PassiveTable)
 
     if PassiveTable.Blocked then return end
-    
 
     self:Execute({
         Name = 'Action.'..TargetAction;
