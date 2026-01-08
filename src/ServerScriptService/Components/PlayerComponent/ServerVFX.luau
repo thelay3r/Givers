@@ -6,8 +6,8 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local VFXs = Shared:WaitForChild('VFXs')
 local Assets: Folder = VFXs:FindFirstChild('Assets')
 
-local Utilities = Shared:WaitForChild('Utilities')
-local NetWork = Utilities:WaitForChild('NetWork')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local NetWork = Modules:WaitForChild('NetWork')
 
 local Replicator = require(NetWork:WaitForChild('Replicator'))
 

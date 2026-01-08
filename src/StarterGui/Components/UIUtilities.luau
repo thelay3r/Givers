@@ -3,8 +3,8 @@
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
-local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local BiezeModule = require(ReplicatedStorage.Modules.Physics.BiezeModule)
+local TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
 
 local camera = workspace.CurrentCamera
 

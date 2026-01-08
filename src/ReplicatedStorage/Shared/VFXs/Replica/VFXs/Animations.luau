@@ -1,13 +1,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Utilities = Shared:WaitForChild('Utilities')
-local Modules = Utilities:WaitForChild('Modules')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
+local Handlers = Modules:WaitForChild('Handlers')
 local VFXs = Shared:WaitForChild('VFXs')
 local Assets = VFXs:WaitForChild('Assets')
 
-local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
-local TaskManager = require(Modules:WaitForChild('TaskManager'))
-local AnimationsComponent = require(Modules:WaitForChild('AnimationsComponent'))
+local CountHandler = require(Handlers:WaitForChild('CountHandler'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local AnimationsComponent = require(Utilities:WaitForChild('Animator'):WaitForChild('AnimationsComponent'))
 
 local KeyCode = {}
 

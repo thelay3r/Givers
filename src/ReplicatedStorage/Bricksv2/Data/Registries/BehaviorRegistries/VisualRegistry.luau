@@ -8,8 +8,8 @@ local _Registries = Data:WaitForChild('Registries')
 
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
-local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local AnimationsComponent = require(ReplicatedStorage.Modules.Utilities.Animator.AnimationsComponent)
+local _TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 

@@ -6,10 +6,11 @@ local Components = Shared:WaitForChild('Components')
 local VFXs = Shared:WaitForChild('VFXs')
 local Assets = VFXs:FindFirstChild('Assets')
 
-local Utilities = Shared:WaitForChild('Utilities')
-local Modules = Utilities:WaitForChild('Modules')
-local CustomAnimator = require(Modules:WaitForChild('AnimationsComponent'))
-local TaskManager = require(Modules:WaitForChild('TaskManager'))
+
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
+local CustomAnimator = require(Utilities:WaitForChild('Animator'):WaitForChild('AnimationsComponent'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
 
 local FistsVFXs = Assets:FindFirstChild('Fists')
 

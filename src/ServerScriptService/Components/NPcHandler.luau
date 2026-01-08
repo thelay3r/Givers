@@ -6,14 +6,14 @@ local Components = ServerScriptService:WaitForChild('Components')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local NPCsFolder = Shared:WaitForChild('NPCsFolder')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local Utilities = Shared:WaitForChild('Utilities')
-local UtilModules = Utilities:WaitForChild('Modules')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
 
 
 local NPcHandlerInterfaces = require(Interfaces:WaitForChild('NPcHandlerInterface'))
 
-local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
-local TableHelper = require(UtilModules:WaitForChild('TableHelper'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
+local TableHelper = require(Utilities:WaitForChild('TableHelper'))
 local NPcComponent = require(Components:WaitForChild('NPCComponent'))
 local NpcBeahaivor = Components:WaitForChild('NpcBehaivor')
 

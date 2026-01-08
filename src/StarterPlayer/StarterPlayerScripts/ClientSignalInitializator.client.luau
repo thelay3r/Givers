@@ -4,16 +4,16 @@ local Players = game:GetService('Players')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Components = Shared:WaitForChild('Components')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local Utilities = Shared:WaitForChild('Utilities')
-local Utilmodules = Utilities:WaitForChild('Modules')
-local NetWork = Utilities:WaitForChild('NetWork')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
+local NetWork = Modules:WaitForChild('NetWork')
 local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
 local BlackList = require(ReplicatedStorage.Bricksv2.Data.Abilities.BlackList)
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local _AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
-local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
+local _AbilityHandler = require(ReplicatedStorage.Modules.Handlers.AbilityHandler)
+local SpeedController = require(ReplicatedStorage.Modules.Controllers.SpeedController)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
@@ -25,7 +25,7 @@ local Replica = require(NetWork:WaitForChild('ReplicaClient'))
 local Packets = require(NetWork:WaitForChild('Packets'))
 local AbilityPacket = Packets.Ability
 
-local Animator = require(Utilmodules:WaitForChild('Animator'))
+local Animator = require(Utilities:WaitForChild('Animator'))
 
 local Player: LocalPlayerInterfaces.IClientPlayerComponent = nil
 

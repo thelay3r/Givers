@@ -7,9 +7,10 @@ local Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local _Registries = Data:WaitForChild('Registries')
 
-local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
-local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
-local Replicator = require(ReplicatedStorage.Shared.Utilities.NetWork.Replicator)
+local AssetsHelper = require(ReplicatedStorage.Modules.Utilities.AssetsHelper)
+local TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
+local Utilities = require(ReplicatedStorage.Modules.Physics.SmartBone.Dependencies.Utilities)
+local Replicator = require(ReplicatedStorage.Modules.NetWork.Replicator)
 local Registry = require(Components:WaitForChild('Registry'))
 local _AbilityParser = require(Components:WaitForChild('AbilityParser'))
 

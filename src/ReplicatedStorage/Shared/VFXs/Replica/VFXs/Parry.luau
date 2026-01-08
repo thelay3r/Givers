@@ -1,18 +1,20 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Utilities = Shared:WaitForChild('Utilities')
-local Modules = Utilities:WaitForChild('Modules')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
+local Containers = Modules:WaitForChild('Containers')
+local Handlers = Modules:WaitForChild('Handlers')
 local VFXs = Shared:WaitForChild('VFXs')
 local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
 local Parry = require(ReplicatedStorage.Bricksv2.Data.Registries.BehaviorRegistries.PassivesBehaviors.Parry)
-local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
-local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
-local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
-local TaskManager = require(Modules:WaitForChild('TaskManager'))
+local AssetsHelper = require(Utilities:WaitForChild('AssetsHelper'))
+local CacheContainer = require(Containers:WaitForChild('CacheContainer'))
+local CountHandler = require(Handlers:WaitForChild('CountHandler'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
 
 local Effects = {}
 local EffectCache = CacheContainer.new()

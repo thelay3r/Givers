@@ -9,7 +9,7 @@ local Components = Bricks:WaitForChild('Components')
 local _Data = Bricks:WaitForChild('Data')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
-local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local _TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 
 

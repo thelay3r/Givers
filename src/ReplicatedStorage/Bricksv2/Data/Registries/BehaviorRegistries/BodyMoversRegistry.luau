@@ -9,9 +9,9 @@ local Data = Bricks:WaitForChild('Data')
 local Registries = Data:WaitForChild('Registries')
 
 local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
-local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
-local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
-local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
+local AssetsHelper = require(ReplicatedStorage.Modules.Utilities.AssetsHelper)
+local BiezeModule = require(ReplicatedStorage.Modules.Physics.BiezeModule)
+local TaskManager = require(ReplicatedStorage.Modules.Utilities.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 

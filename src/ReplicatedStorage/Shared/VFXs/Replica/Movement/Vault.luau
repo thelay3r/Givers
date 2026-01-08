@@ -2,13 +2,13 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local RunService = game:GetService('RunService')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
-local Utilities = Shared:WaitForChild('Utilities')
-local UtilModules = Utilities:WaitForChild('Modules')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
 local VFXs = Shared:WaitForChild('VFXs')
 
 local SoundsEmmiter = require(VFXs:WaitForChild('Modules'):WaitForChild('SoundsEmmiter'))
 local Emit = require(VFXs:WaitForChild('Modules'):WaitForChild('Emit'))
-local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
 
 local Vault = {}
 

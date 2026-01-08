@@ -1,10 +1,9 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
-local Components = Shared:WaitForChild('Components')
-local Utilities = Shared:WaitForChild('Utilities')
-local UtilModules = Utilities:WaitForChild('Modules')
-local NetWork = Utilities:WaitForChild('NetWork')
+local Modules = ReplicatedStorage:WaitForChild('Modules')
+local Utilities = Modules:WaitForChild('Utilities')
+local NetWork = Modules:WaitForChild('NetWork')
 local Packets = require(NetWork:WaitForChild('Packets'))
 
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
@@ -12,7 +11,7 @@ local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterf
 local ContextActionService = game:GetService('ContextActionService')
 local UserInputService = game:GetService('UserInputService')
 
-local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
+local TaskManager = require(Utilities:WaitForChild('TaskManager'))
 
 local Contexts = require(script.Contexts)
 
