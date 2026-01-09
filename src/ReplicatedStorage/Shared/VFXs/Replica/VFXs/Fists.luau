@@ -275,8 +275,13 @@ Fists['BackStab']['Effects'] = function(args)
         'Part1';
     }) :: WeldConstraint
     
-
-    
+    local SoundPrototype = AssetsFolder.Parent.Sounds.BackStab
+    local Sound = CacheContainer:CreateInstance('FistsGrabSound', SoundPrototype) :: Sound
+    Sound.Parent = OwnerCharacter.PrimaryPart
+    Sound:Play()
+    Sound.Ended:Once(function(a0: string)  
+        CacheContainer:AddInstanceToCache('FistsGrabSound', Sound)
+    end)
     BloodBackStab.Anchored = true
 
     task.delay(25/60,function()
@@ -314,7 +319,6 @@ Fists['BackStab']['Effects'] = function(args)
             Character = VictimCharacter;
         })
         if not fastCast then return end
-        print(fastCast.Instance)
         BloodBackStab.CFrame = CFrame.new(fastCast.Position,fastCast.Position+fastCast.Normal) * CFrame.Angles(math.rad(90),0,0) 
         BloodBackStab.Parent = workspace.Map.VFXs
         AssetsHelper.Emit(BloodBackStab)
@@ -328,6 +332,7 @@ Fists['BackStab']['Effects'] = function(args)
             MinMagnitude = 1;
             MaxMagnitude = 3;
         })
+
     end)
     task.delay(105/60, function()
         CameraShake:ShakeByDistance(BloodCFG)
@@ -335,7 +340,13 @@ Fists['BackStab']['Effects'] = function(args)
     end)
     task.delay(130/60, function()
         CameraShake:ShakeByDistance(BloodCFG)
-        AssetsHelper.Emit(BloodBackStab)   
+        AssetsHelper.Emit(BloodBackStab)
+
+
+        task.delay(3, function()
+            CacheContainer:AddInstanceToCache('GrabFists', GrabEffect)
+            CacheContainer:AddInstanceToCache('BloodFistsGrab', BloodBackStab)
+        end)
     end)
 end
 
@@ -382,7 +393,7 @@ Fists['M1']['Jump'] = function(args)
                 }
             })
         Animator:Play(_data)
-        print('Jump!!!!!')
+        
     end
 
 Fists['M1']['JumpLocale'] = function(args)
@@ -460,11 +471,12 @@ Fists['Hit'] = {
         Sound.Ended:Once(function()  
             EffecteCache:AddInstanceToCache('FistHit'..args.Combo, Sound)
         end)
-
+        
         task.delay(1, function()
             EffecteCache:AddInstanceToCache('HitFists', Hit)
             EffecteCache:AddInstanceToCache('Welds', weld)
         end)
+
     end
 }
 
