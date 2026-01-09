@@ -1,10 +1,11 @@
 local BlackList = 
 	{
-		'GreatStunned';
+		'GreatStun';
 		'IsDead';
 		'NockDown';
-		'Ragdolled';
+		'Ragdoll';
 		'Stun';
+		'InGrab';
 	}
 
 return BlackList

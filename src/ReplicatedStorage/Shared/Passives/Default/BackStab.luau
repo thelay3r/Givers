@@ -10,7 +10,7 @@ local _Registries = Data:WaitForChild('Registries')
 local registry = Registry.new()
 
 registry.Inject = {
-    'Stun'
+    'BackStab'
 }
 
 local passive = {
@@ -22,16 +22,14 @@ local passive = {
 		Priority = 1;
 	},
 	{
-		Name = 'Event.OnHit';
-		Tag = 'OnHit';
+		Name = 'Event.OnM1Start';
+		Tag = 'OnM1Start';
 		{
-			Name = 'Condition.InIFrame?';{
-				Name = 'Condition.GreatStun?';
-				{
-					Name = 'Action.Stun';
-				}
+			Name = 'Condition.CanBackStab?';
+			Tag = 'BackStabCheck';
+			{
+				Name = 'Action.BackStab'
 			}
-		
 		}
 	}
 }

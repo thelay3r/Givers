@@ -114,7 +114,7 @@ registry:Register("SlideStart", function(self, node)
 	local cast
 	local angle = math.clamp(math.deg(math.acos(RootPart.CFrame.UpVector:Dot(rayResult.Normal))), 20, config.MaxForce)
 
-	local speedMod = math.clamp(config.BaseSpeed + angle / 2, config.DefaultSpeed, 10)
+	local speedMod = math.clamp((config.BaseSpeed + angle / 2):: number, config.DefaultSpeed, 10)
 
 	local newCFrame = CFrame.fromMatrix(RootPart.Position, rightVector, rayResult.Normal, updateLookVector)
 	BodyGyro.CFrame = newCFrame
@@ -139,7 +139,7 @@ registry:Register("SlideStart", function(self, node)
 			local CurrentlyY = RootPart.Position.Y
 			local DeltaY = (CurrentlyY - prevY) / config.Delta
 
-			local speedModifier = math.clamp(config.BaseSpeed * speedMod, 0, config.MaxSpeed)
+			local speedModifier = math.clamp((config.BaseSpeed * speedMod) :: number, 0, config.MaxSpeed)
 
 			prevY = CurrentlyY
 			BodyVelocity.Velocity = (RootPart.CFrame.LookVector * speedModifier) - Vector3.new(0, 75, 0)
@@ -183,19 +183,19 @@ registry:Register("SlideStart", function(self, node)
 
 			if DeltaY < -1 then
 				speedMod =
-					math.clamp(speedMod + config.VerticalAcceleration * (1 / 60), config.MinSpeed, config.MaxSpeed)
+					math.clamp(((speedMod + config.VerticalAcceleration * (1 / 60)) :: number), config.MinSpeed, config.MaxSpeed)
 				continue
 			end
 
 			if DeltaY > 1 then
 				speedMod =
-					math.clamp(speedMod - config.VerticalDecceleration * (1 / 60), config.MinSpeed, config.MaxSpeed)
+					math.clamp(((speedMod - config.VerticalDecceleration * (1 / 60)):: number), config.MinSpeed, config.MaxSpeed)
 				continue
 			end
 
 			if DeltaY > -1 and DeltaY < 1 then
 				speedMod =
-					math.clamp(speedMod - config.HorizontalDecceleration * (1 / 60), config.MinSpeed, config.MaxSpeed)
+					math.clamp(((speedMod - config.HorizontalDecceleration * (1 / 60)):: number), config.MinSpeed, config.MaxSpeed)
 				continue
 			end
 		end

@@ -144,13 +144,23 @@ end
 
 -- Implement Signal:Wait() in terms of a temporary connection using
 -- a Signal:Connect() which disconnects itself.
-function Signal:Wait()
+function Signal:Wait(waitTime: number)
 	local waitingCoroutine = coroutine.running()
 	local cn;
 	cn = self:Connect(function(...)
 		cn:Disconnect()
 		task.spawn(waitingCoroutine, ...)
 	end)
+	
+	if not waitTime then return coroutine.yield() end
+
+	
+	task.delay(waitTime, function()
+		cn:Disconnect()
+		task.spawn(waitingCoroutine)
+	end)
+
+
 	return coroutine.yield()
 end
 

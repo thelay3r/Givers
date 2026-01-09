@@ -6,7 +6,13 @@ local Workspace = game:GetService("Workspace");
 local Players = game:GetService("Players");
 local RunService = game:GetService("RunService");
 local ContextActionService = game:GetService("ContextActionService");
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService");
+
+local ISmoothShiftLock = require(ReplicatedStorage.Shared.Interfaces.ISmoothShiftLock)
+local LocalPlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.LocalPlayerInterfaces)
+
+
 
 local Maid = require(script:WaitForChild("Maid"));
 local Spring = require(script:WaitForChild("Spring"));
@@ -29,7 +35,8 @@ local Config = {
 		{Enum.KeyCode.LeftAlt, Enum.KeyCode.RightAlt}
 };
 --"rbxassetid://102653473143456",
-function SmoothShiftLock.CreateSmoothShiftLock(ModedPlayer)
+
+function SmoothShiftLock.CreateSmoothShiftLock(ModedPlayer: LocalPlayerInterfaces.IClientPlayerComponent): ISmoothShiftLock.ISmoothShiftLock
 	local self = setmetatable({}, SmoothShiftLock);
 	
 	self._runtimeMaid = Maid.new();
@@ -41,6 +48,7 @@ function SmoothShiftLock.CreateSmoothShiftLock(ModedPlayer)
 	self.Enabled = false;
 	
 	self:Enable();
+	
 	
 	return self;
 end;
@@ -124,26 +132,30 @@ function SmoothShiftLock:IsEnabled(): boolean
 end;
 
 --// ShiftLock toggle function
-function SmoothShiftLock:ToggleShiftLock(Enable: boolean?)
+function SmoothShiftLock.ToggleShiftLock(self: ISmoothShiftLock.ISmoothShiftLock, Enable: boolean?)
 	if Enable ~= nil then
 		self.Enabled = Enable;
 	else
 		self.Enabled = not self.Enabled;
 	end;
+	
 
 	self:_updateMouseState();
 	self:_updateMouseIcon();
 	self:_transitionLockOffset();
+
+	local Attributes = self.ModedPlayer.SessionData.Attributes
+	local StatusEffects = self.ModedPlayer.SessionData.StatusEffects
 	if self.Enabled then
 		self._shiftlockMaid:GiveTask(RunService.RenderStepped:Connect(function(Delta: number)
 			if (self.Humanoid and self.RootPart) then 
 				self.Humanoid.AutoRotate = not self.Enabled;
 			end;
 			
-			if (self.Humanoid.Sit) or (not self.ModedPlayer.ClientData.StatusEffects.AutoRotate) then return; end;
+			if (self.Humanoid.Sit) or (not StatusEffects.CanAutoRotate) then return; end;
 			if Config.SMOOTH_CHARACTER_ROTATION then
 				local x, y, z = Camera.CFrame:ToOrientation();
-				self.RootPart.CFrame = self.RootPart.CFrame:Lerp(CFrame.new(self.RootPart.Position) * CFrame.Angles(0, y, 0), Delta * 5 * Config.CHARACTER_ROTATION_SPEED);
+				self.RootPart.CFrame = self.RootPart.CFrame:Lerp(CFrame.new(self.RootPart.Position) * CFrame.Angles(0, y, 0), Delta * 5 * Attributes.AutoRotateSpeed);
 			else
 				local x, y, z = Camera.CFrame:ToOrientation();
 				self.RootPart.CFrame = CFrame.new(self.RootPart.Position) * CFrame.Angles(0, y, 0);

@@ -26,13 +26,14 @@ StunRegistry:Register('Block', function(self,node)
 
     if not StatusEffects['Block'] then return end
     
-    HitData.Damage = 0
     
     if StatusEffects.Parry then return end
     self:Execute({
         Name = 'Action.DealPosture';
         Config = EventData;
     })
+
+    HitData.Damage = 0
 end)
 
 

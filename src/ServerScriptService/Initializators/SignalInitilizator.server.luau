@@ -103,16 +103,20 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Humanoid.UseJumpPower = true
 	
 	Entity.SpeedController = SpeedController.new(Entity)
+	Ragdoll:Setup(Character)
+	
 	Entity:AppendAbility('Default','Equip')
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendAbility('Fists','Block')
 	Entity:AppendPassive('Default', 'Stun')
+	Entity:AppendPassive('Default', 'GreatStun')
 	Entity:AppendPassive('Default', 'Block')
 	Entity:AppendPassive('Default', 'Parry')
+	Entity:AppendPassive('Default', 'Ragdoll')
 	Entity:AppendPassive('Default', 'Hit')
 	Entity:AppendPassive('Default', 'JumpAttack')
 	Entity:AppendPassive('Default', 'RunAttack')
-	Ragdoll:Setup(Character)
-	--Ragdoll:Enabled(Character)
+	Entity:AppendPassive('Default', 'BackStab')
+	
 end)

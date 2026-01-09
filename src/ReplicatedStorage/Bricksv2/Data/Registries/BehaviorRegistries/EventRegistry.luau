@@ -49,7 +49,12 @@ end)
 behaviorRegistry:Register('OnHit', function(self, node) 
 	
 end)
-
+behaviorRegistry:Register('OnRagdoll', function(self, node) 
+	
+end)
+behaviorRegistry:Register('OnGreatStun', function(self, node) 
+	
+end)
 behaviorRegistry:Register('OnM1Start', function(self, node) 
 	
 end)

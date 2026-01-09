@@ -32,7 +32,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	characterData.HumanoidRootPart = humanoidRootPart
 
 	Animator.InitAnimations(self)
-	self:InitDirection()
+	--self:InitDirection()
 	
 	local function jumpConnection(active)
 		if not active then return end
@@ -50,7 +50,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 
 	initializeThreads()
 
-	characterData.Humanoid.Health = 80
+	
 
 	player.CharacterAdded:Connect(function(newCharacter)
 
@@ -71,7 +71,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 		
 		--бога нет.
 		self:ReplicateKeys()
-		self:InitDirection()
+		--self:InitDirection()
 		Animator.InitAnimations(self)
 
 		initializeThreads()

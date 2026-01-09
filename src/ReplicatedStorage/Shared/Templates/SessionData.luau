@@ -35,6 +35,10 @@ local SessionData = {
 			
 			WalkSpeed = 12;
 			JumpPower = 50;
+
+			AutoRotateSpeed = 3;
+
+			AdditionalHealth = 0;
 		};
 	
 	CharacterData = 
@@ -61,19 +65,27 @@ local SessionData = {
 			ActiveSkill = false;
 			Block = false;
 			Parry = false;
-			GreatStunned = false;
-			Ragdolled = false;
+			GreatStun = false;
+			Ragdoll = false;
 			NockDown = false;
 			IsDead = false;
-			
+			IFRAME = false;
+
 			Dashing = false;
 			Vaulting = false;
 			IsRunning = false;
 
+			InGrab = false;
+			
 			AfterSpace = false;
 			ByPass = false;
+			
+			CanBodySimulation = true;
+			CanAutoRotate = true;
 			CanRun = true;
 
+			LockedStateBody = false;
+			LockedStateRotate = false;
 		};
 	
 	Packs = {};

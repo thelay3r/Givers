@@ -1,5 +1,9 @@
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+
+local LocalPlayerComponent = require(ReplicatedStorage.Shared.Components.LocalPlayerComponent)
 
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -7,6 +11,11 @@ local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 local Torso = Character:WaitForChild("Torso")
+
+local ModedPlayer = LocalPlayerComponent:GetPlayer()
+local SessionData = ModedPlayer.SessionData
+local StatusEffects = SessionData.StatusEffects
+
 
 local Joints = {
 	RootJoint = HumanoidRootPart:WaitForChild("RootJoint"),
@@ -61,6 +70,7 @@ local function LerpJoints(moveDirection, angles)
 end
 
 local function UpdateDirectionalMovement(deltaTime)
+	if not StatusEffects.CanBodySimulation then return end
 	local now = workspace:GetServerTimeNow()
 	if now - lastTime >= tickRate then
 		lastTime = now
@@ -86,6 +96,7 @@ local function UpdateDirectionalMovement(deltaTime)
 				LeftHip = {0, math.rad(moveDirection.X) * 10, 0}
 			})
 		elseif moveDirection:Dot(Vector3.new(-1,0,1).Unit) > dotThreshold then
+			local z
 			LerpJoints(moveDirection, {
 				RootJoint = {math.rad(-moveDirection.Z) * 5, 0, math.rad(moveDirection.X) * 25},
 				Neck = {math.rad(moveDirection.Z) * 5, 0, math.rad(-moveDirection.X) * 25},
@@ -95,6 +106,7 @@ local function UpdateDirectionalMovement(deltaTime)
 				LeftHip = {0, math.rad(moveDirection.X) * 10, 0}
 			})
 		elseif moveDirection:Dot(Vector3.new(-1,0,-1).Unit) > dotThreshold then
+			local x
 			LerpJoints(moveDirection, {
 				RootJoint = {math.rad(-moveDirection.Z) * 5, 0, math.rad(-moveDirection.X) * 25},
 				Neck = {math.rad(moveDirection.Z) * 5, 0, math.rad(moveDirection.X) * 15},
@@ -122,6 +134,7 @@ local function UpdateDirectionalMovement(deltaTime)
 				LeftHip = {0, math.rad(-moveDirection.X) * 15, 0}
 			})
 		elseif moveDirection:Dot(Vector3.new(0,0,1).Unit) > dotThreshold then
+			local c
 			LerpJoints(moveDirection, {
 				RootJoint = {math.rad(-moveDirection.Z) * 10, 0, 0},
 				Neck = {math.rad(moveDirection.Z) * 10, 0, 0},
@@ -131,6 +144,7 @@ local function UpdateDirectionalMovement(deltaTime)
 				LeftHip = {0, 0, 0}
 			})
 		elseif moveDirection:Dot(Vector3.new(-1,0,0).Unit) > dotThreshold then
+			local y
 			LerpJoints(moveDirection, {
 				RootJoint = {0, 0, math.rad(-moveDirection.X) * 35},
 				Neck = {0, 0, math.rad(moveDirection.X) * 35},

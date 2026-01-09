@@ -20,9 +20,6 @@ local TaskManager = require(Modules:WaitForChild('TaskManager'))
 local MoveDirection = {}
 
 
-
-
-
 function MoveDirection:InitDirection()
 	local self: LocalPlayerInterfaces.IClientPlayerComponent = self
 	
@@ -36,7 +33,6 @@ function MoveDirection:InitDirection()
 	local TorsoMotorC0: CFrame = RootPart:WaitForChild('RootJoint').C0
 	
 	TaskManager:CreateThread(self,'MoveDirection',RunService.Heartbeat:Connect(function()
-		if true then return end
 		local MoveDirection = -(Humanoid.MoveDirection * Vector3.new(1,0,1))
 		local Front = -MoveDirection:Dot(RootPart.CFrame.LookVector) * (Humanoid.WalkSpeed/2)
 		local Right = MoveDirection:Dot(RootPart.CFrame.RightVector) * (Humanoid.WalkSpeed/2)

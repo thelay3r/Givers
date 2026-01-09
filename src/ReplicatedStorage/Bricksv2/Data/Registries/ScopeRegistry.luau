@@ -54,6 +54,40 @@ scopeRegistry:Register('Action', function(self, node)
 	return (result or result == nil and true)
 end)
 
+scopeRegistry:Register('ActionPararrel', function(self, node) 
+	task.spawn(function()
+	for key, tag in pairs(node.RequestedTags or {}) do
+		node.Additional[key] = self.Tags[tag] or {}
+	end
+
+	for configKey, paramPath in pairs(node.InjectParams or {}) do
+		local path = string.split(paramPath, '.')
+		local selectedTag = path[1]
+
+		if (not selectedTag) then continue end
+        if (not self.Tags[selectedTag]) then continue end
+
+		table.remove(path, 1)
+
+        local value = traversePath(self.Tags[selectedTag], path)
+        node.Config[configKey] = value
+    end
+
+	local behavior = self.BehaviorRegistry:Get(node.Name)
+	local result
+	if (behavior) then result = behavior(self, node) end
+	if (node.Tag) then
+		self.Tags[node.Tag] = node.Config
+	end
+
+	for _, child in (node.Children or {}) do
+		child:Execute()
+	end	
+	
+	return (result or result == nil and true)
+	end)
+end)
+
 scopeRegistry:Register('Network', function(self, node) 
 	for key, tag in pairs(node.RequestedTags or {}) do
 		node.Config.EventData[key] = self.Tags[tag] or {}

@@ -57,12 +57,12 @@ Effects['Parry'] =
 
         local ParryEffectPrototype = EffectsFolder:FindFirstChild('Parry')
         local ParryEffect = EffectCache:CreateInstance('ParryHit', ParryEffectPrototype) :: BasePart
-        local WeldConstraint = EffectCache:CreateInstance('Welds', EffectsFolder.Welds.WeldConstraint, 
+        local WeldConstraint = EffectCache:CreateInstance('Welds', Assets.Welds.WeldConstraint, 
         {
             'Part0';
             'Part1';
         }) :: WeldConstraint
-        local ParrySound = EffectCache:CreateInstance('ParrySounds', SoundParry, {
+        local ParrySound = EffectCache:CreateInstance('ParrySounds'..ParrySoundCounter(), SoundParry, {
             'Volume'
         }) :: Sound
 
@@ -76,6 +76,8 @@ Effects['Parry'] =
         ParrySound.Parent = RootPart
         ParrySound:Play()
 
+        ParrySoundCounter:Increment()
+        
         ParrySound.Ended:Once(function(a0: string)
             ParrySoundCounter:Increment()
             EffectCache:AddInstanceToCache('ParrySounds', ParrySound)

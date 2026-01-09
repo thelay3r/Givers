@@ -27,7 +27,7 @@ local PendingRevert = {}
 
 local Config = {
     MAX_WALK_SPEED = 40,
-    MIN_WALK_SPEED = 1,
+    MIN_WALK_SPEED = 0,
     SPEED_PRECISION = 1,
     ENABLE_SERVER_VALIDATION = true,
     DEBUG = false,

@@ -13,9 +13,7 @@ registry.Inject = {
 	'M1Fists';
 }
 
-registry:Register('TestInFists', function(self,node): any
-	warn('SKJFGSDHFGSDHJFGSHJKFGDSHJFGS!!!!')  
-end)
+
 
 local ability = {
 		Name = 'Action.Root';
@@ -24,7 +22,7 @@ local ability = {
 		{
 			Name = 'Fists_M1';
 			KeyCode = Enum.UserInputType.MouseButton1;
-
+			
 			Duration = .35;
 			MinDuration = .35,
 			CoolDown = .35;
@@ -40,7 +38,7 @@ local ability = {
 				{
 					Name = 'Condition.CheckBlackList';
 					{
-						Name = 'Action.Combo';
+						Name = 'ActionPararrel.Combo';
 						Config = {
 							Combo = {
 								'Fists';
@@ -51,9 +49,6 @@ local ability = {
 									Main = .35;
 								}
 							}
-						},
-						{
-							Name =	'Action.TestInFists'
 						},
 						{
 							Name = 'Action.SetUsed';

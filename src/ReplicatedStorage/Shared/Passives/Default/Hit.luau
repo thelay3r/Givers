@@ -25,7 +25,10 @@ local passive = {
 		Name = 'Event.OnHit';
 		Tag = 'OnHit';
 		{
-			Name = 'Action.Hit';
+			Name = 'Condition.InIFrame?';
+			{
+				Name = 'Action.Hit';
+			}
 		}
 	}
 }

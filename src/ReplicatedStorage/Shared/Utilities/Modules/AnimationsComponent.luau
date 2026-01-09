@@ -196,7 +196,6 @@ end
 
 function AnimationComponent.new(Character: Model) : IAnimation | boolean
 	if Animators[Character] then return Animators[Character] end
-	print(Animators)
 	local self = setmetatable(AnimationTemplate(),
 		{
 			__index = function(t,key)

@@ -8,10 +8,12 @@ local Assets = VFXs:WaitForChild('Assets')
 local TweenService = game:GetService("TweenService")
 
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
+local BackStab = require(ReplicatedStorage.Shared.Passives.Default.BackStab)
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
+local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
 
 local FistsFolder = Assets:WaitForChild('Fists')
 local DefaultFolder = Assets:WaitForChild('Default')
@@ -20,6 +22,7 @@ local Fists = {}
 
 
 local EffecteCache = CacheContainer.new()
+local CameraShake = CameraShakeHandler.new()
 
 Fists['Idle'] = {
     ['Equip'] = function(args)
@@ -207,6 +210,134 @@ Fists['Critical'] = {
 
     end
 }
+
+Fists['BackStab'] = {
+    ['Animation'] = function(args)
+        local Owner = args.Player :: Player
+        local Victim = args.Victim :: Player
+
+        local VictimCharacter = Victim.Character :: Model
+        local OwnerCharacter = Owner.Character :: Model
+
+        local VictimAnimator = AnimationsComponent.new(VictimCharacter)
+        local OwnerAnimator = AnimationsComponent.new(OwnerCharacter)
+        
+        local AnimationsFolder = Assets.Fists.Animations.BackStab :: Folder
+        local VictimAnimation = AnimationsFolder:FindFirstChild('Victim')
+        local OwnerAnimation = AnimationsFolder:FindFirstChild('Owner')
+
+        local victimAnim,Vdata = VictimAnimator:Load(VictimAnimation,{
+                 Name = 'Fists_BackStabVictim';
+                _Name = 'Fists_BackStabVictim';
+                Priority = Enum.AnimationPriority.Action3.Name;
+                Settings = {
+                    Speed = 1;
+                    Weight = 1;
+                    FadeTime = .15;
+                }
+            })
+        local OwnerAnim,Odata = OwnerAnimator:Load(OwnerAnimation,{
+                 Name = 'Fists_BackStabOwner';
+                _Name = 'Fists_BackStabOwner';
+                Priority = Enum.AnimationPriority.Action3.Name;
+                Settings = {
+                    Speed = 1;
+                    Weight = 1;
+                    FadeTime = .15;
+                }
+            })
+        OwnerAnimator:Play(Odata)
+        VictimAnimator:Play(Vdata)
+    end
+}
+
+Fists['BackStab']['Effects'] = function(args)
+    
+    local Owner = args.Player :: Player
+    local Victim = args.Victim :: Player
+
+    local VictimCharacter = Victim.Character :: Model
+    local OwnerCharacter = Owner.Character :: Model
+
+    local AssetsFolder=Assets.Fists.Effects
+    local GrabEffectProtorype = AssetsFolder.BackStabGrab
+    local BackStabBloodPrototype = AssetsFolder.BackStabBlood
+
+
+    local GrabEffect = CacheContainer:CreateInstance('GrabFists', GrabEffectProtorype) :: BasePart
+    local BloodBackStab = CacheContainer:CreateInstance('BloodFistsGrab', BackStabBloodPrototype,
+    {
+        'Anchored';
+    }) :: BasePart
+
+    local WeldGrab = CacheContainer:CreateInstance('WeldConstraint', Assets.Welds.WeldConstraint, {
+        'Part0';
+        'Part1';
+    }) :: WeldConstraint
+    
+
+    
+    BloodBackStab.Anchored = true
+
+    task.delay(25/60,function()
+
+        GrabEffect.CFrame = OwnerCharacter['Right Arm'].CFrame - OwnerCharacter['Right Arm'].CFrame.UpVector * 1/2
+        WeldGrab.Part0 = OwnerCharacter['Right Arm']
+
+        GrabEffect.Parent = workspace.Map.VFXs
+        WeldGrab.Parent = GrabEffect
+
+        AssetsHelper.Emit(GrabEffect)
+        CameraShake:ShakeByDistance({
+            StartPoint = GrabEffect.Position,
+            Roughness = 15,
+            InTime = 0,
+            OutTime = 0.5,
+            MinMagnitude = 1;
+            MaxMagnitude = 5;
+        })
+    end)
+
+    local BloodCFG = {
+            StartPoint = GrabEffect.Position,
+            Roughness = 20,
+            InTime = 0,
+            OutTime = 0.5,
+            MinMagnitude = 1;
+            MaxMagnitude = 5;
+        }
+
+    task.delay(80/60, function()
+        local fastCast = AssetsHelper.FastCast({
+            Position = VictimCharacter['Head'].Position;
+            Direction = Vector3.new(0,-5,0);
+            Character = VictimCharacter;
+        })
+        if not fastCast then return end
+        print(fastCast.Instance)
+        BloodBackStab.CFrame = CFrame.new(fastCast.Position,fastCast.Position+fastCast.Normal) * CFrame.Angles(math.rad(90),0,0) 
+        BloodBackStab.Parent = workspace.Map.VFXs
+        AssetsHelper.Emit(BloodBackStab)
+
+
+        CameraShake:ShakeByDistance({
+            StartPoint = GrabEffect.Position,
+            Roughness = 15,
+            InTime = 0,
+            OutTime = 0.5,
+            MinMagnitude = 1;
+            MaxMagnitude = 3;
+        })
+    end)
+    task.delay(105/60, function()
+        CameraShake:ShakeByDistance(BloodCFG)
+        AssetsHelper.Emit(BloodBackStab)
+    end)
+    task.delay(130/60, function()
+        CameraShake:ShakeByDistance(BloodCFG)
+        AssetsHelper.Emit(BloodBackStab)   
+    end)
+end
 
 Fists['M1']['Run'] = function(args)
         local Player = args.Player

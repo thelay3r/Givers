@@ -10,9 +10,9 @@ function M1.init(npc: any & EntityInterfaces.IEntityComponent)
 		print(npc,'TAG SOME NPC')
 		local ability = npc:GetAbility('Equip')
 		ability['OnStart'](ability)
+		local m1 = npc:GetAbility('Block')
 
-		while task.wait(.5) do
-			local m1 = npc:GetAbility('M1')
+		while task.wait(2) do
 			m1['OnStart'](m1)
 		end
 

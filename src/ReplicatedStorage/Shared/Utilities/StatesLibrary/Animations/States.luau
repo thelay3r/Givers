@@ -103,15 +103,17 @@ States.Walk = {
 		if Animate:IsPlaying(CFGs.Walk) then return end
 		Animate:Play(CFGs.Walk)
 		
+		local SessionData = Player.SessionData
+		local StatusEffects = SessionData.StatusEffects
+		
+
 		TaskManager:CreateTask(Player,'WalkDirection',0,function()
 			local deadZone = .05
 			while true do
 				task.wait(1/30)
 				local MoveDirection = Humanoid.MoveDirection
-				if MoveDirection == Vector3.zero or Player.ClientData.StatusEffects.IsRunning then continue end
+				if (MoveDirection == Vector3.zero) or (StatusEffects.IsRunning) or (not StatusEffects.CanBodySimulation) then continue end
 				local moveMagnitude = (MoveDirection * Vector3.new(1, 0, 1)).Magnitude
-
-
 
 				local forward = rootPart.CFrame.LookVector
 				local right = rootPart.CFrame.RightVector

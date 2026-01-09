@@ -32,8 +32,13 @@ EntityRegistry:Register('DealDamage', function(self,node)
 	local Victim = config.Victim
 
 	Victim:TriggerPassives('OnHit',config)
+	print('DAMAGE: ', HitData.Damage)
 	Victim:TakeDamage(HitData.Damage)
 
+end)
+
+EntityRegistry:Register('InIFrame?', function(self,node): any
+	return not self.Tags['Owner'].SessionData.StatusEffects.IFRAME  
 end)
 
 EntityRegistry:Register('DealPosture', function(self,node)
@@ -43,8 +48,8 @@ EntityRegistry:Register('DealPosture', function(self,node)
 	local Victim = config.Victim
 
 	Victim:TriggerPassives('OnPosture',config)
-	Victim:TakePosture(HitData.Damage * .1)
-
+	Victim:TakePosture(HitData.Damage * .5)
+	
 end)
 
 EntityRegistry:Register('PassiveTrigger', function(self,node)

@@ -17,7 +17,7 @@ local Spawners = Map.Spawner
 local Spawner = Spawners.Spawner
 
 local TestSpawner = NPcHandler.new(Spawner)
-
+local TestSpawner2 = NPcHandler.new(Spawners.Spawner2)
 
 
 --local NPCComponent = NPCComponents.New(NPCs.TestModel)

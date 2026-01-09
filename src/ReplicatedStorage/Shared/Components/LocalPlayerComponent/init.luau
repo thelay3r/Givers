@@ -41,6 +41,9 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 		}
 
 	self:ReplicaInit()
+	self.SessionData = self.Replica.Data.Session
+	self.ProfileData = self.Replica.Data.Profile
+
 	self:SharePlayer()
 	self:SetupCharacter()
 	self:UpdateControls(self.ClientData.Controls)
@@ -49,8 +52,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self:InitClientVFX()
 	self:InitCamera()
 	
-	self.SessionData = self.Replica.Data.Session
-	self.ProfileData = self.Replica.Data.Profile
+
 
 	PlayerComponent = self
 
