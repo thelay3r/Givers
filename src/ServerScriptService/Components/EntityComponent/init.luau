@@ -3,8 +3,6 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
-local flatten = require(ReplicatedStorage.Packages[".pesde"]["littensy_charm-sync@0.3.0"]["charm-sync"].src.flatten)
-local nicknames = require(ReplicatedStorage.Shared.Utilities.Modules.Fusion.Utility.nicknames)
 local EntityInterfaces = require(Interfaces:WaitForChild("EntityInterfaces"))
 
 type IEntityComponent = EntityInterfaces.IEntityComponent

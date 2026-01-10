@@ -31,8 +31,16 @@ function DamageComponent.TakeDamage(self: any & IEntityComponent,Damage: number)
     local Attributes = sessionData.Attributes
     if (Damage <= 0) or sessionData.StatusEffects.IFRAME then return end
     
-    self:SetAttribute('Health',  math.clamp(self.SessionData.Attributes.Health - Damage, 1, self.SessionData.Attributes.MaxHealth))
+    local DamageToApply = math.clamp(self.SessionData.Attributes.Health - Damage, 1, self.SessionData.Attributes.MaxHealth)
+    self:SetAttribute('Health', DamageToApply )
     Humanoid.Health = Attributes.Health
+
+    if DamageToApply ~= 1 then return end
+    self:TriggerPassives('OnKnockDown',
+    {
+        Entity = self;
+        Apply = true;
+    })
 end
 function DamageComponent.TakePosture(self: any & IEntityComponent,Damage: number)
     local _Instance = self.Instance
