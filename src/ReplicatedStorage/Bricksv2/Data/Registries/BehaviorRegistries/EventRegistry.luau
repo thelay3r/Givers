@@ -49,6 +49,19 @@ end)
 behaviorRegistry:Register('OnHit', function(self, node) 
 	
 end)
+
+behaviorRegistry:Register('OnBlockCast', function(self, node) 
+	
+end)
+
+behaviorRegistry:Register('OnKnockdown', function(self, node) 
+	
+end)
+
+behaviorRegistry:Register('OnParry', function(self, node) 
+	
+end)
+
 behaviorRegistry:Register('OnRagdoll', function(self, node) 
 	
 end)

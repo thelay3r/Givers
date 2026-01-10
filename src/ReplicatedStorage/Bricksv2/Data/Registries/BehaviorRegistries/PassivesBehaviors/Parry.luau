@@ -52,11 +52,15 @@ ParryRegistry:Register('ParryHit', function(self,node)
 		}
 	})
 
+	self:Execute({
+		Name = 'Action.ResetCoolDown'
+	})
+
 end)
 
 
 ParryRegistry:Register('Parry', function(self,node)
-    local EventData = self.Tags['OnCast']['EventData']
+    local EventData = self.Tags['OnBlockCast']['EventData']
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
 
 	self:Execute({

@@ -71,7 +71,7 @@ local ability = {
                     Name = 'Action.PassiveTrigger';
 					InjectParams = {['Victim'] = 'Owner'};
                     Config = {
-                        ['Trigger'] = 'OnCast';
+                        ['Trigger'] = 'OnBlockCast';
                     }
                 };
 				{

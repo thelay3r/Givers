@@ -23,8 +23,8 @@ local passive = {
 		Priority = 3;
 	},
 	{
-		Name = 'Event.OnCast';
-		Tag = 'OnCast';
+		Name = 'Event.OnBlockCast';
+		Tag = 'OnBlockCast';
 		{
 			Name = 'Condition.OnCoolDown?';
 			{
