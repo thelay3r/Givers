@@ -8,6 +8,16 @@ local Threads = {
 
 local TaskManager = {}
 
+function TaskManager.GetTask(Object: any, TaskName: string)
+    Tasks[Object] = Tasks[Object] or {}
+    return Tasks[Object][TaskName]
+end
+
+function TaskManager.GetThread(Object: any, ThreadName: string)
+    Threads[Object] = Threads[Object] or {}
+    return Threads[Object][ThreadName]
+end
+
 function TaskManager:CreateTask(Object: any, TaskName: string, Time: number, Func: (any) -> ())
     
     Tasks[Object] = Tasks[Object] or {}

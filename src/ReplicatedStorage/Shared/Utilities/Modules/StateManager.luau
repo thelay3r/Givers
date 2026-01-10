@@ -15,10 +15,9 @@ type Iargs = StatesInterfaces.Iargs
 type IBehavior = StatesInterfaces.IBehavior
 
 local StateManager = {}
-local Managers: { [any]: IStatesComponent } = {}
+local Managers: { [any]: { [string]: IStatesComponent } } = {}
 
 function StateManager.CheckBehavior(self: IStatesComponent)
-	
 	if self.BehaviorName ~= "Default" then
 		return StateManager.CheckSpecificBehavior(self)
 	end
@@ -30,18 +29,20 @@ function StateManager.CheckBehavior(self: IStatesComponent)
 end
 
 function StateManager.CheckSpecificBehavior(self: IStatesComponent)
-	local behaviors = self:SortedBehaivors()
+	local behaviors = StateManager.SortedBehaviors(self)
 	local behavior = behaviors[self.BehaviorName]
 
-	if not behavior then return end
+	if not behavior then
+		return
+	end
 
 	local passed = behavior.check(self)
 	if passed then
-		if self.Behaivor ~= behavior then
-			if self.Behaivor and self.Behaivor.falseaction then
-				self.Behaivor.falseaction(self)
+		if self.Behavior ~= behavior then
+			if self.Behavior and self.Behavior.falseaction then
+				self.Behavior.falseaction(self)
 			end
-			self.Behaivor = behavior
+			self.Behavior = behavior
 			if behavior.trueaction then
 				behavior.trueaction(self)
 			end
@@ -50,13 +51,13 @@ function StateManager.CheckSpecificBehavior(self: IStatesComponent)
 		if behavior.falseaction then
 			behavior.falseaction(self)
 		end
-		self.Behaivor = nil
+		self.Behavior = nil
 	end
 end
 
 function StateManager.CheckCycleBehavior(self: IStatesComponent)
-	local behaviors = self:SortedBehaivors()
-	
+	local behaviors = StateManager.SortedBehaviors(self)
+
 	for _, behavior: IBehavior in pairs(behaviors) do
 		local passed = behavior.check(self)
 		if passed then
@@ -68,17 +69,14 @@ function StateManager.CheckCycleBehavior(self: IStatesComponent)
 				behavior.falseaction(self)
 			end
 		end
-		
 	end
 end
 
 function StateManager.CheckLockedBehavior(self: IStatesComponent)
-	local behaviors = self:SortedBehaivors()
-	local current = self.Behaivor
+	local behaviors = StateManager.SortedBehaviors(self)
+	local current = self.Behavior
 	local highest: IBehavior? = nil
-	
-	
-	
+
 	for _, behavior: IBehavior in pairs(behaviors) do
 		if behavior.check(self) then
 			if not highest or behavior.priority > highest.priority then
@@ -86,14 +84,13 @@ function StateManager.CheckLockedBehavior(self: IStatesComponent)
 			end
 		end
 	end
-	
-	
+
 	if highest then
 		if not current or highest.priority > current.priority then
 			if current and current.falseaction then
 				current.falseaction(self)
 			end
-			self.Behaivor = highest
+			self.Behavior = highest
 			if highest.trueaction then
 				highest.trueaction(self)
 			end
@@ -102,7 +99,7 @@ function StateManager.CheckLockedBehavior(self: IStatesComponent)
 		if current and current.falseaction then
 			current.falseaction(self)
 		end
-		self.Behaivor = nil
+		self.Behavior = nil
 	end
 end
 
@@ -110,7 +107,7 @@ function StateManager:SetLockMode(state: boolean)
 	self.LockMode = state
 end
 
-function StateManager.SortedBehaivors(self: IStatesComponent): { IBehavior }
+function StateManager.SortedBehaviors(self: IStatesComponent): { [string]: IBehavior }
 	local Behaviors = require(self.Folder:WaitForChild("Behaviors"))
 	local section = Behaviors[self.SectionName]
 
@@ -142,19 +139,23 @@ function StateManager.ChangeState(self: IStatesComponent)
 end
 
 function StateManager:Destroy()
-	local self = self :: IStatesComponent
-
 	TaskManager:CancelAllTasks(self)
 	TaskManager:CancelAllThreads(self)
 
-	if self.Threads then table.clear(self.Threads) end
-	if self.args then table.clear(self.args) end
-	if self.Tasks then table.clear(self.Tasks) end
+	if self.Threads then
+		table.clear(self.Threads)
+	end
+	if self.args then
+		table.clear(self.args)
+	end
+	if self.Tasks then
+		table.clear(self.Tasks)
+	end
 
 	self.Threads = nil
 	self.args = nil
 	self.Tasks = nil
-	self.Behaivor = nil
+	self.Behavior = nil
 	self.State = nil
 	self.Ignore = nil
 	self.BehaviorName = nil
@@ -162,30 +163,31 @@ function StateManager:Destroy()
 	self.SectionName = nil
 	self.LockMode = nil
 
+	if self.Parent and Managers[self.Parent] then
+		Managers[self.Parent][self.StateName] = nil
+	end
+
 	table.clear(self)
 	setmetatable(self, nil)
 end
 
 function StateManager:New(args: Iargs): IStatesComponent?
-	if not args then
+	if not args or not args.FOLDER then
 		return
 	end
-	if not args.FOLDER then
-		return
-	end
-	
-	local self = setmetatable({
+
+	local newComponent = setmetatable({
 		Folder = args.FOLDER,
 		SectionName = args.SECTION_NAME or "Default",
 		BehaviorName = args.BEHAVIOR_NAME or "Default",
-		StateName = args.STATE_NAME or 'Default',
+		StateName = args.STATE_NAME or "Default",
 		Ignore = args.IGNORE or false,
 		State = false,
-		Behaivor = false,
+		Behavior = false,
 		Update = args.UPDATE or false,
 		LockMode = args.LOCK_MODE or false,
-		Parent = args.PARENT or nil;
-		Launch = args.LAUNCH or false;
+		Parent = args.PARENT or nil,
+		Launch = args.LAUNCH or false,
 		args = args,
 		Tasks = {},
 		Threads = {},
@@ -193,14 +195,18 @@ function StateManager:New(args: Iargs): IStatesComponent?
 		__index = StateManager,
 	}) :: IStatesComponent
 
-	if self.Launch then StateManager.Launch(self, args) end
-
-	if self.Parent then
-		Managers[self.Parent] = Managers[self.Parent] or {}
-		Managers[self.Parent][self.StateName] = self
+	if newComponent.Parent then
+		if not Managers[newComponent.Parent] then
+			Managers[newComponent.Parent] = {}
+		end
+		Managers[newComponent.Parent][newComponent.StateName] = newComponent
 	end
 
-	return self
+	if newComponent.Launch then
+		StateManager.Launch(newComponent, args)
+	end
+
+	return newComponent
 end
 
 function StateManager.Launch(self: IStatesComponent, args: Iargs)
@@ -208,12 +214,17 @@ function StateManager.Launch(self: IStatesComponent, args: Iargs)
 		self:CheckBehavior()
 		return
 	end
-	
-	if args.UPDATE_TIME and args.UPDATE_TIME ~= 1 / 60 then
+
+	TaskManager:CancelThread(self, "Behaviors")
+	TaskManager:CancelTask(self, "Behaviors")
+
+	local updateTime = args.UPDATE_TIME or 1 / 60
+
+	if updateTime ~= 1 / 60 then
 		TaskManager:CreateTask(self, "Behaviors", 0, function()
 			while self.Update do
 				self:CheckBehavior()
-				task.wait(args.UPDATE_TIME or 1)
+				task.wait(updateTime)
 			end
 		end)
 	else
@@ -231,21 +242,22 @@ function StateManager.Launch(self: IStatesComponent, args: Iargs)
 	end
 end
 
-
-
-function StateManager:Get(Parent: any, StateName: string): IStatesComponent?
-	return Managers[Parent][StateName]
+function StateManager:Get(parent: any, stateName: string): IStatesComponent?
+	if not Managers[parent] then
+		return nil
+	end
+	return Managers[parent][stateName]
 end
 
-function StateManager.ChangeUpdate(self: IStatesComponent, Update: boolean)
-	self.Update = Update
+function StateManager.ChangeUpdate(self: IStatesComponent, update: boolean)
+	self.Update = update
 	StateManager.Launch(self, self.args)
 end
 
-function StateManager.ChangeType(self: IStatesComponent, Type: string)
-	local Manager = StateManager.Get(self)
+function StateManager.ChangeType(self: IStatesComponent, typeValue: string)
+	local Manager = StateManager:Get(self.Parent, self.StateName)
 	if Manager then
-		Manager.Type = Type
+		Manager.Type = typeValue
 	end
 end
 

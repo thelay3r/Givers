@@ -21,7 +21,7 @@ Behaviors.Movement = {
 			local Humanoid = CharacterData.Humanoid
 			
 			local MoveDirection = Humanoid.MoveDirection
-			if MoveDirection == Vector3.zero then return false end
+			if (MoveDirection == Vector3.zero) or Humanoid.WalkSpeed <= 0 then return false end
 			return true
 		end,
 		trueaction = function(self: StatesInterfaces.IStatesComponent)

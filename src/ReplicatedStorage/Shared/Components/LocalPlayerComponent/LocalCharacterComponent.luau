@@ -22,28 +22,35 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	local characterData = self.ClientData.CharacterData
 	if (not characterData) then return end
 	
-	
-	
 	characterData.Character = character
 
 	local humanoid = character:WaitForChild('Humanoid') :: Humanoid
 	local humanoidRootPart = character:WaitForChild('HumanoidRootPart') :: BasePart
-	humanoid.WalkSpeed = 12
 	humanoid.UseJumpPower = true
 
 	characterData.Humanoid = humanoid
 	characterData.HumanoidRootPart = humanoidRootPart
 
 	Animator.InitAnimations(self)
-	self:InitDirection()
+	--self:InitDirection()
 	
-	--local fsm = CharacterFSM.new(character)
-	--print(CharacterFSM)
-	TaskManager:CreateThread(self,'Jumping',humanoid.Jumping:Connect(function(active)
-		print(self.ClientData.Replica)
+	local function jumpConnection(active)
 		if not active then return end
 		self.Buses.Character:Fire('OnJump')
-	end))
+	end
+
+	local function healthConnection()
+		self.Buses.Character:Fire('OnHealthChanged')
+	end
+
+	local function initializeThreads()
+		TaskManager:CreateThread(self,'Jumping',characterData.Humanoid.Jumping:Connect(jumpConnection))
+		TaskManager:CreateThread(self,'HealthChanged',characterData.Humanoid.HealthChanged:Connect(healthConnection))
+	end
+
+	initializeThreads()
+
+	
 
 	player.CharacterAdded:Connect(function(newCharacter)
 
@@ -64,12 +71,11 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 		
 		--бога нет.
 		self:ReplicateKeys()
-		self:InitDirection()
+		--self:InitDirection()
 		Animator.InitAnimations(self)
-		--if fsm then fsm:Destroy() end
-		--fsm = CharacterFSM.new(newCharacter)
-		--print(fsm)
-	
+
+		initializeThreads()
+
 	end)
 end
 

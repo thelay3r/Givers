@@ -58,11 +58,11 @@ end
 local function FireVFX(EventData,...)
 	local splitted = string.split(EventData.VFXType :: string, '.')
 	if (#splitted < 2) then return end
-
+	
 	local scope = splitted[1]
 	local name = splitted[2]
-
 	local state = EventData['State'] or 'Start'
+
 	EventData['Player'] = (EventData.Player) or (Players.LocalPlayer)
 	local module = CachedModules[scope] and CachedModules[scope][name][state]
 	if not module then return end

@@ -29,9 +29,9 @@ local RemoteMap = {
 		local config = node.Config
 		local eventData = config.EventData
 
-		local selectedEvent = config.Event or GlobalEvent
+		local selectedEvent = ((Replicator:GetRemote(config.Event)) or (GlobalEvent))
 
-		assert(RunService:IsClient() == true,'{PlayRemoteEvent} | invocation allowed only on the server')
+		assert(RunService:IsServer(),'{PlayRemoteEvent} | invocation allowed only on the server')
 		selectedEvent:Fire(config['Player'], config.EventName, eventData)
 	end;
 	[Enums.EventType.Close] = function(self,node)
@@ -43,8 +43,8 @@ local RemoteMap = {
 		local config = node.Config
 		local eventData = config.EventData
 
-		local selectedEvent = config.Event or GlobalEvent
-		assert(RunService:IsClient() == true,'{PlayRemoteEvent} | invocation allowed only on the server')
+		local selectedEvent = ((Replicator:GetRemote(config.Event)) or (GlobalEvent))
+		assert(RunService:IsServer(),'{PlayRemoteEvent} | invocation allowed only on the server')
 
 		local position = RootPart.Position or config.RemotePosition
 		selectedEvent:FireInRadius(position, 512, config.EventName, eventData)
@@ -53,7 +53,7 @@ local RemoteMap = {
 		local config = node.Config
 		local eventData = config.EventData
 
-		local selectedEvent = config.Event or GlobalEvent
+		local selectedEvent = ((Replicator:GetRemote(config.Event)) or (GlobalEvent))
 
 		if (RunService:IsClient()) then
 			selectedEvent:Fire(config.EventName, eventData)
@@ -63,7 +63,7 @@ local RemoteMap = {
 	end
 }
 
-NetworkRegistry:Register('TriggerEvent', function(self, node) 
+NetworkRegistry:Register('TriggerEventNetwork', function(self, node) 
 	if (not self.Events) then return end
 	local handler = self.ScopeRegistry:Get('EventAction')
 
@@ -97,7 +97,6 @@ NetworkRegistry:Register('PlayBindableEvent', function(self, node)
 	local config = node.Config
 	local eventData = config.EventData
 
-	print(config,'EventBindable')
 	GlobalBindable:BindableFire(config.EventName, eventData)
 end)
 

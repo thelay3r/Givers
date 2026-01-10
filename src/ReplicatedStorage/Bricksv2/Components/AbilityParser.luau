@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Bricks = ReplicatedStorage:WaitForChild('Bricksv2')
 local Components = Bricks:WaitForChild('Components')
 
-local AbilityParseObject = require(Components:WaitForChild('AbilityParseObject'))
+local ParserObject = require(Components:WaitForChild('ParserObject'))
 local Registry = require(Components:WaitForChild('Registry'))
 local TreeNode = require(Components:WaitForChild('TreeNode'))
 local Parser = require(Components:WaitForChild('Parser'))
@@ -12,7 +12,7 @@ local AbilityParser = {}
 AbilityParser.__index = AbilityParser
 setmetatable(AbilityParser, { __index = Parser })
 
-type IAbilityParser = typeof(AbilityParseObject.new())
+type IAbilityParser = typeof(ParserObject.new())
 
 
 function AbilityParser.new()
@@ -20,7 +20,7 @@ function AbilityParser.new()
 	return self
 end
 
-function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(AbilityParseObject.new()))
+function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(ParserObject.new()))
 	local children = {}
 	
 	if not structure.Name then return end
@@ -40,7 +40,9 @@ function AbilityParser:TransferIntoNodes(structure: any, parent: typeof(AbilityP
 		config = structure.Config,
 		tag = structure.Tag,
 		requestedTags = structure.RequestedTags,
-		sendParams = structure.SendParams, 
+		sendParams = structure.SendParams,
+		injectParams = structure.InjectParams,
+		
 	})
 
 	local scope = parent.ScopeRegistry:Get(splitted[1])
@@ -59,8 +61,7 @@ function AbilityParser:Execute(structure: any, parent: IAbilityParser)
 end
 
 function AbilityParser:Create(structure: any, parent: IAbilityParser)
-	--local block = AbilityParseObject.new()
-	print(parent, 'tag1')
+	--local block = ParserObject.new()
 	local oldMetaTable = getmetatable(parent)
 	setmetatable(parent, {
 		__index = function(t, i)

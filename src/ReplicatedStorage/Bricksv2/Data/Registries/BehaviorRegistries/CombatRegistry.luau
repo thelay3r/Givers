@@ -20,16 +20,40 @@ local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 local EntityRegistry = Registry.new()
 
 EntityRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
+EntityRegistry:Register('AutoCombo', function(self,node)  
+    local Main = self.Tags['Main']
+    local Owner = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
 
+    if TaskManager.GetTask(Owner, 'AutoCombo') then
+        return
+    end
+     
+    TaskManager:CreateTask(Owner, 'AutoCombo', 0, function(a0)
+        while Main.PlayerPressed do
+            task.wait(Main.CoolDown - .1)
+            if not Main.PlayerPressed then
+                TaskManager:CancelTask(Owner, 'AutoCombo')
+                break
+            end
+
+            self:Execute({
+            Name = 'Action.TriggerEvent',
+            Config = {
+                TagName = 'OnStart',
+            }})
+        end
+    end)
+
+end)
 
 EntityRegistry:Register('Combo', function(self, node)
 	local Entity = self.Tags['Owner'] :: PlayerInterfaces.IServerPlayerComponent
-	local Session = Entity.Replica.Data.Session
+	local Session = Entity.SessionData
     local config = node.Config
     local combo = config.Combo
+    local timings = config.Timings
     if not combo then return end
 
     Session.StatusEffects.CurrentCombo += 1
@@ -53,10 +77,23 @@ EntityRegistry:Register('Combo', function(self, node)
     if not TargetAction then
         local try = 1
         while not TargetAction do
+            if try >= 4 then return end
             TargetAction = newCombo[Session.StatusEffects.CurrentCombo - try]
             try+=1
         end
     end
+
+    local PassiveTable = {
+        Weapon = TargetAction;
+        Owner = Entity;
+        Blocked = false;
+    }
+    print(PassiveTable.Blocked,'ZZZ')
+    Entity:TriggerPassives('OnM1Start',PassiveTable)
+
+    
+    if PassiveTable.Blocked then return end
+    
     self:Execute({
         Name = 'Action.'..TargetAction;
     })
@@ -64,21 +101,25 @@ EntityRegistry:Register('Combo', function(self, node)
     if Session.StatusEffects.CurrentCombo >= 4 then 
         Session.StatusEffects.CurrentCombo = 0 
         self:Execute({
-            Name = 'Ability.SetRootCoolDown';
+            Name = 'Action.SetRootCoolDown';
             Config = {
-                CoolDown = 2;
+                CoolDown = (timings[TargetAction].Combo) or 2;
             }
         })
 
         TaskManager:CreateTask(Entity, 'ClickCoolDown', 2, function()  
             self:Execute({
-                Name = 'Ability.SetRootCoolDown';
+                Name = 'Action.SetRootCoolDown';
                 Config = {
-                    CoolDown = .5;
+                    CoolDown = (timings[TargetAction].Main) or .35; 
                 }
             })
         end)
     end
+
+    TaskManager:CreateTask(Entity, 'ResetCombo', 1.5, function()  
+        Session.StatusEffects.CurrentCombo = 0
+    end)
 
 end)
 

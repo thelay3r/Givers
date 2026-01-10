@@ -27,17 +27,16 @@ function Component.AppendAbility(self: any & IEntity,pack: string,name: string)
     assert(AbilitesFolder:FindFirstChild(pack), (`%s pack doesn't exist`):format(pack))
     assert(AbilitesFolder[pack]:FindFirstChild(name), (`%s ability doesn't exist in %s pack`):format(name, pack))
 
-    local abilityModule = require(AbilitesFolder[pack][name])
-    local ability = AbilityHandler.new(abilityModule)
+    local abilityModule = AbilitesFolder[pack][name]:Clone()
+    local ability = AbilityHandler.new(require(abilityModule))
+    abilityModule:Destroy()
 
     ability:BindToEntity(name,sessionData.UserId)
     local Tree = ability.Instance.Tree
     local Config = Tree.Config
     
     ability.Instance.Tags['Owner'] = self
-
-    if not PlayersService:GetPlayerByUserId(sessionData.UserId) then return end
-
+    
     self:SetAbility(Config.KeyCode.Name,
     {
         Name = name;

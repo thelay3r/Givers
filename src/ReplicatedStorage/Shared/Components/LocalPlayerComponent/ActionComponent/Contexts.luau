@@ -35,7 +35,6 @@ end
 
 
 Contexts['LocalAbility'] = function(_,State, SelectedInput: InputObject)
-	print(State)
 	BindableGlobal:BindableFire('LocalAbility', {
 		Name = SelectedInput;
 		State = GetState(State);

@@ -63,7 +63,6 @@ local function RunStop(args)
 end
 
 local function DashStart(args)
-
     local Player: Player = args.Player
     if not Player then return end
     local Character = Player.Character 
@@ -76,7 +75,7 @@ local function DashStart(args)
 
     local PackFolder = Assets:FindFirstChild((args.Pack) or ('Default'))
     if not PackFolder then return end
-    local Defis = (args.DashConfig.MainDirection) or ('Front')
+    local Defis = (args.DashDirection.MainDirection) or ('Front')
     local AnimationNedeed = 'Dash_'..Defis
 
     local animationAsset: Animation = PackFolder:FindFirstChild('Animations')[AnimationNedeed]
@@ -132,6 +131,7 @@ local function DashCancel(args)
 end
 
 local function Vault(args)
+    print(args)
     local Player: Player = args.Player
     if not Player then return end
     local Character = Player.Character 

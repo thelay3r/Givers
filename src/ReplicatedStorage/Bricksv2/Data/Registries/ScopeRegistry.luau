@@ -21,110 +21,6 @@ local function traversePath(obj, path)
     return obj
 end
 
--- !! why do we even need those?
---[[
-
-scopeRegistry:Register('Abilities', function(self, node) 
-	for key, tag in pairs(node.RequestedTags or {}) do
-		node.Additional[key] = self.Tags[tag] or {}
-	end
-
-
-	local behavior = self.BehaviorRegistry:Get(node.Name)
-	if (behavior) then behavior(self, node) end
-	if (node.Tag) then
-		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
-	end
-
-
-	for _, child in (node.Children or {}) do
-		child:Execute()
-	end	
-	
-	return true
-end)
-
-scopeRegistry:Register('Entity', function(self, node) 
-	for key, tag in pairs(node.RequestedTags or {}) do
-		node.Additional[key] = self.Tags[tag] or {}
-	end
-
-	local behavior = self.BehaviorRegistry:Get(node.Name)
-	if (behavior) then behavior(self, node) end
-	if (node.Tag) then
-		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
-	end
-
-	for _, child in (node.Children or {}) do
-		child:Execute()
-	end	
-	
-	return true
-end)
-
-
-
-scopeRegistry:Register('Combat', function(self, node) 
-	for key, tag in pairs(node.RequestedTags or {}) do
-		node.Additional[key] = self.Tags[tag] or {}
-	end
-
-
-	local behavior = self.BehaviorRegistry:Get(node.Name)
-	print(node.Name)
-	if (behavior) then behavior(self, node) end
-	if (node.Tag) then
-		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
-	end
-
-
-	for _, child in (node.Children or {}) do
-		child:Execute()
-	end
-	
-	return true
-end)
-
-scopeRegistry:Register('Visual', function(self, node) 
-	for key, tag in pairs(node.RequestedTags or {}) do
-		node.Additional[key] = self.Tags[tag] or {}
-	end
-
-
-	local behavior = self.BehaviorRegistry:Get(node.Name)
-	if (behavior) then behavior(self, node) end
-	if (node.Tag) then
-		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
-	end
-
-	for _, child in (node.Children or {}) do
-		child:Execute()
-	end	
-	
-	return true
-end)
-
-scopeRegistry:Register('Ability', function(self, node) 
-	for key, tag in pairs(node.RequestedTags or {}) do
-		node.Additional[key] = self.Tags[tag] or {}
-	end
-
-
-	local behavior = self.BehaviorRegistry:Get(node.Name)
-	if (behavior) then behavior(self, node) end
-	if (node.Tag) then
-		self.Tags[node.Tag] = node.Config --! maybe make tags immutable
-	end
-
-
-	for _, child in (node.Children or {}) do
-		child:Execute()
-	end	
-	
-	return true
-end)
-
-]]
 
 scopeRegistry:Register('Action', function(self, node) 
 	for key, tag in pairs(node.RequestedTags or {}) do
@@ -155,7 +51,41 @@ scopeRegistry:Register('Action', function(self, node)
 		child:Execute()
 	end	
 	
-	return (result or true)
+	return (result or result == nil and true)
+end)
+
+scopeRegistry:Register('ActionPararrel', function(self, node) 
+	task.spawn(function()
+	for key, tag in pairs(node.RequestedTags or {}) do
+		node.Additional[key] = self.Tags[tag] or {}
+	end
+
+	for configKey, paramPath in pairs(node.InjectParams or {}) do
+		local path = string.split(paramPath, '.')
+		local selectedTag = path[1]
+
+		if (not selectedTag) then continue end
+        if (not self.Tags[selectedTag]) then continue end
+
+		table.remove(path, 1)
+
+        local value = traversePath(self.Tags[selectedTag], path)
+        node.Config[configKey] = value
+    end
+
+	local behavior = self.BehaviorRegistry:Get(node.Name)
+	local result
+	if (behavior) then result = behavior(self, node) end
+	if (node.Tag) then
+		self.Tags[node.Tag] = node.Config
+	end
+
+	for _, child in (node.Children or {}) do
+		child:Execute()
+	end	
+	
+	return (result or result == nil and true)
+	end)
 end)
 
 scopeRegistry:Register('Network', function(self, node) 
@@ -180,8 +110,9 @@ scopeRegistry:Register('Network', function(self, node)
 	local result
 	if (behavior) then result = behavior(self, node) end
 	
-	return (result or true)
+	return (result or result == nil and true)
 end)
+
 
 
 scopeRegistry:Register('Condition', function(self,node) 

@@ -32,7 +32,7 @@ Behaviors.Vaulting = {
 			local Pack = ClientData.ClientAbilities.Packs['Movement']
 			local Ability: AbilityInterfaces.IAbilityComponent = Pack['Vault']
 
-			if Ability:CheckBlacklist(Ability.Config.Blacklist, {CheckCD = false;}) then return false end
+			if Ability:CheckBlacklist(Action.Config.Blacklist, {CheckCD = false;}) then return false end
 
             local Character = CharacterData.Character
             local HumanoidRootPart = CharacterData.HumanoidRootPart
@@ -104,7 +104,7 @@ Behaviors.Dash = {
 
 			local Pack = ClientData.ClientAbilities.Packs['Movement']
 			local Ability: AbilityInterfaces.IAbilityComponent = Pack['Dash']
-			local AbilityConfig = Ability.Config
+			local AbilityConfig = Action.Config
 			
 			return true
 

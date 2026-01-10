@@ -7,6 +7,7 @@ local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
 local NetWork = Utilities:WaitForChild('NetWork')
+local RegistryManager = require(ReplicatedStorage.Bricksv2.Components.RegistryManager)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
@@ -26,27 +27,18 @@ local GlobalEvent = Replicator:GetRemote('Global')
 
 
 
-
-behaviorRegistry:Register('TriggerEvent', function(self, node) 
-	if (not self.Events) then return end
-	local handler = self.ScopeRegistry:Get('EventAction')
-
-	local selectedBlock = self.Events[node.Config.TagName]
-	
-	selectedBlock.TriggerArgs = node.Config
-
-
-	self.Tags[node.Config.TagName] = node.Config
-
-	if handler then handler(self, selectedBlock) end
-
-end)
-
-
 behaviorRegistry:Register('Wait', function(self, node)  
 	task.wait(node.Config.Wait)
 end)
 
+behaviorRegistry:Register('Extend', function(self,node): any 
+	local currentlyInjected = self.BehaviorRegistry._meta
+	local tbInjected = RegistryManager:GetRegistriesToInject(node.Config)
+
+	for _, inject in pairs(tbInjected) do
+		table.insert(currentlyInjected, inject)
+	end
+end)
 
 behaviorRegistry:Register('Raycast', function(self,node)
 	local config = node.Config
@@ -59,23 +51,9 @@ behaviorRegistry:Register('Raycast', function(self,node)
 	local cast = AssetsHelper.FastCast(castData)
 
 	node.Config['Cast'] = cast
+	if not cast then return false end
 	return cast
 end)
 
-
-behaviorRegistry:Register('TriggerPassive', function(self, node)
-	local info = node.Additional.Main
-	
-	for _, passive in pairs(info.Passives) do
-		passive:Execute(
-			{
-				Name = 'Action.TriggerEvent',
-				Config = {
-					Projectile = node.Additional.Projectile,
-					TagName = node.Config.PassiveEvent
-				}
-			})
-	end
-end)
 
 return behaviorRegistry

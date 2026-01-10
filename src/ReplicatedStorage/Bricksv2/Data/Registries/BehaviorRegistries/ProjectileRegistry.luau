@@ -11,10 +11,8 @@ local AbilityParser = require(Components:WaitForChild('AbilityParser'))
 
 local behaviorRegistry = Registry.new()
 
-behaviorRegistry:Register('OnHit', function(self, node) 
-	print(self.Tags) 
-	--print('root created', self)
-end)
+
+
 
 behaviorRegistry:Register('LinearSpeedUp',function(self,node)
 	local Part: BasePart = node.Additional['ProjectileInfo'].Part

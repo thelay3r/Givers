@@ -21,7 +21,6 @@ local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 local behaviorRegistry = Registry.new()
 
 behaviorRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 behaviorRegistry:Register('SlideStop', function(self, node)
@@ -37,7 +36,7 @@ behaviorRegistry:Register('SlideStop', function(self, node)
 	SlideTag.BodyVelocity:Destroy()
 	SlideTag.BodyGyro:Destroy()
 	
-	print(self)
+
 end)
 
 behaviorRegistry:Register('SlideJump', function(self,node)
@@ -58,11 +57,11 @@ behaviorRegistry:Register('SlideJump', function(self,node)
 		})
 
 		self:Execute({
-			Name = 'NetWork.PlayVFX';
+			Name = 'Network.PlayBindableEvent';
 			Config = {
-				VFXType = 'Animations.Slide';
-				Client = true;
+				EventName = 'PlayVFX';
 				EventData = {
+					VFXType = 'Animations.Slide';
 					State = 'Jump';
 					Pack = 'Default';
 
@@ -186,7 +185,7 @@ behaviorRegistry:Register('SlideStart', function(self, node)
 				--[[
 				if speedMod > 15 then
 					self:Execute({
-						Name = 'NetWork.PlayVFX';
+						Name = 'Network.PlayVFX';
 						Config = {
 							VFXType = 'Slide.Client';
 							Client = true;

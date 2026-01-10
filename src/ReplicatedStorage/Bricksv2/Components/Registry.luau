@@ -4,6 +4,7 @@ Registry.__index = Registry
 function Registry.new()
 	local self = setmetatable({
 		callbacks = {},
+		_meta = {},
 	}, Registry)
 
 	return self
@@ -24,9 +25,15 @@ end
 
 function Registry:Extends(registries: {any})
 
+	self._meta = registries
+	if (not registries) then
+		warn(`{self} registries are nill`)
+		return
+	end
+
 	setmetatable(self.callbacks, {
 		__index = function(t, i)
-			for _, registry in pairs(registries) do
+			for _, registry in pairs(self._meta) do
 				if (registry.callbacks[i]) then return registry.callbacks[i] end
 			end
 

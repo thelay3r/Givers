@@ -1,83 +1,98 @@
-local ServerScriptService = game:GetService('ServerScriptService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local Services = ServerScriptService:WaitForChild('Services')
+
+
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Interfaces = Shared:WaitForChild('Interfaces')
 
-local ReplicaService = require(Services:WaitForChild('ReplicaService'))
+
 local EntityInterfaces = require(Interfaces:WaitForChild('EntityInterfaces'))
 local ValuesInterface = require(Interfaces:WaitForChild('ValuesInterface'))
+
 
 type IEntity = EntityInterfaces.IEntityComponent
 type IValues = ValuesInterface.IValues
 
 
-local ValuesComponent: IValues = {}
 
-function ValuesComponent.SpecialSet(self: IPlayer, string, name: string, value: any)
+local ValuesComponent: any | IValues = {}
 
-	local SessionData = self.SessionData
-	
-	if not SessionData[name] then return end
-
-	SessionData[name] = value
+local function SetValue(self: IEntity, scope: any, name: string, value: any, subKey: string?)
+    local target = scope[name]
+    if target == nil then return end
+    
+    if subKey then
+        if value == nil then
+			table.clear(target[subKey])
+		end
+        target[subKey] = value
+    else
+        scope[name] = value
+    end
 end
 
-function ValuesComponent.SetAttribute(self: IEntity, name: string, value: any)
-	
-	local SessionData = self.SessionData
-	local Scope = SessionData.Attributes
-	
-	local target = Scope[name]
-	if not target then return end
-	
-	Scope[name] = value
+
+function ValuesComponent.SpecialSet(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    
+    if SessionData[name] == nil then return end
+
+    if subKey then
+		if value == nil then
+			table.clear(SessionData[name][subKey])
+		end
+        SessionData[name][subKey] = value
+    else
+        SessionData[name] = value
+    end
 end
 
-function ValuesComponent.SetStatusEffect(self: IEntity, name: string, value: any)
 
-	local SessionData = self.SessionData
-	local Scope = SessionData.StatusEffects
-
-	local target = Scope[name]
-	if not target then return end
-
-	Scope[name] = value
+function ValuesComponent.SetAbility(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.Abilities, name, value, subKey)
 end
 
-function ValuesComponent.SetCharacterData(self: IEntity, name: string, value: any)
-
-	local SessionData = self.SessionData
-	local Scope = SessionData.CharacterData
-
-	local target = Scope[name]
-	if not target then return end
-
-	Scope[name] = value
+function ValuesComponent.SetPassive(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.Passives, name, value, subKey)
 end
 
-function ValuesComponent.SetEquipment(self: IEntity, name: string, value: any)
-
-	local SessionData = self.SessionData
-	local Scope = SessionData.Equipment
-
-	local target = Scope[name]
-	if not target then return end
-
-	Scope[name] = value
+function ValuesComponent.SetAttribute(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.Attributes, name, value, subKey)
 end
 
-function ValuesComponent.SetSetting(self: IEntity, name: string, value: any)
 
-	local SessionData = self.SessionData
-	local Scope = SessionData.Settings
-
-	local target = Scope[name]
-	if not target then return end
-
-	Scope[name] = value
+function ValuesComponent.SetStatusEffect(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.StatusEffects, name, value, subKey)
 end
+
+
+function ValuesComponent.SetCharacterData(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.CharacterData, name, value, subKey)
+end
+
+
+function ValuesComponent.SetEquipment(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.Equipment, name, value, subKey)
+end
+
+
+function ValuesComponent.SetSpeedData(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.SpeedData, name, value, subKey)
+end
+
+
+function ValuesComponent.SetSetting(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.Settings, name, value, subKey)
+end
+
 
 return ValuesComponent

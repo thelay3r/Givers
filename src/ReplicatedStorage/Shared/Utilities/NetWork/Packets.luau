@@ -13,6 +13,7 @@ return {
 	{
 		Name = PacketManager.String;
 		State = PacketManager.String;
+		Blocked = PacketManager.Boolean8;
 	});
 
 

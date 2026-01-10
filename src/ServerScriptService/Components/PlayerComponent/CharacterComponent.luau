@@ -6,6 +6,9 @@ local Utilities = Shared:WaitForChild('Utilities')
 local NetWork = Utilities:WaitForChild('NetWork')
 local Interfaces = Shared:WaitForChild('Interfaces')
 local Templates = Shared:WaitForChild('Templates')
+local RunTimeList = require(ReplicatedStorage.Bricksv2.Data.Abilities.RunTimeList)
+local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 local PlayerInterfaces = require(Interfaces:WaitForChild('PlayerInterfaces'))
 
@@ -22,6 +25,37 @@ local Entities = Map:WaitForChild('Entities')
 local Players = Entities:WaitForChild('Players')
 
 local CharacterComponent = {}
+
+local RunTimeBlackList = RunTimeList
+local HealthRate = 3
+
+local function CheckBlackList(Status)
+	for i,v in pairs(RunTimeBlackList) do
+		if Status[i] == true then return false end
+	end
+	return true
+end
+
+local function HealthRegen(self: EntityInterfaces.IEntityComponent)
+	
+	local HealthScript = self.Instance.Character:WaitForChild('Health')
+	if HealthScript then HealthScript:Destroy() end
+
+	TaskManager:CreateTask(self.Instance, 'Health', 0, function(a0)  
+		local SessionData = self.SessionData
+		local Attributes = SessionData.Attributes
+		local StatusEffects = SessionData.StatusEffects
+
+		local percent = 5
+		while task.wait(HealthRate) do
+			if not CheckBlackList(StatusEffects) then continue end
+			local MaxHealth: number = Attributes.MaxHealth
+			local ToHealth = MaxHealth * percent / 100
+			self:TakeHealth(math.abs(ToHealth) + Attributes.AdditionalHealth)
+		end
+	end)
+
+end
 
 function CharacterComponent.SetupCharacter(self: IServerPlayerComponent)
 	local player = self.Instance :: Player
@@ -47,10 +81,24 @@ function CharacterComponent.SetupCharacter(self: IServerPlayerComponent)
 	characterData.Character:SetAttribute('Id', Session.UserId)
 
 	EntityComponent.AddToList(Session.UserId,self)
-	print(Session)
+
 	Replicator:GetRemote('BindableGlobal'):BindableFire('SetUp', Session.UserId)
 	
+	for _,v in pairs(characterData.Character:GetDescendants()) do
+		 if v:IsA('BasePart') then
+			v.CollisionGroup = 'Player'
+		end
+	end
+
+	HealthRegen(self)
 	player.CharacterAdded:Connect(function(newCharacter)
+		TaskManager:CancelAllTasks(self)
+		TaskManager:CancelAllTasks(self.Instance)
+
+		TaskManager:CancelAllThreads(self)
+		TaskManager:CancelAllThreads(self.Instance)
+
+		
 		Session.StatusEffects = table.clone(SessionDataTemplate().StatusEffects)
 		Session.Attributes = table.clone(SessionDataTemplate().Attributes)
 
@@ -66,8 +114,17 @@ function CharacterComponent.SetupCharacter(self: IServerPlayerComponent)
 		characterData.Character:SetAttribute('Id', Session.UserId)
 		characterData.Character:SetAttribute('Id', Session.UserId)
 		
+		
+		for _,v in pairs(characterData.Character:GetDescendants()) do
+			if v:IsA('BasePart') then
+				v.CollisionGroup = 'Player'
+			end
+		end
+
 		Replicator:GetRemote('BindableGlobal'):BindableFire('SetUp', Session.UserId)
 		
+
+		HealthRegen(self)
 	end)
 	
 end

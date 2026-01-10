@@ -9,15 +9,14 @@ local Assets = VFXs:WaitForChild('Assets')
 local TweenService = game:GetService("TweenService")
 
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
 local CameraShaker = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShaker)
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local camera = workspace.CurrentCamera
 
-local Shaker = CameraShaker.new(Enum.RenderPriority.Camera.Value +1, function(cf)
-    camera.CFrame *= cf
-end)
-Shaker:Start()
+local Shaker = CameraShakeHandler.new()
+
 
 local Effects = {}
 
@@ -34,21 +33,19 @@ Effects['Client'] =
         if not RootPart then return end
 
         TaskManager:CreateTask(args.Player, 'SlideCameraEffect', 0, function(a0)
-            
             while task.wait(1/10) do
-                print(RootPart.AssemblyLinearVelocity.Magnitude/150)
-                Shaker:ShakeOnce(math.clamp(RootPart.AssemblyLinearVelocity.Magnitude/150, 0, 2), math.clamp(RootPart.AssemblyLinearVelocity.Magnitude/5, 1, 75), 0, .1)
+                Shaker:ShakeOnce(math.clamp(RootPart.AssemblyLinearVelocity.Magnitude/150, 0, 5), math.clamp(RootPart.AssemblyLinearVelocity.Magnitude/5, 1, 75), 0, .1)
             end 
         end)
     end;
-    ['Test'] = function(args)
+    ['SlideVFX'] = function(args)
         local Player = args.Player
         if not Player then return end
         local Character = Player.Character :: Model 
         if not Character then return end
         local RootPart = Character:FindFirstChild('HumanoidRootPart') :: BasePart
         if not RootPart then return end
-        local test = script:WaitForChild('Test'):Clone() :: Model
+        local test = script:WaitForChild('WindBeamSnipe'):Clone() :: Model
         
         local weld = Instance.new('WeldConstraint')
         weld.Part0 = RootPart

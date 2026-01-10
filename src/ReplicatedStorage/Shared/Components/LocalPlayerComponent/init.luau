@@ -29,15 +29,21 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	end}) :: any & LocalPlayerInterfaces.IClientPlayerComponent
 	
 	self.Instance = player
+	local PlayerModule =  require(player.PlayerScripts:WaitForChild('PlayerModule'):WaitForChild('ControlModule'))
+	PlayerModule:Disable()
+
 	self.ClientData = self:LoadClientData()
 	self.ClientData.Controls = DefaultInputs
 	self.Buses = 
 		{
 			['Main'] = EventBus.new('Player');
 			['Character'] = EventBus.new('Character');
-			
 		}
+
 	self:ReplicaInit()
+	self.SessionData = self.Replica.Data.Session
+	self.ProfileData = self.Replica.Data.Profile
+
 	self:SharePlayer()
 	self:SetupCharacter()
 	self:UpdateControls(self.ClientData.Controls)
@@ -46,15 +52,18 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self:InitClientVFX()
 	self:InitCamera()
 	
-	
+
+
 	PlayerComponent = self
-	
+
 	BindableGlobal:BindableFire('PlayerInitialized')
-	print(self)
+	PlayerModule:Enable(true)
+	print(self, 'tag initialized local player')
 	return self
 end
 
 function LocalPlayerComponent:GetPlayer(): LocalPlayerInterfaces.IClientPlayerComponent
+	while (not PlayerComponent) do task.wait(1/10) end
 	return PlayerComponent
 end
 

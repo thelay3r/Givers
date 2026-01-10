@@ -1,4 +1,3 @@
-local ServerScriptService = game:GetService('ServerScriptService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerScriptService = game:GetService('ServerScriptService')
 
@@ -16,14 +15,13 @@ local NPcHandlerInterfaces = require(Interfaces:WaitForChild('NPcHandlerInterfac
 local TaskManager = require(UtilModules:WaitForChild('TaskManager'))
 local TableHelper = require(UtilModules:WaitForChild('TableHelper'))
 local NPcComponent = require(Components:WaitForChild('NPCComponent'))
-
-
+local NpcBeahaivor = Components:WaitForChild('NpcBehaivor')
 
 type INPcHandler = NPcHandlerInterfaces.NPcHandlerComponent
 
 local NPcHandler = {}
 
-local Methods = {}
+local Methods: { [string]: (INPcHandler, ...any) -> ...any } = {}
 
 local function RandomVector3(min,max)
 	return Vector3.new(math.random(min,max),0,math.random(min,max))
@@ -32,7 +30,7 @@ end
 function Methods._SpawnBranch(self: INPcHandler)
 	if not self.Active then return end
 	
-	TaskManager:CreateTask(self,'SpawnBranch',nil,function()
+	TaskManager:CreateTask(self,'SpawnBranch',0,function()
 		while self.Active do
 			task.wait(1)
 			local AliveIndexsCount = TableHelper:CheckIndexCount(self.AliveNPCs)
@@ -69,11 +67,16 @@ function Methods._Create(self: INPcHandler)
 	local Humanoid = CharacterData.Humanoid
 
 	
-	
+
 	Humanoid.Died:Once(function()
 		self.AliveNPCs[npc.SessionData.UserId] = nil
 	end)
 	
+	if not NpcBeahaivor:FindFirstChild(self.CFG) then return npc end
+	local module = require(NpcBeahaivor:FindFirstChild(self.CFG))
+	if not module then return npc end
+	module(npc)
+
 	return npc
 end
 
@@ -88,7 +91,7 @@ function NPcHandler.new(Part: BasePart)
 	local Count = (Part:GetAttribute('Count')) or 1
 	
 	
-	local self: INPcHandler = setmetatable(
+	local self = setmetatable(
 		{
 			AliveNPCs = {};
 			Active = false;
@@ -96,6 +99,7 @@ function NPcHandler.new(Part: BasePart)
 			Count = Count;
 			NpcName = NPC;
 			Type = Type;
+			CFG = CFG;
 			
 			_Instance = Part;
 		},
@@ -103,7 +107,7 @@ function NPcHandler.new(Part: BasePart)
 		__index = function(t,key)
 			return Methods[key] or NPcHandler[key]
 		end,
-	}) 
+	}) :: any & INPcHandler
 	
 	self.Active = true
 	self:_SpawnBranch()

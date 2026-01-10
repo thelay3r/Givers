@@ -1,7 +1,7 @@
 local ButtonComponent = {}
 ButtonComponent.__index = ButtonComponent
 
-local Components: {typeof(ButtonComponent)} = {}
+local Components: {[GuiButton]: typeof(ButtonComponent) & {Instance: GuiButton}} = {}
 
 function ButtonComponent:BindToClick(callback: () -> {})
 	table.insert(self.OnClick, callback)
@@ -36,12 +36,10 @@ function ButtonComponent:OnCallback(name: string, ...: any)
 	self.Callbacks[name](...)
 end
 
-function ButtonComponent.new(guiButton: GuiButton): typeof(ButtonComponent) & {['Instance']: GuiButton}
-
+function ButtonComponent.new(guiButton: GuiButton): (typeof(ButtonComponent) & {['Instance']: GuiButton})
+	assert(guiButton:IsA('GuiButton'), guiButton.Name..' isnt a GuiButton')
 	if (Components[guiButton]) then return Components[guiButton], true end
 	
-	if (not guiButton:IsA('GuiButton')) then return end
-
 	local self = setmetatable({
 
 		Instance = guiButton,
@@ -53,9 +51,6 @@ function ButtonComponent.new(guiButton: GuiButton): typeof(ButtonComponent) & {[
 		OnDown = {},
 		OnUp = {},
 		OnDestroy = {},
-		
-		Tasks = {};
-		Threads = {};
 		
 		Callbacks = {},
 
@@ -101,7 +96,7 @@ function ButtonComponent.new(guiButton: GuiButton): typeof(ButtonComponent) & {[
 		for _, callback in pairs(self.OnDestroy) do callback() end
 		
 		for _,v in pairs(self) do
-			if typeof(v) == 'table' then
+			if typeof(v) == "table" then
 				table.clear(v)
 			end
 		end

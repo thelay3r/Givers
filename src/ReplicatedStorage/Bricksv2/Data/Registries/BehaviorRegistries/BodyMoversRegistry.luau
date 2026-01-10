@@ -22,7 +22,6 @@ local BlackList = require(AbilityFolder:WaitForChild('BlackList'))
 local BodyMoversRegistry = Registry.new()
 
 BodyMoversRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
 end)
 
 BodyMoversRegistry:Register('BodyGyro', function(self,node)
@@ -90,8 +89,7 @@ BodyMoversRegistry:Register('UnitSmoothVelocity', function(self,node)
 
 	local easing = (config.EasingDirection) or (Enum.EasingStyle.Sine)
 	local direction = (config.EasingDirection) or (Enum.EasingDirection.In)
-	
-	local Humanoid = BodyVelocityTag.Parent.Parent:FindFirstChild('Humanoid')
+	local Humanoid = Body.Parent.Parent:FindFirstChild('Humanoid')
 	if not Humanoid then return end
 	local Unit
 

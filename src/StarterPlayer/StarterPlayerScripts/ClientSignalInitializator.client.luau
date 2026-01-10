@@ -10,7 +10,10 @@ local NetWork = Utilities:WaitForChild('NetWork')
 local VFXs = Shared:WaitForChild('VFXs')
 local VFXReplica = VFXs:WaitForChild('Replica')
 
+local BlackList = require(ReplicatedStorage.Bricksv2.Data.Abilities.BlackList)
+local PlayerInterfaces = require(ReplicatedStorage.Shared.Interfaces.PlayerInterfaces)
 local _AbilityHandler = require(ReplicatedStorage.Shared.Utilities.Modules.AbilityHandler)
+local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local LocalPlayerComponent = require(Components:WaitForChild('LocalPlayerComponent'))
 local LocalPlayerInterfaces = require(Interfaces:WaitForChild('LocalPlayerInterfaces'))
 
@@ -24,7 +27,7 @@ local AbilityPacket = Packets.Ability
 
 local Animator = require(Utilmodules:WaitForChild('Animator'))
 
-local Player: LocalPlayerInterfaces.IClientPlayerComponent = LocalPlayerComponent:GetPlayer()
+local Player: LocalPlayerInterfaces.IClientPlayerComponent = nil
 
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
@@ -49,7 +52,7 @@ Replicator:GetRemote('VFX'):Connect('VFX', function(args, ...)
 	
 	if not (Pack[args.Name]) then warn('VFX is nil.') return end
 	
-	local VFXModule = require(Pack[args.Name])
+	local VFXModule = require(Pack[args.Name] :: any)
 	
 	if not (VFXModule[args.Func]) then warn('Function is nil.') return end
 	
@@ -57,7 +60,7 @@ Replicator:GetRemote('VFX'):Connect('VFX', function(args, ...)
 	
 end)
 
-BindableGlobal:Connect('VFX', function(args, ...)
+BindableGlobal:Connect('VFX', function(args: {[string] : any}, ...)
 
 	if not (VFXReplica[args.Pack]) then return warn('Cannot find required pack.') end
 
@@ -65,7 +68,7 @@ BindableGlobal:Connect('VFX', function(args, ...)
 
 	if not (Pack[args.Name]) then warn('VFX is nil.') return end
 
-	local VFXModule = require(Pack[args.Name])
+	local VFXModule = require(Pack[args.Name] :: any)
 
 	if not (VFXModule[args.Func]) then warn('Function is nil.') return end
 
@@ -83,17 +86,34 @@ BindableGlobal:Connect('PlayerInitialized', function(args)
 	Player:AppendAbility('Movement','Dash')
 	Player:AppendAbility('Movement','Vault')
 	Player:AppendAbility('Movement','Slide')
+	Player.SpeedController = SpeedController.new(Player)
+	
 end)
 
+local function IsActionBlocked(statusEffects)
+	if statusEffects.ByPass then return false end
+    for _, effectName in pairs(BlackList) do
+        if statusEffects[effectName] == true then
+			print(statusEffects[effectName],effectName,'ACTION BLOCKED')
+            return true
+        end
+    end
+    return false
+end
+
 BindableGlobal:Connect('LocalAbility', function(args)
-	_Player = LocalPlayerComponent:GetPlayer()
+	local _Player = LocalPlayerComponent:GetPlayer()
 	if not _Player.ClientData.Abilities[args.Name] then return end
+
+	local ClientReplica = _Player.Replica
+	local sessionData = ClientReplica.Data.Session
+
 	local abilityName = _Player.ClientData.Abilities[args.Name].Name
 	local ability = _Player:GetAbility(abilityName)
-	print(abilityName)
-	print(args.State)
 	ability[args.State](ability)
 end)
+
+
 
 
 BindableGlobal:Connect('ServerAbility', function(args)
@@ -102,11 +122,12 @@ BindableGlobal:Connect('ServerAbility', function(args)
 	local sessionData = ClientReplica.Data.Session
 	local Abilities = sessionData.Abilities
 	local ability = Abilities[args.Name]
-	
+
 	AbilityPacket:Fire(
 		{
 			Name = ability.Name;
 			State = args.State;
+			Blocked = IsActionBlocked(sessionData.StatusEffects);
 		})
 
 end)

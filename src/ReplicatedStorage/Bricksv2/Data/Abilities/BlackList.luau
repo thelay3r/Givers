@@ -1,17 +1,15 @@
 local BlackList = 
 	{
-		'Block';
-		'Click';
 		'Dashing';
-		'GreatStunned';
+		'GreatStun';
 		'IsDead';
 		'NockDown';
-		'Parry';
-		'Ragdolled';
+		'Ragdoll';
 		'Stun';
 		'IsVaulting';
 		'IsSliding';
 		'ActiveSkill';
+		'InGrab';
 	}
 
 return BlackList

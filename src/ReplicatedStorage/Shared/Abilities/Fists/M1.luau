@@ -9,51 +9,102 @@ local _Registries = Data:WaitForChild('Registries')
 
 local registry = Registry.new()
 
+registry.Inject = {
+	'M1Fists';
+}
+
+
 
 local ability = {
-	Name = 'Action.Root';
-	Tag = 'Main',
-	Config = 
-	{
-        Name = 'Fists_M1';
-		KeyCode = Enum.UserInputType.MouseButton1;
+		Name = 'Action.Root';
+		Tag = 'Main',
+		Config = 
+		{
+			Name = 'Fists_M1';
+			KeyCode = Enum.UserInputType.MouseButton1;
+			
+			Duration = .35;
+			MinDuration = .35,
+			CoolDown = .35;
+			LastUsed = 0;
 
-		Duration = 1;
-		CoolDown = .5;
-		LastUsed = 0;
-
-		IsActive = false;
-	},
-	{
-		Name = 'Event.OnStart';
-		Tag = 'OnStart';
-		{	
-			Name = 'Condition.IsEquipped?';
-			{
-				Name = 'Condition.CheckBlackList';
+			IsActive = false;
+		},
+		{
+			Name = 'Event.OnStart';
+			Tag = 'OnStart';
+			{	
+				Name = 'Condition.IsEquipped?';
 				{
+					Name = 'Condition.CheckBlackList';
 					{
-						Name = 'Ability.SetCoolDown';
-					};
-					Name = 'Combat.Combo';
-					Config = {
-						Combo = {
-							'Fist';
+						Name = 'ActionPararrel.Combo';
+						Config = {
+							Combo = {
+								'Fists';
+							},
+							Timings = {
+								['Fists'] = {
+									Combo = 2;
+									Main = .35;
+								}
+							}
+						},
+						{
+							Name = 'Action.SetUsed';
+						};
+						{
+							Name = 'Action.SetAbilityActive';
+							Config = {
+								Status = true;
+							};
+						};
+						{
+							Name = 'Action.SetStatusEffect';
+							Config = {
+								Effect = 'ActiveSkill';
+								Status = true;
+							};
+						};
+						{
+							Name = 'Action.SetStatusEffect';
+							Config = {
+								Effect = 'CanRun';
+								Status = false;
+							};
+						};
+						{
+							Name = 'Action.AutoCombo';
 						}
-					}
-						
-				};
+					};
+			};
+		},
+
+		
+	},
+
+	{
+		Name = 'Event.OnDurationEnd'; 
+		Tag = 'OnDurationEnd';
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'ActiveSkill';
+				Status = false; 
+			};
+		};
+		{
+			Name = 'Action.SetAbilityActive';
+			Config = { Status = false; };
+		};
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'CanRun';
+				Status = true;
+			};
 		};
 	}
-},
-{
-	Name = 'Event.OnStop';
-	Tag = 'OnStop';
-
-	{
-		Name = 'Condition.IsActive?',
-	}
-}    
 }
 
 return {

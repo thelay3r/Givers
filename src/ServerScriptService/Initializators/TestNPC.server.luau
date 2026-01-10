@@ -16,7 +16,9 @@ local Map = workspace.Map
 local Spawners = Map.Spawner
 local Spawner = Spawners.Spawner
 
-local test = NPcHandler.new(Spawner)
+local TestSpawner = NPcHandler.new(Spawner)
+local TestSpawner2 = NPcHandler.new(Spawners.Spawner2)
+
 
 --local NPCComponent = NPCComponents.New(NPCs.TestModel)
 --EntitiesComponent:Add(NPCComponent)

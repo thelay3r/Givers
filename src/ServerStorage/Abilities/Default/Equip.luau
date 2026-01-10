@@ -27,14 +27,14 @@ return
                     Vector = 'UpVector';
                     Range = -5;
                 };
-                {   Name = 'Ability.SetAbilityActive';
+                {   Name = 'Action.SetAbilityActive';
                     Config = 
                     {
                         ['Status'] = true;
                     }
                 };
                 {
-                    Name = 'Ability.SetStatusEffect';
+                    Name = 'Action.SetStatusEffect';
                     Config = 
                     {
                         ['Effect'] = 'IsSliding';
@@ -66,7 +66,7 @@ return
                     }
                 };
                 {
-                    Name = 'NetWork.PlayVFX';
+                    Name = 'Network.PlayVFX';
                     Config = {
                             VFXType = 'Animations.Slide';
                             Client = true;
@@ -77,7 +77,7 @@ return
                     };
                 };
                 {
-                    Name = 'NetWork.PlayVFX';
+                    Name = 'Network.PlayVFX';
                     Config = {
                         VFXType = 'Slide.Client';
                         Client = true;
@@ -99,14 +99,14 @@ return
             Name = 'Condition.IsActive?';
             RequestedTags = {['Ability'] = 'Main'};
             {
-                Name = 'Ability.SetAbilityActive';
+                Name = 'Action.SetAbilityActive';
                 Config = 
                 {
                     ['Status'] = false;
                 }
             };
             {
-                Name = 'Ability.SetStatusEffect';
+                Name = 'Action.SetStatusEffect';
                 Config = 
                 {
                     ['Effect'] = 'IsSliding';
@@ -118,7 +118,7 @@ return
                 Name = 'Abilities.SlideStop';
             };
             {
-                Name = 'NetWork.PlayVFX';
+                Name = 'Network.PlayVFX';
                 Config = {
                         VFXType = 'Animations.Slide';
                         Client = true;
@@ -129,7 +129,7 @@ return
                 };
             };
             {
-                Name = 'NetWork.PlayVFX';
+                Name = 'Network.PlayVFX';
                 Config = {
                     VFXType = 'Slide.Client';
                     Client = true;

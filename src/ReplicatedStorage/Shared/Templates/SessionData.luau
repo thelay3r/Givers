@@ -3,12 +3,9 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilites = Shared:WaitForChild('Utilities')
 local Modules = Utilites:WaitForChild('Modules')
+local SpeedModuleInterface = require(ReplicatedStorage.Shared.Interfaces.SpeedModuleInterface)
 local TableHelper = require(Modules:WaitForChild('TableHelper'))
-local Interfaces = Shared:WaitForChild('Interfaces')
-
-local PassiveInterfaces = require(Interfaces:WaitForChild('PassiveInterfaces'))
-
-type IPassiveComponents = PassiveInterfaces.IPassive
+local _Interfaces = Shared:WaitForChild('Interfaces')
 
 local SessionData = {
 	
@@ -19,13 +16,29 @@ local SessionData = {
 	CurrentEquipped = 'none';
 	CurrentInArm = 'none';
 
+	SpeedData = {
+		DefaultSpeed = 12,
+		CurrentSpeed = 12,
+		LastSpeed = 12,
+		Cache = {} :: {[string]: SpeedModuleInterface.SpeedModifier},
+		PendingValidation = {},
+		CanChange = true :: boolean
+	};
+
 	Attributes = 
 		{
+			Posture = 0;
+			MaxPosture = 100;
+
 			Health = 100;
 			MaxHealth = 100;
 			
-			WalkSpeed = 16;
+			WalkSpeed = 12;
 			JumpPower = 50;
+
+			AutoRotateSpeed = 3;
+
+			AdditionalHealth = 0;
 		};
 	
 	CharacterData = 
@@ -52,20 +65,32 @@ local SessionData = {
 			ActiveSkill = false;
 			Block = false;
 			Parry = false;
-			GreatStunned = false;
-			Ragdolled = false;
+			GreatStun = false;
+			Ragdoll = false;
 			NockDown = false;
 			IsDead = false;
-			
+			IFRAME = false;
+
 			Dashing = false;
 			Vaulting = false;
 			IsRunning = false;
 
+			InGrab = false;
+			
+			AfterSpace = false;
+			ByPass = false;
+			
+			CanBodySimulation = true;
+			CanAutoRotate = true;
+			CanRun = true;
+
+			LockedStateBody = false;
+			LockedStateRotate = false;
 		};
 	
 	Packs = {};
 	Abilities = {};
-	Passives = {}:: {IPassiveComponents};
+	Passives = {};
 	
 	PressedKeys = {};
 	
@@ -73,7 +98,6 @@ local SessionData = {
 		{
 			['Loaded'] = false;
 		};
-	
 	Threads = {};
 	Tasks = {};
 	

@@ -16,7 +16,7 @@ local VFXReplica = require(NetWork:WaitForChild('VfxReplica'))
 
 local CharacterComponent = {}
 
-function CharacterComponent.SetupCharacter(self:NPCInterfaces.INPCComponent, Model: Model): NPCInterfaces.INPCComponent
+function CharacterComponent.SetupCharacter(self:any & NPCInterfaces.INPCComponent, Model: Model): NPCInterfaces.INPCComponent
 	local character = Model:Clone()
 	character.Parent = workspace.Map.Entities.NPCs
 	
@@ -33,7 +33,10 @@ function CharacterComponent.SetupCharacter(self:NPCInterfaces.INPCComponent, Mod
 	CharacterData.Character.Parent = NPCs.Neutral
 	
 	CharacterData.Character:SetAttribute("Id", self.SessionData.UserId)
-	
+	self.Instance = {
+		UserId = self.SessionData.UserId;
+		Character = CharacterData.Character;
+	}
 	for _,v in pairs(CharacterData.Character:GetDescendants()) do
 		if v:IsA('BasePart') then
 			v.CollisionGroup = "NPC"
@@ -50,6 +53,7 @@ function CharacterComponent.SetupCharacter(self:NPCInterfaces.INPCComponent, Mod
 		
 	end)
 	
+	return self
 end
 
 return CharacterComponent

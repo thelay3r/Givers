@@ -1,4 +1,3 @@
-local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 
 export type NpcHandlerMethods = 
@@ -16,7 +15,8 @@ export type NPcHandlerComponent = NpcHandlerMethods &
 		Active: boolean;
 		NpcName: string;
 		Type: string;
-		_Instance: Instance;
+		CFG: string;
+		_Instance: BasePart;
 	}
 
 
