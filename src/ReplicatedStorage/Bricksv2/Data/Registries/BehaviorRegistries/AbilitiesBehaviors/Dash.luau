@@ -58,37 +58,32 @@ registry:Register('FeintDash', function(self,node)
 	if not _instance then return end
 	_instance:Destroy()
 
-	self:Execute(
-		{
-			Name = 'Network.PlayVFX';
-			SendParams = {
-                    ['Player'] = {From = 'Owner', Path = {'Instance'}}
-                };
-			Config = 
-			{
-				VFXType = 'Animations.Dash';
-				Client = true;
-                EventData = {
-                    State = 'Cancel';
+	self:Execute({
+			Name = "Network.PlayBindableEvent",
+			InjectParams = { ["Player"] = "Owner.Instance" },
+			Config = {
+				EventName = "PlayVFX",
+				EventData = {
+					VFXType = "Animations.Dash",
+					State = 'Cancel';
                     Pack = 'Movement';
-                };
-			};
+				},
+			},
 		})
-		self:Execute({
-			Name = 'Network.PlayVFX';
-			SendParams = {
-                 ['Player'] = {From = 'Owner', Path = {'Instance'}}
-            };
-			Config = 
-			{
-				VFXType = 'Dash.Cancel';
-				Client = true;
-                EventData = {
-                    State = 'Start';
+
+	self:Execute({
+			Name = "Network.PlayBindableEvent",
+			InjectParams = { ["Player"] = "Owner.Instance" },
+			Config = {
+				EventName = "PlayVFX",
+				EventData = {
+					VFXType = "Dash.Cancel",
+					State = 'Start';
                     Pack = 'Movement';
-                };
-			};
+				},
+			},
 		})
+
 
 end)
 
