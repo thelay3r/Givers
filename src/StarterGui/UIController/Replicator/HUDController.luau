@@ -55,7 +55,7 @@ local function changePosturehBar()
     local posture = playerComponent.SessionData.Attributes.Posture :: number
     local maxPosture = playerComponent.SessionData.Attributes.MaxPosture :: number
     local posturePercent = posture / maxPosture
-
+    
     TweenService:Create(leftBar, TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.fromScale(1-posturePercent, 0)}):Play()
     TweenService:Create(rightBar, TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.fromScale(posturePercent-1, 0)}):Play()
 end

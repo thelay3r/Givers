@@ -39,7 +39,7 @@ function Utilities:TweenBarTransparencyGradient(frame: Frame, time: number, twee
 
 	TaskManager:CreateTask(frame, 'BarTransparency', 0, function()
 		for i = 0, tweenTime, 1/60 do
-			self:BarTransparencyGradient(frame, BiezeModule.lerp(currentTime, time, i / tweenTime))
+			self:BarTransparencyGradient(frame, BiezeModule.lerp(currentTime, time, i / tweenTime,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut))
 			RunService.Heartbeat:Wait()
 		end
 	end)

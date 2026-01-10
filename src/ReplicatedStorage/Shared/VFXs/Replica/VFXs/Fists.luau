@@ -319,7 +319,9 @@ Fists['BackStab']['Effects'] = function(args)
             Character = VictimCharacter;
         })
         if not fastCast then return end
-        BloodBackStab.CFrame = CFrame.new(fastCast.Position,fastCast.Position+fastCast.Normal) * CFrame.Angles(math.rad(90),0,0) 
+        local position = fastCast.Position
+        BloodBackStab.CFrame = CFrame.new(position,position+fastCast.Normal) * (CFrame.Angles(-math.rad(90),0,0))
+        BloodBackStab.Orientation = Vector3.zero
         BloodBackStab.Parent = workspace.Map.VFXs
         AssetsHelper.Emit(BloodBackStab)
 

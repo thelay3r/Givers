@@ -22,9 +22,25 @@ local Registry = require(Components:WaitForChild('Registry'))
 
 local EntityRegistry = Registry.new()
 
-EntityRegistry:Register('Root', function(self, node)  
-    print('New Root Behavior')
-end)
+local function creteTrails(self,Victim,Part)
+		self:Execute({
+			Name = 'Network.PlayRemoteEvent';
+			Config = {
+				EventType = Enums.EventType.Close;
+				Event = 'VFX';
+				EventName = 'PlayVFX';
+				EventData = {
+					Player = Victim.Instance;
+					VFXType = 'Effects.Trail';
+					State = 'Start';
+					Pack = 'Movement';
+					AbilityName = 'Dash';
+					LifeTime = 3;
+					Parent = Part;
+				};
+			}
+		})
+end
 
 EntityRegistry:Register('FistsBackStab', function(self, node)  
 	local Victim = node.Config.Victim :: EntityInterfaces.IEntityComponent
@@ -99,15 +115,21 @@ EntityRegistry:Register('FistsBackStab', function(self, node)
 
 		VictimRoot.AssemblyLinearVelocity = OwnerRoot.CFrame.UpVector * 50 + OwnerRoot.CFrame.LookVector * 100
 		
+
 		Victim:SetStatusEffect('InGrab',false)
 
-
-
+		creteTrails(self,Victim,'Left Arm')
+		creteTrails(self,Victim,'Right Arm')
+		creteTrails(self,Victim,'Left Leg')
+		creteTrails(self,Victim,'Right Leg')
+		
 		task.delay(2, function()
 			if not Victim.Instance.LocaleId then
 				VictimRoot:SetNetworkOwner(nil)
 			end
 		end)
+
+
 	end)
 
 	TaskManager:CreateTask(Owner, 'InGrabMove', 3.1, function(a0)
