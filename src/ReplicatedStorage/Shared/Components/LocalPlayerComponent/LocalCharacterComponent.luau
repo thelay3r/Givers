@@ -1,5 +1,7 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
+local StarterGui = game:GetService('StarterGui')
+
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
 local UtilModules = Utilities:WaitForChild('Modules')
@@ -32,7 +34,7 @@ function LocalCharacterComponent.SetupCharacter(self: LocalPlayerInterfaces.ICli
 	characterData.HumanoidRootPart = humanoidRootPart
 
 	Animator.InitAnimations(self)
-	--self:InitDirection()
+	
 	
 	local function jumpConnection(active)
 		if not active then return end

@@ -77,7 +77,7 @@ behaviorRegistry:Register('AbilityStatus', function(self,node)
 			})
 		
 		local isInvalid = not Validate
-		if isInvalid or isTimeExpired or shouldManualStop then
+		if isInvalid or (isTimeExpired) or shouldManualStop then
 			self:Execute({
 				Name = 'Action.TriggerEvent';
 				Config = { TagName = 'OnStop',['node'] = node };

@@ -88,11 +88,9 @@ EntityRegistry:Register('Combo', function(self, node)
         Owner = Entity;
         Blocked = false;
     }
-    print(PassiveTable.Blocked,'ZZZ')
     Entity:TriggerPassives('OnM1Start',PassiveTable)
-
-    
     if PassiveTable.Blocked then return end
+    
     
     self:Execute({
         Name = 'Action.'..TargetAction;

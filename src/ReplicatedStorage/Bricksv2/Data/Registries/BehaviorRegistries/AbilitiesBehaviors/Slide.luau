@@ -159,24 +159,9 @@ registry:Register("SlideStart", function(self, node)
 			local fastCast = AssetsHelper.FastCast({
 				Position = RootPart.Position,
 				Direction = RootPart.CFrame.LookVector * 4,
-				Character = Character,
+				Character = workspace.Map.Entities,
 			})
 			if fastCast then
-				--[[
-				if speedMod > 15 then
-					self:Execute({
-						Name = 'Network.PlayVFX';
-						Config = {
-							VFXType = 'Slide.Client';
-							Client = true;
-							EventData = {
-								State = 'Lobo';
-								Pack = 'Default';
-							};
-						};
-					})
-				end
-				]]
 				speedMod = 0
 				continue
 			end

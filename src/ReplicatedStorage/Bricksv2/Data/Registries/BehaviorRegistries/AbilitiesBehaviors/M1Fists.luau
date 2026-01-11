@@ -297,7 +297,7 @@ EntityRegistry:Register('Fists', function(self, node)
                 Player = Entity.Instance;
                 VFXType = 'Fists.M1';
 				State = 'OnStart';
-				Combo = Session.StatusEffects.CurrentCombo;
+				Combo = math.max(1,Session.StatusEffects.CurrentCombo);
 			}
 		}
 	})

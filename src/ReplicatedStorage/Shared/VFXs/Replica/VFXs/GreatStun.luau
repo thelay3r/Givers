@@ -11,6 +11,7 @@ local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.Animati
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
+local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local GreatStun = {}
@@ -21,7 +22,7 @@ local Sounds = Assets.Default.Sounds :: Folder
 
 local EffectContainer = CacheContainer.new()
 
-
+local Shaker = CameraShakeHandler.new()
 GreatStun['Action'] = {
     ['Effect'] = function(args)
         local Player = args.Player :: Player

@@ -30,10 +30,10 @@ EntityRegistry:Register('DealDamage', function(self,node)
 	local config = node.Config
 	local HitData = config.HitData
 	local Victim = config.Victim
+	if (Owner.SessionData.StatusEffects.Stun) or (Owner.SessionData.StatusEffects.GreatStun) then return end
 
 	Victim:TriggerPassives('OnHit',config)
-	print('DAMAGE: ', HitData.Damage)
-	Victim:TakeDamage(HitData.Damage)
+	Victim:TakeDamage((HitData.Damage or 0))
 
 end)
 
@@ -48,7 +48,7 @@ EntityRegistry:Register('DealPosture', function(self,node)
 	local Victim = config.Victim
 
 	Victim:TriggerPassives('OnPosture',config)
-	Victim:TakePosture(HitData.Damage * .5)
+	Victim:TakePosture((HitData.Damage or 0) * .5)
 	
 end)
 

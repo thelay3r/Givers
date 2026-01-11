@@ -93,7 +93,8 @@ return {
 			Enum.KeyCode.X,
 			Enum.KeyCode.C,
 			Enum.KeyCode.V,
-
+			Enum.KeyCode.B,
+			
 			Enum.UserInputType.MouseButton1,
 			Enum.KeyCode.E,
 			Enum.KeyCode.R,

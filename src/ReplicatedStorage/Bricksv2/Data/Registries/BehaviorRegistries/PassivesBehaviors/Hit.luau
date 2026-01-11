@@ -23,11 +23,13 @@ HitRegistry:Register('Hit', function(self,node)
     local Victim = EventData['Victim']
     local Enemy = EventData['Enemy'] :: EntityInterfaces.IEntityComponent
     local HitData = EventData['HitData']
-    if HitData.Damage <= 0 then return end
+    if not HitData.Damage then return end
+	if HitData.Damage <= 0 then return end
     
     local weapon = HitData.Weapon
     local combo = if Enemy.SessionData.StatusEffects.CurrentCombo <= 0 then 4 else Enemy.SessionData.StatusEffects.CurrentCombo
-    self:Execute({
+    
+	self:Execute({
 		Name = 'Network.PlayRemoteEvent';
 		Config = {
 			EventType = Enums.EventType.Close;
@@ -43,6 +45,8 @@ HitRegistry:Register('Hit', function(self,node)
 		}
 	})
     
+
+
 end)
 
 

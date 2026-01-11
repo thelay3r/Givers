@@ -26,6 +26,8 @@ RagdollRegistry:Register('Ragdoll', function(self,node)
     
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
     local VictimCharacter = Victim.Instance.Character
+    if not HitData.RagdollTime then return end
+
     if HitData['RagdollTime'] <= 0 then return end
     local RagdollTime = HitData['RagdollTime'] :: number
     local now = tick()

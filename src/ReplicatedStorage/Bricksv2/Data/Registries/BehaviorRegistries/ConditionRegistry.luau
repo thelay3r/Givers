@@ -128,6 +128,7 @@ conditionRegistry:Register('RunTimeCheck?', function(self,node)
 	local sessionData = (Entity.SessionData)
 	
 	for _,v in pairs((nodeConfig['WhiteList'] or {})) do
+		if v == 'Carry' then continue end
 		if (sessionData.StatusEffects[v] == false) then
 			return false
 		end
@@ -162,6 +163,12 @@ conditionRegistry:Register('BlackList?', function(self,node)
 		end
 	end
 	
+	for _,v in pairs((nodeConfig['WhiteList'] or {})) do
+		if v == 'CanRun' then continue end
+		if (sessionData.StatusEffects[v] == true) then
+			return false
+		end
+	end
 
 	if IgnoreList['IsActive'] then return true end
 	if RootCFG.IsActive then return false end

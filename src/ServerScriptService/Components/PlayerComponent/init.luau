@@ -56,10 +56,10 @@ function PlayerComponent.new(_player: Player): PlayerInterfaces.IServerPlayerCom
 	self:InitVFX()
 	
 	local Character : Model? = self.Instance.Character
-	local _Id: number = if Character then Character:GetAttribute('Id') :: number else 0
+	local _Id: string = if Character then Character:GetAttribute('Id') :: string else '0'
 
 
-	EntityComponent.AddToList(_Id,self)
+	EntityComponent.AddToList(_Id,self :: any)
 	return self :: any --:: PlayerInterfaces.IServerPlayerComponent
 end
 

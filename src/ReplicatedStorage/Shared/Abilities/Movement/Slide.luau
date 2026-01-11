@@ -36,6 +36,9 @@ local ability = {
 				Ignore = {
 					["IsSliding"] = true,
 				},
+				WhiteList = {
+					'Carry'
+				}
 			},
 			{
 				Name = "Condition.RayCheck",

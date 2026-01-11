@@ -16,7 +16,10 @@ return {
 		Blocked = PacketManager.Boolean8;
 	});
 
-
+	Reset = PacketManager('Reset', 
+		{
+			UserId = PacketManager.NumberU32;
+		});
 
 	
 	SetupPack = PacketManager('SetupPack', PacketManager.Any);

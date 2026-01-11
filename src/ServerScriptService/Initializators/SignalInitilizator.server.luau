@@ -24,7 +24,7 @@ local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 
 local Ability = Packets.Ability
 local ReplicateKeys = Packets.ReplicateKeys
-
+local ResetPakcet = Packets.Reset
 local BindableGlobal = Replicator:GetRemote('BindableGlobal')
 
 
@@ -50,11 +50,19 @@ ReplicateKeys.OnServerEvent:Connect(function(Player, args)
 	end
 	
 end)
+ResetPakcet.OnServerEvent:Connect(function(a0: Player, args)  
+	local UserId = args.UserId
+	local Entity = EntityComponent.GetEntity(UserId)
+	if not Entity then return end
+	Entity:TakeDamage(1e10,false)
+end)
 
 Replicator:GetRemote('Global'):Connect('SpeedAmplify', function(player: Player,data)
 	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
 	Entity.SpeedController.Data.Cache[data.Name] = data
 end)
+
+
 
 Replicator:GetRemote('Global'):Connect('SetRunTick', function(player: Player,data)
 	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
@@ -109,6 +117,10 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendAbility('Fists','Block')
+	Entity:AppendAbility('Default','Grab')
+
+
+
 	Entity:AppendPassive('Default', 'Stun')
 	Entity:AppendPassive('Default', 'GreatStun')
 	Entity:AppendPassive('Default', 'Block')
@@ -118,5 +130,5 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendPassive('Default', 'JumpAttack')
 	Entity:AppendPassive('Default', 'RunAttack')
 	Entity:AppendPassive('Default', 'BackStab')
-	
+	Entity:AppendPassive('Default', 'KnockDown')
 end)

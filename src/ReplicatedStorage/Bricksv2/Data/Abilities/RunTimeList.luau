@@ -2,7 +2,7 @@ local BlackList =
 	{
 		'GreatStun';
 		'IsDead';
-		'NockDown';
+		'KnockDown';
 		'Ragdoll';
 		'Stun';
 		'InGrab';

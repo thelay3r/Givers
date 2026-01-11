@@ -8,23 +8,7 @@ function M1.init(npc: any & EntityInterfaces.IEntityComponent)
     print(npc)
     task.delay(2,function()
 		print(npc,'TAG SOME NPC')
-		local ability = npc:GetAbility('Equip')
-		ability['OnStart'](ability)
-
-
-		task.spawn(function()
-			while task.wait(20) do
-				warn('TAG Checker States',npc.SessionData)
-			end
-		end)
-
-		while task.wait(.5) do
-			local m1 = npc:GetAbility('M1')
-			m1['OnStart'](m1)
-		end
-
-		
-
+		npc:TakeDamage(1e10)
 	end)
 
 end

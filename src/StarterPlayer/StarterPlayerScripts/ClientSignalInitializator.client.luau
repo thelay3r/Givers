@@ -24,7 +24,7 @@ local Replica = require(NetWork:WaitForChild('ReplicaClient'))
 
 local Packets = require(NetWork:WaitForChild('Packets'))
 local AbilityPacket = Packets.Ability
-
+local ResetPacket = Packets.Reset
 local Animator = require(Utilmodules:WaitForChild('Animator'))
 
 local Player: LocalPlayerInterfaces.IClientPlayerComponent = nil
@@ -78,6 +78,11 @@ end)
 
 Replica.OnNew('StatusEffects', function(replica)
 	Replica.RequestData()
+end)
+
+Replicator:GetRemote('Reset').Instance.Event:Connect(function()
+	local Player = LocalPlayerComponent:GetPlayer()
+	ResetPacket:Fire({UserId = Player.Instance.UserId})
 end)
 
 BindableGlobal:Connect('PlayerInitialized', function(args)

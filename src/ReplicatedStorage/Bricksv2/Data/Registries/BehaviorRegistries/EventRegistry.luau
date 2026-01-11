@@ -46,6 +46,14 @@ behaviorRegistry:Register('OnStart', function(self,node)
 
 end)
 
+behaviorRegistry:Register('OnBlockCast', function(self, node) 
+	
+end)
+
+behaviorRegistry:Register('OnKnockDown', function(self, node) 
+	
+end)
+
 behaviorRegistry:Register('OnHit', function(self, node) 
 	
 end)
@@ -68,6 +76,7 @@ behaviorRegistry:Register('OnDurationEnd', function(self,node)
 
 	TaskManager:CancelAllThreads(self)
 	TaskManager:CancelAllTasks(self)
+
 	print('Ended?')
 end)
 

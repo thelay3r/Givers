@@ -26,19 +26,24 @@ ParryRegistry:Register('ParryHit', function(self,node)
 
     if not StatusEffects.Parry then return end
 
-    		self:Execute({
-			Name = 'Action.DealDamage';
-			Config = {
-				['Victim'] = Enemy;
-				['Enemy'] = Victim;
-				['HitData'] = {
-					Damage = 0;
-					StunTime = 1;
-				}
-			}
-		})
 
-    self:Execute({
+	Enemy:TakePosture(EventData['HitData'].Damage)
+	table.clear((EventData['HitData'] or {}))
+
+	self:Execute({
+		Name = 'Action.DealDamage';
+		Config = {
+			['Victim'] = Enemy;
+			['Enemy'] = Victim;
+			['HitData'] = {
+				StunTime = 0;
+			}
+		}
+	})
+
+	local pack = if Victim.SessionData.CurrentEquipped ~= 'none' then Victim.SessionData.CurrentEquipped else 'Fists'
+    
+	self:Execute({
 		Name = 'Network.PlayRemoteEvent';
 		Config = {
 			EventType = Enums.EventType.Close;
@@ -46,17 +51,23 @@ ParryRegistry:Register('ParryHit', function(self,node)
 			EventName = 'PlayVFX';
 			EventData = {
 				Player = Victim.Instance;
+				Pack = pack;
 				VFXType = 'Parry.Parry';
 				State = 'Hit'
 			};
 		}
 	})
 
+	
+	Victim:SetStatusEffect('Parry',true)
+	TaskManager:CreateTask(Victim, 'Parry', 1, function(a0)  
+		Victim:SetStatusEffect('Parry',false)
+	end)
 end)
 
 
 ParryRegistry:Register('Parry', function(self,node)
-    local EventData = self.Tags['OnCast']['EventData']
+    local EventData = self.Tags['OnBlockCast']['EventData']
     local Victim = EventData['Victim'] :: EntityInterfaces.IEntityComponent
 
 	self:Execute({

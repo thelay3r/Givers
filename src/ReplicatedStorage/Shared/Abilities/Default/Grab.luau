@@ -10,41 +10,51 @@ local _Registries = Data:WaitForChild('Registries')
 local registry = Registry.new()
 
 registry.Inject = {
-    'Parry'
+	'Grab'
 }
 
-local passive = {
+local ability = {
 	Name = 'Action.Root';
 	Tag = 'Main',
 	Config = 
 	{
-		LastStunTime = 0;
-		CoolDown = 2;
-		Priority = 3;
+		Name = 'Grab';
+
+		KeyCode = Enum.KeyCode.V;
+
+		Duration = 1e10;
+		MinDuration = .5,
+		CoolDown = 1.5;
+		LastUsed = 0;
+
+		IsActive = false;
 	},
 	{
-		Name = 'Event.OnBlockCast';
-		Tag = 'OnBlockCast';
+		Name = 'Event.OnStart';
+		Tag = 'OnStart';
 		{
-			Name = 'Condition.OnCoolDown?';
-			{
-				Name = 'Action.Parry';
-			},
+			Name = 'Condition.CheckBlackList';
 			{
 				Name = 'Action.SetUsed';
-			}
+				{
+					Name = 'Condition.UpGrab';
+					{
+						Name = 'Action.CheckGrab';
+						Tag = 'CheckGrab'
+					};
+				};
+				{
+					Name = 'Condition.GrabDown';
+					{
+						Name = 'Action.UnGrab';
+					};
+				}
+			},	
 		}
-	},
-	{
-		Name = 'Event.OnHit';
-		Tag = 'OnHit';
-		{
-			Name = 'Action.ParryHit';
-		}
-	}
+	}, 
 }
 
 return {
-	Passive = passive,
+	Ability = ability,
 	Registry = registry,
 }

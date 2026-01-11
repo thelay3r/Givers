@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local StarterGui = game:GetService('StarterGui')
 
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
@@ -20,6 +21,8 @@ end
 
 local LocalPlayerComponent = {}
 
+
+
 function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClientPlayerComponent
 	local self = setmetatable({}, {__index = function(t, i)
 		for _, component in pairs(LoadedComponents) do
@@ -31,6 +34,7 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 	self.Instance = player
 	local PlayerModule =  require(player.PlayerScripts:WaitForChild('PlayerModule'):WaitForChild('ControlModule'))
 	PlayerModule:Disable()
+	
 
 	self.ClientData = self:LoadClientData()
 	self.ClientData.Controls = DefaultInputs
@@ -39,10 +43,12 @@ function LocalPlayerComponent.New(player: Player): LocalPlayerInterfaces.IClient
 			['Main'] = EventBus.new('Player');
 			['Character'] = EventBus.new('Character');
 		}
-
+	
 	self:ReplicaInit()
 	self.SessionData = self.Replica.Data.Session
 	self.ProfileData = self.Replica.Data.Profile
+	StarterGui:SetCore('ResetButtonCallback',Replicator:GetRemote('Reset').Instance)
+
 
 	self:SharePlayer()
 	self:SetupCharacter()

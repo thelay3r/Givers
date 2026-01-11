@@ -76,8 +76,6 @@ function RagDoll:Enabled(Character : Model)
 	local HumanoidRootPart = Character.PrimaryPart :: BasePart
 	local Humanoid : Humanoid = Character:WaitForChild('Humanoid') :: Humanoid
 	
-	--HumanoidRootPart:ApplyImpulse(Vector3.new(50,-5,1))
-	
 	
 	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics,true)
 	Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
@@ -105,6 +103,7 @@ function RagDoll:Enabled(Character : Model)
 				end
 			end
 		end
+		HumanoidRootPart.AssemblyAngularVelocity = Vector3.one * 25
 	end)
 end
 
@@ -114,7 +113,7 @@ function RagDoll:Disabled(Character : Model)
 	local HumanoidRootPart : Part = Character.PrimaryPart
 	local Humanoid : Humanoid = Character.Humanoid
 	
-	if Humanoid.Health <= 1 then return end
+	if Humanoid.Health <= 0 then return end
 
 	for _, v in ipairs(Character.RagdollConstraints.Motors:GetChildren()) do
 		v.Value.Enabled = true

@@ -50,6 +50,13 @@ local ability = {
 				};
 			};
             {
+                Name = 'Action.SetStatusEffect';
+                Config = {
+                    Effect = 'CanBodySimulation';
+                    Status = false;
+                }
+            };
+            {
                 Name = 'Action.GetDashDirection';
                 Tag = 'DashDirection';
                 RequestedTags = {['Owner'] = 'Owner'};
@@ -169,7 +176,15 @@ local ability = {
                     };
                     {
                        Name = 'Condition.ResumeRun?'
-                    }
+                    };
+                    {
+                        Name = 'Action.SetStatusEffect';
+                        Config = {
+                            Effect = 'CanBodySimulation';
+                            Status = true;
+                        }
+                    };
+                    
                 };
             },
         },

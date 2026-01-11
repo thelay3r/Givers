@@ -67,8 +67,11 @@ local SessionData = {
 			Parry = false;
 			GreatStun = false;
 			Ragdoll = false;
-			NockDown = false;
+			KnockDown = false;
 			IsDead = false;
+
+			Carry = false;
+
 			IFRAME = false;
 
 			Dashing = false;

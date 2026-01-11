@@ -32,6 +32,11 @@ local ability = {
 			Name = 'Condition.IsEquipped?';
             {
                 Name = 'Condition.CheckBlackList';
+				Config = {
+						WhiteList = {
+							'Carry'
+						}
+					};
                 {
                     Name = 'Action.SetStatusEffect';
                     Config = {
@@ -71,7 +76,7 @@ local ability = {
                     Name = 'Action.PassiveTrigger';
 					InjectParams = {['Victim'] = 'Owner'};
                     Config = {
-                        ['Trigger'] = 'OnCast';
+                        ['Trigger'] = 'OnBlockCast';
                     }
                 };
 				{

@@ -37,22 +37,13 @@ local ability = {
 				Name = 'Condition.IsEquipped?';
 				{
 					Name = 'Condition.CheckBlackList';
+					Config = {
+						WhiteList = {
+							'Carry'
+						}
+					};
 					{
-						Name = 'ActionPararrel.Combo';
-						Config = {
-							Combo = {
-								'Fists';
-							},
-							Timings = {
-								['Fists'] = {
-									Combo = 2;
-									Main = .35;
-								}
-							}
-						},
-						{
-							Name = 'Action.SetUsed';
-						};
+						Name = 'Action.SetUsed';
 						{
 							Name = 'Action.SetAbilityActive';
 							Config = {
@@ -75,6 +66,27 @@ local ability = {
 						};
 						{
 							Name = 'Action.AutoCombo';
+						};
+						{
+							Name = 'ActionPararrel.Combo';
+							Config = {
+								Combo = {
+									'Fists';
+								},
+								Timings = {
+									['Fists'] = {
+										Combo = 2;
+										Main = .35;
+									}
+								}
+							},
+						};
+						{
+							Name = 'Action.SetStatusEffect';
+							Config = {
+								Effect = 'CanBodySimulation';
+								Status = false;
+							}
 						}
 					};
 			};
@@ -104,6 +116,13 @@ local ability = {
 				Status = true;
 			};
 		};
+		{
+			Name = 'Action.SetStatusEffect';
+			Config = {
+				Effect = 'CanBodySimulation';
+				Status = true;
+			}
+		}
 	}
 }
 

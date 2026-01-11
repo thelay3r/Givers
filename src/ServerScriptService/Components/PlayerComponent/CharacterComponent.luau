@@ -36,6 +36,23 @@ local function CheckBlackList(Status)
 	return true
 end
 
+local PercentToUp = 10
+
+local Map = {
+	{
+		Check = function(SessionData : typeof(SessionDataTemplate()))
+			local healthCondition = (SessionData.Attributes.Health >=  SessionData.Attributes.MaxHealth * PercentToUp / 100 )
+			return healthCondition and SessionData.StatusEffects.KnockDown
+		end,
+		Action = function(self)
+			self:TriggerPassives('OnKnockDown',{
+				Entity = self;
+				Apply = false;
+			})
+		end
+	}
+}
+
 local function HealthRegen(self: EntityInterfaces.IEntityComponent)
 	
 	local HealthScript = self.Instance.Character:WaitForChild('Health')
@@ -45,6 +62,7 @@ local function HealthRegen(self: EntityInterfaces.IEntityComponent)
 		local SessionData = self.SessionData
 		local Attributes = SessionData.Attributes
 		local StatusEffects = SessionData.StatusEffects
+		
 
 		local percent = 5
 		while task.wait(HealthRate) do
@@ -52,6 +70,12 @@ local function HealthRegen(self: EntityInterfaces.IEntityComponent)
 			local MaxHealth: number = Attributes.MaxHealth
 			local ToHealth = MaxHealth * percent / 100
 			self:TakeHealth(math.abs(ToHealth) + Attributes.AdditionalHealth)
+
+			for i,v in pairs(Map) do
+				if v.Check(SessionData) then v.Action(self) end
+			end
+			
+
 		end
 	end)
 

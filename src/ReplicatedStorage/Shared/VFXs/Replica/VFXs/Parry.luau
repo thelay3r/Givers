@@ -8,15 +8,32 @@ local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
-local Parry = require(ReplicatedStorage.Bricksv2.Data.Registries.BehaviorRegistries.PassivesBehaviors.Parry)
+local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
+local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
 local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
 local TaskManager = require(Modules:WaitForChild('TaskManager'))
 
 local Effects = {}
 local EffectCache = CacheContainer.new()
 local ParrySoundCounter = CountHandler.Create('ParrySound', 1, 3)
+local ParryAnimationCounter = CountHandler.Create('ParryAnimation', 1, 2)
+local Shaker = CameraShakeHandler.new()
+local function  PlayParryAnimation(Character,Pack)
+    local Animator = AnimationsComponent.new(Character)
+    local Animation= Assets[Pack].Animations.Parry[ParryAnimationCounter()]
+
+    local _,data = Animator:Load(Animation,
+    {
+        Name = 'Parry';
+        _Name = 'Parry'..Pack..ParryAnimationCounter();
+        Priority = Enum.AnimationPriority.Action3.Name;
+    })
+    Animator:Play(data)
+    ParryAnimationCounter:Increment()
+end
+
 
 Effects['Parry'] = 
 {
@@ -38,6 +55,8 @@ Effects['Parry'] =
             OutlineTransparency = 1,
             FillTransparency = 1
         })
+
+        
         ParryTween:Play()
         ParryTween.Completed:Once(function()
             EffectCache:AddInstanceToCache('ParryCast', ParryCast)
@@ -76,10 +95,21 @@ Effects['Parry'] =
         ParrySound.Parent = RootPart
         ParrySound:Play()
 
-        ParrySoundCounter:Increment()
         
+        
+        PlayParryAnimation(Character, args.Pack)
+        ParrySoundCounter:Increment()
+
+        Shaker:ShakeByDistance({
+            StartPoint = ParryEffect.Position;
+            Roughness = 15;
+            InTime = 0;
+            OutTime = .4;
+            MaxMagnitude = 4;
+            MinMagnitude = 2;
+            MaxDistance = 15;
+        })
         ParrySound.Ended:Once(function(a0: string)
-            ParrySoundCounter:Increment()
             EffectCache:AddInstanceToCache('ParrySounds', ParrySound)
         end)
         task.delay(1,function()

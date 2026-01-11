@@ -32,6 +32,11 @@ local ability = {
 			Name = 'Condition.IsEquipped?';
 			{
 				Name = 'Condition.CheckBlackList';
+				Config = {
+						WhiteList = {
+							'Carry'
+						}
+					};
 				{
 					{
 						Name = 'Action.SetUsed';

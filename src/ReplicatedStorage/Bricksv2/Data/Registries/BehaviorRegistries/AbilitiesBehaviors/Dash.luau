@@ -4,6 +4,7 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local _Registries = Data:WaitForChild('Registries')
+local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
 local Registry = require(_Components.Registry)
 
@@ -71,6 +72,7 @@ registry:Register('FeintDash', function(self,node)
 			},
 		})
 
+	
 	self:Execute({
 			Name = "Network.PlayBindableEvent",
 			InjectParams = { ["Player"] = "Owner.Instance" },

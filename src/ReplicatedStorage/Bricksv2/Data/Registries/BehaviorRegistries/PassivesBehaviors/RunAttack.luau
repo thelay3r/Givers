@@ -10,6 +10,7 @@ local _Data = Bricks:WaitForChild('Data')
 
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local _TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 local Registry = require(Components:WaitForChild('Registry'))
 
@@ -37,6 +38,7 @@ PassiveRegistry:Register('RunAttack', function(self,node)
 	if EventData.Blocked then return end
 	EventData.Blocked = true
 
+	TaskManager:CancelTask(Owner, 'ResetCombo')
 	Owner:SetStatusEffect('CurrentCombo',0)
 	
 	print(EventData)

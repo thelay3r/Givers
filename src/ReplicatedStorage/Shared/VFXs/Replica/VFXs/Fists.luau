@@ -1,3 +1,4 @@
+local AnimationClipProvider = game:GetService("AnimationClipProvider")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilities = Shared:WaitForChild('Utilities')
@@ -14,6 +15,7 @@ local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHe
 local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModule)
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
 local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
+local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
 
 local FistsFolder = Assets:WaitForChild('Fists')
 local DefaultFolder = Assets:WaitForChild('Default')
@@ -23,6 +25,8 @@ local Fists = {}
 
 local EffecteCache = CacheContainer.new()
 local CameraShake = CameraShakeHandler.new()
+
+local HitCounter = CountHandler.Create('HitCounter', 1, 4)
 
 Fists['Idle'] = {
     ['Equip'] = function(args)
@@ -431,6 +435,25 @@ Fists['M1']['JumpLocale'] = function(args)
 end
 
 
+local function HitAnimation(Victim: Model,Owner: Model)
+    local VAnimator= AnimationsComponent.new(Victim)
+    local Animation = Assets.Default.Animations.Hits[HitCounter()]
+
+    local _,data = VAnimator:Load(Animation,
+    {
+        Name = 'Hit';
+        _Name = 'HitFists'..HitCounter();
+        Priority = Enum.AnimationPriority.Action2.Name;
+        Settings = {
+            FadeTime = .1;
+            Weight = 1;
+            Speed = 1;
+        }
+    })
+    VAnimator:Play(data)
+    HitCounter:Increment()
+end
+
 Fists['Hit'] = {
     ['Hit'] = function(args)
         local Player = args.Player :: Player
@@ -470,10 +493,14 @@ Fists['Hit'] = {
         AssetsHelper.Emit(Hit)
         Sound.Parent = RootPart
         Sound:Play()
+
+        HitAnimation(Character)
+
         Sound.Ended:Once(function()  
             EffecteCache:AddInstanceToCache('FistHit'..args.Combo, Sound)
         end)
         
+
         task.delay(1, function()
             EffecteCache:AddInstanceToCache('HitFists', Hit)
             EffecteCache:AddInstanceToCache('Welds', weld)

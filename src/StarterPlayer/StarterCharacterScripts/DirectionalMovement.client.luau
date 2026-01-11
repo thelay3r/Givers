@@ -70,7 +70,17 @@ local function LerpJoints(moveDirection, angles)
 end
 
 local function UpdateDirectionalMovement(deltaTime)
-	if not StatusEffects.CanBodySimulation then return end
+	if not StatusEffects.CanBodySimulation then 
+		LerpJoints(1, {
+				RootJoint = {0, 0, 0},
+				Neck = {0, 0, 0},
+				RightShoulder = {0, 0, 0},
+				LeftShoulder = {0, 0, 0},
+				RightHip = {0, 0, 0},
+				LeftHip = {0, 0, 0}
+			})
+		 return 
+		end
 	local now = workspace:GetServerTimeNow()
 	if now - lastTime >= tickRate then
 		lastTime = now
