@@ -25,13 +25,28 @@ local EntityRegistry = Registry.new()
 EntityRegistry:Register('Root', function(self, node)  
 end)
 
+local function VictimDamageDeal(status)
+	local blakclist = {
+		'InGrab';
+		'IFRAME';
+	}
+
+	for _,v in pairs(blakclist) do
+		print(status[v],v)
+		if status[v] == true then print(status[v]) return false end
+	end
+
+	return true
+end
+
 EntityRegistry:Register('DealDamage', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local config = node.Config
 	local HitData = config.HitData
-	local Victim = config.Victim
+	local Victim = config.Victim :: EntityInterfaces.IEntityComponent
 	if (Owner.SessionData.StatusEffects.Stun) or (Owner.SessionData.StatusEffects.GreatStun) then return end
 
+	if not VictimDamageDeal(Victim.SessionData.StatusEffects) then return end
 	Victim:TriggerPassives('OnHit',config)
 	Victim:TakeDamage((HitData.Damage or 0))
 
@@ -49,6 +64,25 @@ EntityRegistry:Register('DealPosture', function(self,node)
 
 	Victim:TriggerPassives('OnPosture',config)
 	Victim:TakePosture((HitData.Damage or 0) * .5)
+	
+end)
+
+EntityRegistry:Register('AmplifySpeed', function(self,node): any  
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	Owner.SpeedController:Amplify({
+		node.Config.Data
+	})
+end)
+
+EntityRegistry:Register('AmplifyJump', function(self,node): any  
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	Owner.JumpController:Amplify({
+		node.Config.Data
+	})
+end)
+
+EntityRegistry:Register('RevertJump', function(self,node): any  
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	
 end)
 

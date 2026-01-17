@@ -72,13 +72,6 @@ local ability = {
                     Name = 'Action.SetAbilityActive';
                     Config = { Status = true; };
 		        };
-                {
-                    Name = 'Action.PassiveTrigger';
-					InjectParams = {['Victim'] = 'Owner'};
-                    Config = {
-                        ['Trigger'] = 'OnBlockCast';
-                    }
-                };
 				{
 					Name = 'Network.PlayBindableEvent';
 					InjectParams = {['Player'] = 'Owner.Instance'};
@@ -90,7 +83,14 @@ local ability = {
                     	};
 					}
 				}
-            }
+            };
+			{
+                    Name = 'Action.PassiveTrigger';
+					InjectParams = {['Victim'] = 'Owner'};
+                    Config = {
+                        ['Trigger'] = 'OnBlockCast';
+                    }
+                };
 	    }
 	},
 	{

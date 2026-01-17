@@ -58,8 +58,6 @@ EntityRegistry:Register('FistsBackStab', function(self, node)
 	Victim:SetStatusEffect('InGrab',true)
 	Owner:SetStatusEffect('InGrab',true)
 
-	VictimRoot.Anchored = true
-	OwnerRoot.Anchored = true
 
 	Owner:SetStatusEffect('CanAutoRotate',false)
 	Owner:SetStatusEffect('CanBodySimulation',false)
@@ -67,7 +65,16 @@ EntityRegistry:Register('FistsBackStab', function(self, node)
 	Victim:SetStatusEffect('CanAutoRotate',false)
 	Victim:SetStatusEffect('CanBodySimulation',false)
 
+	local Weld = Instance.new('Weld')
+	Weld.Part0 = OwnerRoot
+	Weld.Part1 = VictimRoot
 
+	Owner.SpeedController:Amplify({
+        Name = 'Grab';
+        Percent = -100;
+        UseBaseSpeed = false;
+        Priority = 20;
+    })
 
 	self:Execute({
 			Name = 'Network.PlayBindableEvent';
@@ -99,9 +106,10 @@ EntityRegistry:Register('FistsBackStab', function(self, node)
 	})
 
 	VictimRoot.CFrame = OwnerRoot.CFrame + OwnerRoot.CFrame.LookVector * 2
-	
+	Weld.Parent = Weld.Part0
+
 	TaskManager:CreateTask(Victim, 'InGrabMove', 2.8, function(a0)  
-		VictimRoot.Anchored = false
+		Weld:Destroy()
 		if Owner.Instance.LocaleId then
 			VictimRoot:SetNetworkOwner(Owner.Instance)
 		end
@@ -139,6 +147,7 @@ EntityRegistry:Register('FistsBackStab', function(self, node)
 
 		Owner:SetStatusEffect('CanAutoRotate',true)
 		Owner:SetStatusEffect('CanBodySimulation',true)
+		Owner.SpeedController:Revert({Name = 'Grab'})
 
 	end)
 

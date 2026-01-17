@@ -75,7 +75,10 @@ Effects['Parry'] =
         local SoundParry = SoundsFolder:FindFirstChild('Parry')[ParrySoundCounter()]
 
         local ParryEffectPrototype = EffectsFolder:FindFirstChild('Parry')
-        local ParryEffect = EffectCache:CreateInstance('ParryHit', ParryEffectPrototype) :: BasePart
+        local ParryEffect = EffectCache:CreateInstance('ParryHit', ParryEffectPrototype,
+        {
+            'Brightness'
+        }) :: BasePart
         local WeldConstraint = EffectCache:CreateInstance('Welds', Assets.Welds.WeldConstraint, 
         {
             'Part0';
@@ -109,6 +112,13 @@ Effects['Parry'] =
             MinMagnitude = 2;
             MaxDistance = 15;
         })
+
+        local Tween = TweenService:Create(ParryEffect.PointLight, TweenInfo.new(.7,Enum.EasingStyle.Sine), 
+        {
+            Brightness = 0
+        })
+        Tween:Play()
+
         ParrySound.Ended:Once(function(a0: string)
             EffectCache:AddInstanceToCache('ParrySounds', ParrySound)
         end)

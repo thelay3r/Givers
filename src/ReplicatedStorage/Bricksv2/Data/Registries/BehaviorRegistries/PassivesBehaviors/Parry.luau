@@ -36,7 +36,7 @@ ParryRegistry:Register('ParryHit', function(self,node)
 			['Victim'] = Enemy;
 			['Enemy'] = Victim;
 			['HitData'] = {
-				StunTime = 0;
+				StunTime = 1;
 			}
 		}
 	})
@@ -58,9 +58,13 @@ ParryRegistry:Register('ParryHit', function(self,node)
 		}
 	})
 
-	
+	self:Execute({
+		Name = 'Action.ResetCoolDown';
+	})
+
+
 	Victim:SetStatusEffect('Parry',true)
-	TaskManager:CreateTask(Victim, 'Parry', 1, function(a0)  
+	TaskManager:CreateTask(Victim, 'Parry', .3, function(a0)  
 		Victim:SetStatusEffect('Parry',false)
 	end)
 end)

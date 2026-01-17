@@ -88,6 +88,10 @@ function ValuesComponent.SetSpeedData(self: IEntity, name: string, value: any, s
     SetValue(self, SessionData.SpeedData, name, value, subKey)
 end
 
+function ValuesComponent.SetJumpData(self: IEntity, name: string, value: any, subKey: string?)
+    local SessionData = self.SessionData
+    SetValue(self, SessionData.JumpData, name, value, subKey)
+end
 
 function ValuesComponent.SetSetting(self: IEntity, name: string, value: any, subKey: string?)
     local SessionData = self.SessionData

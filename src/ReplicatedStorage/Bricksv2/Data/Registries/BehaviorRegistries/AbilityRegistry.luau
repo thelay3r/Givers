@@ -94,7 +94,7 @@ end)
 
 
 behaviorRegistry:Register('ResetCoolDown', function(self, node)
-	node:GetRoot().Config.LastUsed = 0
+	self.Tags['Main'].LastUsed = 0
 end)
 
 return behaviorRegistry

@@ -3,6 +3,7 @@ local BlackList =
 		'Dashing';
 		'GreatStun';
 		'IsDead';
+		'InGrip';
 		'KnockDown';
 		'Ragdoll';
 		'Stun';

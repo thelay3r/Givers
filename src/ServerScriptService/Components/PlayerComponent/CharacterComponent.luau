@@ -37,6 +37,8 @@ local function CheckBlackList(Status)
 end
 
 local PercentToUp = 10
+local HealthRegen = 5
+local CombatHealthRegen = 1
 
 local Map = {
 	{
@@ -50,6 +52,35 @@ local Map = {
 				Apply = false;
 			})
 		end
+	};
+	{
+		Check = function(SessionData : typeof(SessionDataTemplate()))
+			local StatusEffects = SessionData.StatusEffects
+			print((not CheckBlackList(SessionData.StatusEffects)) and (not (StatusEffects.Combat)))
+			return (CheckBlackList(SessionData.StatusEffects)) and (not (StatusEffects.Combat))
+		end,
+		Action = function(self)
+			local SessionData = self.SessionData
+			local Attributes = SessionData.Attributes
+			
+			local MaxHealth: number = Attributes.MaxHealth
+			local ToHealth = MaxHealth * HealthRegen / 100
+			self:TakeHealth(math.abs(ToHealth) + Attributes.AdditionalHealth)
+		end
+	};
+	{
+		Check = function(SessionData : typeof(SessionDataTemplate()))
+			local StatusEffects = SessionData.StatusEffects
+			return (not CheckBlackList(SessionData.StatusEffects)) and (StatusEffects.Combat)
+		end,
+		Action = function(self)
+			local SessionData = self.SessionData
+			local Attributes = SessionData.Attributes
+			
+			local MaxHealth: number = Attributes.MaxHealth
+			local ToHealth = MaxHealth * CombatHealthRegen / 100
+			self:TakeHealth(math.abs(ToHealth) + Attributes.AdditionalHealth)
+		end
 	}
 }
 
@@ -60,22 +91,10 @@ local function HealthRegen(self: EntityInterfaces.IEntityComponent)
 
 	TaskManager:CreateTask(self.Instance, 'Health', 0, function(a0)  
 		local SessionData = self.SessionData
-		local Attributes = SessionData.Attributes
-		local StatusEffects = SessionData.StatusEffects
-		
-
-		local percent = 5
 		while task.wait(HealthRate) do
-			if not CheckBlackList(StatusEffects) then continue end
-			local MaxHealth: number = Attributes.MaxHealth
-			local ToHealth = MaxHealth * percent / 100
-			self:TakeHealth(math.abs(ToHealth) + Attributes.AdditionalHealth)
-
 			for i,v in pairs(Map) do
 				if v.Check(SessionData) then v.Action(self) end
 			end
-			
-
 		end
 	end)
 

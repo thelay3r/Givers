@@ -8,6 +8,7 @@ local Assets = VFXs:WaitForChild('Assets')
 
 local TweenService = game:GetService("TweenService")
 
+local Character = require(ReplicatedStorage.Shared.FSM_States.Character)
 local AnimationsInterfaces = require(ReplicatedStorage.Shared.Interfaces.AnimationsInterfaces)
 local BackStab = require(ReplicatedStorage.Shared.Passives.Default.BackStab)
 local AnimationsComponent = require(ReplicatedStorage.Shared.Utilities.Modules.AnimationsComponent)
@@ -16,6 +17,7 @@ local BiezeModule = require(ReplicatedStorage.Shared.Utilities.Modules.BiezeModu
 local CacheContainer = require(ReplicatedStorage.Shared.Utilities.Modules.CacheContainer)
 local CameraShakeHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CameraShakeHandler)
 local CountHandler = require(ReplicatedStorage.Shared.Utilities.Modules.CountHandler)
+local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
 
 local FistsFolder = Assets:WaitForChild('Fists')
 local DefaultFolder = Assets:WaitForChild('Default')
@@ -509,6 +511,86 @@ Fists['Hit'] = {
     end
 }
 
+
+local function PlayAnimationGrip(Character,state,state2)
+    local Animator = AnimationsComponent.new(Character)
+    local Animation = Assets.Fists.Animations[state2][state]
+
+    local _, data = Animator:Load(Animation,
+        {
+            Name = state2;
+            _Name = state2..state;
+            Priority = Enum.AnimationPriority.Action3.Name; 
+        })
+    Animator:Play(data)
+    return data
+end
+
+local function StopAnimation(Character,data)
+    local Animator = AnimationsComponent.new(Character)
+    Animator:Stop(data)
+    return data
+end
+
+Fists['Grip'] =
+{
+    ['Start'] = function(args)
+        
+        PlayAnimationGrip(args.Player.Character, 'Owner','Grip')
+        PlayAnimationGrip(args.Victim.Character, 'Victim','Grip')
+
+    end;
+     ['LocaleStart'] = function(args)
+        local Character = args.Player.Character
+        local ECharacter = args.Victim.Character
+
+        local AssetsFolder=Assets.Fists.Effects
+        local BloodPrototype = AssetsFolder.BackStabBlood
+
+
+        local Blood = CacheContainer:CreateInstance('BloodFistsGrab', BloodPrototype,
+        {
+            'Anchored';
+        }) :: BasePart
+
+        Blood.Anchored = true
+        Blood.Parent = workspace.Map.VFXs
+
+        TaskManager:CreateTask(Character, 'GripEffect1', 38/60, function()
+            local fastCast = AssetsHelper.FastCast({
+                Position = ECharacter['Head'].Position;
+                Direction = Vector3.new(0,-5,0);
+                Character = ECharacter;
+            })
+            if not fastCast then return end
+            Blood.CFrame = CFrame.new(fastCast.Position,fastCast.Position+fastCast.Normal) * CFrame.Angles(-math.rad(90), 0, 0)
+            AssetsHelper.Emit(Blood)
+
+        end)
+        TaskManager:CreateTask(Character, 'GripEffect2', 68/60, function()
+            AssetsHelper.Emit(Blood)
+        end)
+        TaskManager:CreateTask(Character, 'GripEffect3', 135/60, function()
+            AssetsHelper.Emit(Blood)
+        end)
+    end;
+    ['LocaleStop'] = function(args)
+        local Character = args.Player.Character
+        TaskManager:CancelTask(Character, 'GripEffect1')
+        TaskManager:CancelTask(Character, 'GripEffect2')
+        TaskManager:CancelTask(Character, 'GripEffect3')
+    end;
+    ['Stop'] = function(args)
+        StopAnimation(args.Player.Character,{
+            Name = 'Grip';
+            Priority = Enum.AnimationPriority.Action3.Name; 
+        })
+        StopAnimation(args.Victim.Character,{
+            Name = 'Grip';
+            Priority = Enum.AnimationPriority.Action3.Name; 
+        })
+    end
+}
 
 
 return Fists

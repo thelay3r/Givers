@@ -10,6 +10,7 @@ local NetWork = Utilities:WaitForChild('NetWork')
 
 local ServerComponents = ServerScriptService:WaitForChild('Components')
 
+local JumpController = require(ReplicatedStorage.Shared.Utilities.Modules.JumpController)
 local Ragdoll = require(ReplicatedStorage.Shared.Utilities.Modules.Ragdoll)
 local SpeedController = require(ReplicatedStorage.Shared.Utilities.Modules.SpeedController)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
@@ -62,7 +63,22 @@ Replicator:GetRemote('Global'):Connect('SpeedAmplify', function(player: Player,d
 	Entity.SpeedController.Data.Cache[data.Name] = data
 end)
 
+Replicator:GetRemote('Global'):Connect('SpeedRevert', function(player: Player,Name)
+	local Entity = EntityComponent.GetEntity(player.UserId)
+	if not Entity.SpeedController.Data.Cache[Name] then return end
+	Entity:SetSpeedData('Cache',nil,Name)
+end)
 
+Replicator:GetRemote('Global'):Connect('JumpAmplify', function(player: Player,data)
+	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
+	Entity.JumpController.Data.Cache[data.Name] = data
+end)
+
+Replicator:GetRemote('Global'):Connect('JumpRevert', function(player: Player,Name)
+	local Entity = EntityComponent.GetEntity(player.UserId)
+	if not Entity.JumpController.Data.Cache[Name] then return end
+	Entity:SetJumpData('Cache',nil,Name)
+end)
 
 Replicator:GetRemote('Global'):Connect('SetRunTick', function(player: Player,data)
 	local Entity = EntityComponent.GetEntity(player.UserId) :: EntityInterfaces.IEntityComponent
@@ -73,13 +89,7 @@ Replicator:GetRemote('GlobalFunction'):Connect('ValideSpeed', function()
 	return true
 end)
 
-Replicator:GetRemote('Global'):Connect('SpeedRevert', function(player: Player,Name)
-	local Entity = EntityComponent.GetEntity(player.UserId)
-	if not Entity.SpeedController.Data.Cache[Name] then return end
-	-- table.clear(Entity.SpeedController.Data.Cache[Name]) 
-	-- Entity.SpeedController.Data.Cache[Name] = nil
-	Entity:SetSpeedData('Cache',nil,Name)
-end)
+
 
 Ability.OnServerEvent:Connect(function(Player, args)
 	local Entity = EntitiesComponent:Get(Player.UserId) :: EntityInterfaces.IEntityComponent
@@ -92,7 +102,7 @@ Ability.OnServerEvent:Connect(function(Player, args)
 	local PlayerPressed = if args.State == 'OnStart' then true else false
 	config.PlayerPressed = PlayerPressed
 
-	if args.Blocked then
+	if (args.Blocked) and (args.State == 'OnStart') then
 		return
 	end
 
@@ -111,13 +121,17 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Humanoid.UseJumpPower = true
 	
 	Entity.SpeedController = SpeedController.new(Entity)
+	Entity.JumpController = JumpController.new(Entity)
+
 	Ragdoll:Setup(Character)
 	
 	Entity:AppendAbility('Default','Equip')
+	Entity:AppendAbility('Default','Grab')
+	Entity:AppendAbility('Default','Grip')
+
 	Entity:AppendAbility('Fists','M1')
 	Entity:AppendAbility('Fists','Critical')
 	Entity:AppendAbility('Fists','Block')
-	Entity:AppendAbility('Default','Grab')
 
 
 
@@ -131,4 +145,5 @@ BindableGlobal:Connect('SetUp', function(UserId: string)
 	Entity:AppendPassive('Default', 'RunAttack')
 	Entity:AppendPassive('Default', 'BackStab')
 	Entity:AppendPassive('Default', 'KnockDown')
+	Entity:AppendPassive('Default', 'Grab')
 end)

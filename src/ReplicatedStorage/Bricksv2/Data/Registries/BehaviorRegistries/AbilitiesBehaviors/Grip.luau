@@ -8,10 +8,10 @@ local Bricks = ReplicatedStorage.Bricksv2
 local _Components = Bricks:WaitForChild('Components')
 local Data = Bricks:WaitForChild('Data')
 local _Registries = Data:WaitForChild('Registries')
-local EntitiesStorage = require(ServerScriptService.Components.EntitiesStorage)
 local EntityComponent = require(ServerScriptService.Components.EntityComponent)
 local EntityInterfaces = require(ReplicatedStorage.Shared.Interfaces.EntityInterfaces)
 local AssetsHelper = require(ReplicatedStorage.Shared.Utilities.Modules.AssetsHelper)
+local Enums = require(ReplicatedStorage.Shared.Utilities.Modules.Enums)
 local HitboxClass = require(ReplicatedStorage.Shared.Utilities.Modules.HitboxClass)
 local Ragdoll = require(ReplicatedStorage.Shared.Utilities.Modules.Ragdoll)
 local TaskManager = require(ReplicatedStorage.Shared.Utilities.Modules.TaskManager)
@@ -20,17 +20,18 @@ local Registry = require(_Components.Registry)
 
 local registry = Registry.new()
 
-registry:Register('GrabDown', function(self,node)
+local GripTimer = 2.75
+
+registry:Register('GripDown', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
-	print(Owner.SessionData.StatusEffects.Carry)
 	return Owner.SessionData.StatusEffects.Carry
 end)
-registry:Register('UpGrab', function(self,node)
+registry:Register('UpGrip', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	return not Owner.SessionData.StatusEffects.Carry
 end)
 
-registry:Register('CheckGrab', function(self,node): any  
+registry:Register('CheckGrip', function(self,node): any  
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local _Instance = Owner.Instance :: Player
 	local Character = _Instance.Character :: Model
@@ -57,7 +58,7 @@ registry:Register('CheckGrab', function(self,node): any
 		
 		node.Config['Victim'] = Entity
 		self:Execute({
-			Name = 'Action.Grab';
+			Name = 'Action.Grip';
 			Config = {
 				Target = Entity;
 			}
@@ -66,40 +67,50 @@ registry:Register('CheckGrab', function(self,node): any
 
 end)
 
-registry:Register('Grab', function(self,node)
+registry:Register('Grip', function(self,node)
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
 	local Victim = node.Config.Target :: EntityInterfaces.IEntityComponent
-
-	Owner.GrabbedBody = Victim
-
-	Owner:SetStatusEffect('Carry',true)
-
-	Victim:SetStatusEffect('InGrab',true)
-	Victim:SetStatusEffect('CanBodySimluation',false)
-	Victim:SetStatusEffect('CanAutoRotate',false)
 
 	local VInstance = Victim.Instance :: Player
 	local OInstance = Owner.Instance :: Player
 
+	Owner.GripbedBody = Victim
+
+	Victim:SetStatusEffect('InGrip',true)
+	Owner:SetStatusEffect('Carry',true)
+
+	Victim:SetStatusEffect('CanBodySimulation',false)
+	Victim:SetStatusEffect('CanAutoRotate',false)
+
+	Owner:SetStatusEffect('CanBodySimulation',false)
+	Owner:SetStatusEffect('CanAutoRotate',false)
+
+	Victim.SpeedController:Amplify({
+        Name = 'Grip';
+        Percent = -100;
+        UseBaseSpeed = false;
+        Priority = 20;
+    })
+
 	Ragdoll:Disabled(VInstance.Character)
-
-	VInstance.Character.Humanoid.PlatformStand = true
-
-	for _,v in pairs(VInstance.Character:GetDescendants()) do
-		if v:IsA('BasePart') then
-			v.CanCollide = false
-			v.Massless = true
-		end
-	end
 
 	local Weld = Instance.new('Weld') :: Weld
 
-	Weld.Part0 = OInstance.Character.Torso
+	Weld.Part0 = OInstance.Character.PrimaryPart
 	Weld.Part1 = VInstance.Character.PrimaryPart
 
 	Weld.Parent = Weld.Part0
 
-	
+	local action = if Owner.SessionData.CurrentEquipped ~= 'none' then Owner.SessionData.CurrentEquipped else 'Fists'
+
+	TaskManager:CreateTask(OInstance, 'Grip', GripTimer, function(a0)  
+		self:Execute({
+			Name = 'Action.GripDone'
+		})
+		self:Execute({
+			Name = 'Action.UnGrip'
+		})
+	end)
 
 	self:Execute({
 		Name = 'Network.PlayBindableEvent';
@@ -108,32 +119,65 @@ registry:Register('Grab', function(self,node)
 			EventData = {
                 Player = OInstance;
 				Victim = VInstance;
-                VFXType = 'Grab.Carry';
-				State = 'Carry';
+                VFXType = action..'.Grip';
+				State = 'Start';
 			}
+		}
+	})
+	self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = OInstance;
+				Victim = VInstance;
+				VFXType = action..'.Grip';
+				State = 'LocaleStart';
+			};
 		}
 	})
 
 end)
 
-registry:Register('UnGrab', function(self,node)
+registry:Register('GripDone', function(self,node): any  
 	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
-	local Victim = Owner.GrabbedBody :: EntityInterfaces.IEntityComponent
+	local Victim = Owner.GripbedBody :: EntityInterfaces.IEntityComponent
 
 	local VInstance = Victim.Instance :: Player
 	local OInstance = Owner.Instance :: Player
 
+	Victim:TakeDamage(1e10,true)
+end)
+
+registry:Register('UnGrip', function(self,node)
+	local Owner = self.Tags['Owner'] :: EntityInterfaces.IEntityComponent
+	local Victim = Owner.GripbedBody :: EntityInterfaces.IEntityComponent
+
+	local VInstance = Victim.Instance :: Player
+	local OInstance = Owner.Instance :: Player
+
+	TaskManager:CancelTask(OInstance, 'Grip')
+
+
 	Ragdoll:Enabled(VInstance.Character)
 
-	OInstance.Character.Torso:FindFirstChildOfClass('Weld'):Destroy()
+	OInstance.Character.PrimaryPart:FindFirstChildOfClass('Weld'):Destroy()
 
-	Owner.GrabbedBody = nil
+	Owner.GripbedBody = nil
 
 	Owner:SetStatusEffect('Carry',false)
-	Victim:SetStatusEffect('InGrab',false)
+	Victim:SetStatusEffect('InGrip',false)
 
-	Victim:SetStatusEffect('CanBodySimluation',true)
+	Victim:SetStatusEffect('CanBodySimulation',true)
 	Victim:SetStatusEffect('CanAutoRotate',true)
+
+	Owner:SetStatusEffect('CanBodySimulation',true)
+	Owner:SetStatusEffect('CanAutoRotate',true)
+
+	local action = if Owner.SessionData.CurrentEquipped ~= 'none' then Owner.SessionData.CurrentEquipped else 'Fists'
+
 
 	self:Execute({
 		Name = 'Network.PlayBindableEvent';
@@ -142,12 +186,26 @@ registry:Register('UnGrab', function(self,node)
 			EventData = {
                 Player = OInstance;
 				Victim = VInstance;
-                VFXType = 'Grab.Carry';
-				State = 'UnCarry';
+                VFXType = action..'.Grip';
+				State = 'Stop';
 			}
 		}
 	})
 
+	self:Execute({
+		Name = 'Network.PlayRemoteEvent';
+		Config = {
+			EventType = Enums.EventType.Close;
+			Event = 'VFX';
+			EventName = 'PlayVFX';
+			EventData = {
+				Player = OInstance;
+				Victim = VInstance;
+				VFXType = action..'.Grip';
+				State = 'LocaleStop';
+			};
+		}
+	})
 end)
 
 return registry

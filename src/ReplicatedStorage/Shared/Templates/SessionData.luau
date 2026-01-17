@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Shared = ReplicatedStorage:WaitForChild('Shared')
 local Utilites = Shared:WaitForChild('Utilities')
 local Modules = Utilites:WaitForChild('Modules')
+local JumpPowerModuleInterface = require(ReplicatedStorage.Shared.Interfaces.JumpPowerModuleInterface)
 local SpeedModuleInterface = require(ReplicatedStorage.Shared.Interfaces.SpeedModuleInterface)
 local TableHelper = require(Modules:WaitForChild('TableHelper'))
 local _Interfaces = Shared:WaitForChild('Interfaces')
@@ -21,6 +22,14 @@ local SessionData = {
 		CurrentSpeed = 12,
 		LastSpeed = 12,
 		Cache = {} :: {[string]: SpeedModuleInterface.SpeedModifier},
+		PendingValidation = {},
+		CanChange = true :: boolean
+	};
+	JumpData = {
+		DefaultJump = 12,
+		CurrentJump = 12,
+		LastJump = 12,
+		Cache = {} :: {[string]:	JumpPowerModuleInterface.JumpModifier},
 		PendingValidation = {},
 		CanChange = true :: boolean
 	};
@@ -61,6 +70,8 @@ local SessionData = {
 			Click = false;
 			CurrentCombo = 0;
 			
+			Combat = false;
+
 			Stun = false;
 			ActiveSkill = false;
 			Block = false;
@@ -79,6 +90,7 @@ local SessionData = {
 			IsRunning = false;
 
 			InGrab = false;
+			InGrip = false;
 			
 			AfterSpace = false;
 			ByPass = false;

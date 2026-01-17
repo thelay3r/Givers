@@ -52,6 +52,7 @@ local function RoundSpeed(speed: number): number
 end
 
 local function Clamp(value: number, min: number, max: number): number
+    if not value then return end
     return math.max(min, math.min(value, max))
 end
 
@@ -74,7 +75,7 @@ local function RecalculateSpeed(self: ISpeedComponent): number
     local currentSpeed = Clamp(this_Data.DefaultSpeed, Config.MIN_WALK_SPEED, Config.MAX_WALK_SPEED)
     
     local sortedModifiers = {}
-    for name, modifier in pairs(this_Data.Cache) do
+    for name, modifier in pairs((this_Data.Cache or {})) do
         table.insert(sortedModifiers, modifier)
     end
     
@@ -223,14 +224,16 @@ end
 function Methods._ClearAllModifiers(self: ISpeedComponent)
     local this_Data = self.Data
     local keysToRevert = {}
-    for name in pairs(this_Data.Cache) do
+    if not this_Data.Cache then return end
+
+    for name in pairs((this_Data.Cache or {})) do
         table.insert(keysToRevert, name)
     end
 
     for _, name in ipairs(keysToRevert) do
          self.Entity:SetSpeedData('Cache', nil, name)
     end
-
+    
     local newSpeed = RecalculateSpeed(self)
     self:_SetSpeed(newSpeed)
 end
@@ -286,8 +289,8 @@ function SpeedController.new(Entity: EntityInterfaces.IEntityComponent): ISpeedC
     Cache[Character] = self
 
     local function Cleanup()
-        Cache[Character] = nil
         self:_ClearAllModifiers()
+        --Cache[Character] = nil
     end
 
     Humanoid.Died:Connect(Cleanup)

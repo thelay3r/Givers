@@ -31,22 +31,39 @@ GreatStun['Action'] = {
 
         local SoundProtorype = Sounds:FindFirstChild('GreatStun'):FindFirstChild('GreatStun')
         local GreatStunPrototype = Effects:FindFirstChild('GreatStun') :: BasePart
+        local SubGreatStunPrototype = Effects:FindFirstChild('GreatStunSub') :: BasePart
         local GreatStunEffect = EffectContainer:CreateInstance('GreatStun', GreatStunPrototype) :: BasePart
-        local Weld = EffectContainer:CreateInstance('WeldConstraint', Assets.Welds.WeldConstraint, {
+        local GreatStunEffectSub = EffectContainer:CreateInstance('GreatStunSub', SubGreatStunPrototype) :: BasePart
+
+        local Weld = EffectContainer:CreateInstance('Weld', Assets.Welds.Weld, {
             'Part1';
             'Part0';
         }):: WeldConstraint
         local GreatStunSound = EffectContainer:CreateInstance('GreatStunSound', SoundProtorype) :: Sound
 
 
+        
         GreatStunSound.Parent = RootPart
         GreatStunSound:Play()
         GreatStunSound.Ended:Once(function(a0: string)  
             EffectContainer:AddInstanceToCache('GreatStunSound', GreatStunSound)
         end)
         
+        task.delay(.35, function()
+            local GroundCheck = AssetsHelper.FastCast({
+                ['Character'] = Character;
+                ['Direction'] = Vector3.new(0,-5,0);
+                ['Position'] = Character.PrimaryPart.Position;
+            })
+            if not GroundCheck then return end
+            GreatStunEffectSub.Parent = workspace.Map.VFXs
+            GreatStunEffectSub.Anchored = true
+            GreatStunEffectSub.CFrame = CFrame.new(GroundCheck.Position,GroundCheck.Position+GroundCheck.Normal) * CFrame.Angles(-math.rad(90), 0, 0)
+            AssetsHelper.Emit(GreatStunEffectSub)
+        end)
+
         GreatStunEffect.CFrame = RootPart.CFrame
-        Weld.Part0 = RootPart
+        Weld.Part0 = Character.Torso
         Weld.Part1 = GreatStunEffect
 
         GreatStunEffect.Parent = workspace.Map.VFXs
@@ -54,10 +71,12 @@ GreatStun['Action'] = {
 
         AssetsHelper.Emit(GreatStunEffect)
 
-        task.delay(2, function()
+        task.delay(3, function()
             EffectContainer:AddInstanceToCache('GreatStun', GreatStunEffect)
-            EffectContainer:AddInstanceToCache('WeldConstraint', Weld)
+            EffectContainer:AddInstanceToCache('Weld', Weld)
+            EffectContainer:AddInstanceToCache('GreatStunEffectSub', GreatStunEffectSub)
         end)
+
     end,
     ['Animation'] = function(args)
         local Player = args.Player :: Player

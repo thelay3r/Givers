@@ -94,13 +94,17 @@ BodyMoversRegistry:Register('UnitSmoothVelocity', function(self,node)
 	local Unit
 
 	TaskManager:CreateTask(node, 'UnitSmoothVelocity', 0, function(a0)  
+		local lastHumanoidDirection
 		for i=1, Frames do 
 			if (not Body) or (not Body.Parent) then break end
-			Unit = if Humanoid.MoveDirection ~= Vector3.zero then Humanoid.MoveDirection.Unit  else Body.Parent.CFrame[BodyVelocityTag.Force]
+			Unit = if (Humanoid.MoveDirection ~= Vector3.zero) then Humanoid.MoveDirection.Unit else (lastHumanoidDirection or Body.Parent.CFrame[BodyVelocityTag.Force])
 
 			local t = i/Frames
 			local lerp = BiezeModule.lerp(config.SPoint, config.EPoint, t, easing, direction)
 			Body.Velocity = Unit * (BodyVelocityTag.VectorSpeed * lerp)
+			if Humanoid.MoveDirection ~= Vector3.zero then
+				lastHumanoidDirection = Humanoid.MoveDirection.Unit
+			end
 			task.wait(FrameRate)
 		end
 	end)

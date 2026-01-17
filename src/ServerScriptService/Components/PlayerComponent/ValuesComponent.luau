@@ -56,7 +56,9 @@ function ValuesComponent.SetSpeedData(self: IPlayer, name: string, value: any, s
     SetValue(self, 'SpeedData', name, value, subKey)
 end
 
-
+function ValuesComponent.SetJumpData(self: IPlayer, name: string, value: any, subKey: string?)
+    SetValue(self, 'JumpData', name, value, subKey)
+end
 function ValuesComponent.SetStatusEffect(self: IPlayer, name: string, value: any, subKey: string?)
     SetValue(self, 'StatusEffects', name, value, subKey)
 end
